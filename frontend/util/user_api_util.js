@@ -1,34 +1,12 @@
-var AppDispatcher = require('../dispatcher/dispatcher');
+var SessionActions = require('../actions/session_actions');
+var ErrorActions = require('../actions/error_actions');
 
 var UserApiUtil = {
 
-  post: function (options) {
-    $.ajax({
-      type: 'POST',
-      url: options.url,
-      data: {user: options.user},
-      success: options.success,
-      error: options.error
-    });
+  signup: function () {
+
   },
 
-  logout: function (success, error) {
-    $.ajax({
-      type: 'DELETE',
-      url: 'api/session',
-      success: success,
-      error: error
-    });
-  },
-
-  fetchCurrentUser: function (success, error) {
-    $.ajax({
-      type: 'GET',
-      url: 'api/session',
-      success: success,
-      error: error
-    });
-  }
 };
 
 module.exports = UserApiUtil;
