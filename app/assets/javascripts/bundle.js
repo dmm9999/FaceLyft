@@ -25877,6 +25877,11 @@
 	var SessionApiUtil = __webpack_require__(257);
 	var UserApiUtil = __webpack_require__(256);
 	
+	function overlay() {
+	  el = document.getElementById("overlay");
+	  el.style.visibility = el.style.visibility == "visible" ? "hidden" : "visible";
+	}
+	
 	var LoginForm = React.createClass({
 	  displayName: 'LoginForm',
 	
@@ -25913,7 +25918,10 @@
 	  },
 	
 	  updateErrors: function () {
-	    var errors = this.setState({ errors: ErrorStore.all() });
+	    this.setState({ errors: ErrorStore.all() });
+	    setTimeout(function () {
+	      this.setState({ errors: {} });
+	    }.bind(this), 2000);
 	  },
 	
 	  componentDidMount: function () {
@@ -25958,6 +25966,16 @@
 	  },
 	
 	  render: function () {
+	
+	    var modalState;
+	
+	    console.log(this.state.errors);
+	
+	    if (Object.keys(this.state.errors).length !== 0) {
+	      modalState = "visible-error-modal";
+	    } else {
+	      modalState = "hidden-error-modal";
+	    }
 	
 	    return React.createElement(
 	      'div',
@@ -26029,7 +26047,7 @@
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'error-modal' },
+	        { className: modalState },
 	        React.createElement(
 	          'div',
 	          null,
@@ -32887,6 +32905,7 @@
 	  for (var i in _errors) {
 	    results.push(_errors[i]);
 	  }
+	  return results;
 	};
 	
 	ErrorStore.formErrors = function (form) {

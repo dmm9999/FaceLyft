@@ -12,6 +12,7 @@ ErrorStore.all = function () {
   for (var i in _errors) {
     results.push(_errors[i]);
   }
+  return results;
 };
 
 ErrorStore.formErrors = function (form) {

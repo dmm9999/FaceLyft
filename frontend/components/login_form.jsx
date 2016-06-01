@@ -4,6 +4,11 @@ var ErrorStore = require('../stores/error_store');
 var SessionApiUtil = require('../util/session_api_util');
 var UserApiUtil = require('../util/user_api_util');
 
+function overlay() {
+	el = document.getElementById("overlay");
+	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+}
+
 var LoginForm = React.createClass({
 
   getInitialState: function () {
@@ -30,8 +35,10 @@ var LoginForm = React.createClass({
   },
 
   updateErrors: function () {
-    var errors =
     this.setState( { errors : ErrorStore.all() } );
+    setTimeout(function () {
+        this.setState({errors: {}});
+    }.bind(this), 2000);
   },
 
   componentDidMount: function () {
@@ -77,7 +84,15 @@ var LoginForm = React.createClass({
 
   render: function () {
 
+    var modalState;
 
+    console.log(this.state.errors);
+
+    if (Object.keys(this.state.errors).length !== 0) {
+      modalState = "visible-error-modal";
+    } else {
+      modalState = "hidden-error-modal";
+    }
 
     return (
       <div>
@@ -128,7 +143,7 @@ var LoginForm = React.createClass({
 
         </nav>
 
-        <div className="error-modal">
+        <div className={modalState}>
             <div>
               <p>
                 {this.fieldErrors("base")}
@@ -137,7 +152,7 @@ var LoginForm = React.createClass({
               </p>
             </div>
         </div>
-        
+
       </div>
     );
   }
