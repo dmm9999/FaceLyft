@@ -82,48 +82,62 @@ var LoginForm = React.createClass({
     return (
       <div>
         <nav className="group">
-          {this.fieldErrors("base")}
-          <h1 className="logo">
-              FaceLyft
-          </h1>
 
-          <form onSubmit={this.handleSubmit} className="login">
-            <ul>
+          <nav className="loginbar">
 
-              <li>
-                <label for="email">Email Address</label>
-                  {this.fieldErrors("emailAddress")}
+            <h1 className="logo">
+                FaceLyft
+            </h1>
+
+            <form onSubmit={this.handleSubmit} className="login">
+
+              <ul>
+
+                <li>
+                  <label for="email">Email Address</label>
+                    <input
+                      className="email"
+                      id="email"
+                      type="text"
+                      value={this.state.emailAddress}
+                      onChange={this.emailAddressChange}/>
+                </li>
+
+                <li>
+                  <label for="password">Password</label>
+                    <input
+                      className="password"
+                      id="password"
+                      type="password"
+                      value={this.state.password}
+                      onChange={this.passwordChange}/>
+                </li>
+
+                <li>
+                  <label for="button"> </label>
                   <input
-                    className="email"
-                    id="email"
-                    type="text"
-                    value={this.state.emailAddress}
-                    onChange={this.emailAddressChange}/>
-              </li>
+                    className="button"
+                    id="button"
+                    type="submit"
+                    value="Log In"/>
+                </li>
 
-              <li>
-                <label for="password">Password</label>
-                  {this.fieldErrors("password")}
-                  <input
-                    className="password"
-                    id="password"
-                    type="password"
-                    value={this.state.password}
-                    onChange={this.passwordChange}/>
-              </li>
+              </ul>
+            </form>
+          </nav>
 
-              <li>
-                <label for="button"> </label>
-                <input
-                  className="button"
-                  id="button"
-                  type="submit"
-                  value="Log In"/>
-              </li>
-
-            </ul>
-          </form>
         </nav>
+
+        <div className="error-modal">
+            <div>
+              <p>
+                {this.fieldErrors("base")}
+                {this.fieldErrors("emailAddress")}
+                {this.fieldErrors("password")}
+              </p>
+            </div>
+        </div>
+        
       </div>
     );
   }

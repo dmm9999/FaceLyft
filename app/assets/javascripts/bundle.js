@@ -25965,64 +25965,80 @@
 	      React.createElement(
 	        'nav',
 	        { className: 'group' },
-	        this.fieldErrors("base"),
 	        React.createElement(
-	          'h1',
-	          { className: 'logo' },
-	          'FaceLyft'
-	        ),
-	        React.createElement(
-	          'form',
-	          { onSubmit: this.handleSubmit, className: 'login' },
+	          'nav',
+	          { className: 'loginbar' },
 	          React.createElement(
-	            'ul',
-	            null,
+	            'h1',
+	            { className: 'logo' },
+	            'FaceLyft'
+	          ),
+	          React.createElement(
+	            'form',
+	            { onSubmit: this.handleSubmit, className: 'login' },
 	            React.createElement(
-	              'li',
+	              'ul',
 	              null,
 	              React.createElement(
-	                'label',
-	                { 'for': 'email' },
-	                'Email Address'
+	                'li',
+	                null,
+	                React.createElement(
+	                  'label',
+	                  { 'for': 'email' },
+	                  'Email Address'
+	                ),
+	                React.createElement('input', {
+	                  className: 'email',
+	                  id: 'email',
+	                  type: 'text',
+	                  value: this.state.emailAddress,
+	                  onChange: this.emailAddressChange })
 	              ),
-	              this.fieldErrors("emailAddress"),
-	              React.createElement('input', {
-	                className: 'email',
-	                id: 'email',
-	                type: 'text',
-	                value: this.state.emailAddress,
-	                onChange: this.emailAddressChange })
-	            ),
-	            React.createElement(
-	              'li',
-	              null,
 	              React.createElement(
-	                'label',
-	                { 'for': 'password' },
-	                'Password'
+	                'li',
+	                null,
+	                React.createElement(
+	                  'label',
+	                  { 'for': 'password' },
+	                  'Password'
+	                ),
+	                React.createElement('input', {
+	                  className: 'password',
+	                  id: 'password',
+	                  type: 'password',
+	                  value: this.state.password,
+	                  onChange: this.passwordChange })
 	              ),
-	              this.fieldErrors("password"),
-	              React.createElement('input', {
-	                className: 'password',
-	                id: 'password',
-	                type: 'password',
-	                value: this.state.password,
-	                onChange: this.passwordChange })
-	            ),
-	            React.createElement(
-	              'li',
-	              null,
 	              React.createElement(
-	                'label',
-	                { 'for': 'button' },
-	                ' '
-	              ),
-	              React.createElement('input', {
-	                className: 'button',
-	                id: 'button',
-	                type: 'submit',
-	                value: 'Log In' })
+	                'li',
+	                null,
+	                React.createElement(
+	                  'label',
+	                  { 'for': 'button' },
+	                  ' '
+	                ),
+	                React.createElement('input', {
+	                  className: 'button',
+	                  id: 'button',
+	                  type: 'submit',
+	                  value: 'Log In' })
+	              )
 	            )
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'error-modal' },
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(
+	            'p',
+	            null,
+	            this.fieldErrors("base"),
+	            this.fieldErrors("emailAddress"),
+	            this.fieldErrors("password")
 	          )
 	        )
 	      )
