@@ -7,6 +7,12 @@ var ErrorStore = new Store(AppDispatcher);
 var _errors = {};
 var _form = "";
 
+ErrorStore.all = function () {
+  var results = [];
+  for (var i in _errors) {
+    results.push(_errors[i]);
+  }
+};
 
 ErrorStore.formErrors = function (form) {
   if (form !== _form) {

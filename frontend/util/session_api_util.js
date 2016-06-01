@@ -5,7 +5,7 @@ var SessionApiUtil = {
 
   login: function (credentials) {
     $.ajax({
-      url: 'api/session',
+      url: '/api/session',
       type: 'POST',
       data: { user: credentials },
       success: function (currentUser) {
@@ -20,7 +20,7 @@ var SessionApiUtil = {
 
   logout: function () {
     $.ajax({
-      url: 'api/session',
+      url: '/api/session',
       type: 'DELETE',
       success: function () {
         SessionActions.removeCurrentUser();
@@ -30,7 +30,7 @@ var SessionApiUtil = {
 
   fetchCurrentUser: function () {
     $.ajax({
-      url: 'api/session',
+      url: '/api/session',
       type: 'GET',
       success: function (currentUser) {
         SessionActions.receiveCurrentUser(currentUser);

@@ -25882,7 +25882,7 @@
 	
 	
 	  getInitialState: function () {
-	    return { email_address: "", password: "", errors: {} };
+	    return { emailAddress: "", password: "", errors: {} };
 	  },
 	
 	  contextTypes: {
@@ -25932,11 +25932,21 @@
 	    }
 	  },
 	
+	  emailAddressChange: function (e) {
+	    var newEmailAddress = e.target.value;
+	    this.setState({ emailAddress: newEmailAddress });
+	  },
+	
+	  passwordChange: function (e) {
+	    var newPassword = e.target.value;
+	    this.setState({ password: newPassword });
+	  },
+	
 	  handleSubmit: function (e) {
 	    e.preventDefault();
 	
 	    var formData = {
-	      email_address: this.state.email_address,
+	      email_address: this.state.emailAddress,
 	      password: this.state.password
 	    };
 	
@@ -25947,13 +25957,34 @@
 	    }
 	  },
 	
-	  form: function () {},
-	
 	  render: function () {
+	
 	    return React.createElement(
 	      'div',
 	      null,
-	      'One Day I Will Be A Form'
+	      React.createElement(
+	        'form',
+	        { onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'label',
+	          null,
+	          'Email Address',
+	          React.createElement('input', {
+	            type: 'text',
+	            value: this.state.emailAddress,
+	            onChange: this.emailAddressChange })
+	        ),
+	        React.createElement(
+	          'label',
+	          null,
+	          'Password',
+	          React.createElement('input', {
+	            type: 'password',
+	            value: this.state.password,
+	            onChange: this.passwordChange }),
+	          React.createElement('input', { type: 'submit', value: 'Log In' })
+	        )
+	      )
 	    );
 	  }
 	
@@ -25973,6 +26004,42 @@
 	
 	var _currentUser = {},
 	    _currentUserHasBeenFetched = false;
+	
+	function _login(currentUser) {
+	  _currentUser = currentUser;
+	  _currentUserHasBeenFetched = true;
+	}
+	
+	function _logout() {
+	  _currentUser = {};
+	  _currentUserHasBeenFetched = false;
+	}
+	
+	SessionStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case SessionConstants.LOGIN:
+	      _login(payload.currentUser);
+	      break;
+	    case SessionConstants.LOGOUT:
+	      _logout();
+	      break;
+	  }
+	  SessionStore.__emitChange();
+	};
+	
+	SessionStore.currentUser = function () {
+	  return $.extend({}, _currentUser);
+	};
+	
+	SessionStore.currentUserHasBeenFetched = function () {
+	  return _currentUserHasBeenFetched;
+	};
+	
+	SessionStore.isUserLoggedIn = function () {
+	  return !!_currentUser.id;
+	};
+	
+	module.exports = SessionStore;
 
 /***/ },
 /* 231 */
@@ -32758,6 +32825,13 @@
 	var _errors = {};
 	var _form = "";
 	
+	ErrorStore.all = function () {
+	  var results = [];
+	  for (var i in _errors) {
+	    results.push(_errors[i]);
+	  }
+	};
+	
 	ErrorStore.formErrors = function (form) {
 	  if (form !== _form) {
 	    return {};
@@ -32814,7 +32888,21 @@
 	
 	var UserApiUtil = {
 	
-	  signup: function () {}
+	  signup: function (formData) {
+	    $.ajax({
+	      type: 'POST',
+	      url: 'api/users',
+	      dataType: 'json',
+	      data: { user: formData },
+	      success: function (currentUser) {
+	        SessionActions.receiveCurrentUser(currentUser);
+	      },
+	      error: function (xhr) {
+	        var errors = xhr.responseJSON;
+	        ErrorActions.setErrors("signup", errors);
+	      }
+	    });
+	  }
 	
 	};
 	
@@ -32831,7 +32919,7 @@
 	
 	  login: function (credentials) {
 	    $.ajax({
-	      url: 'api/session',
+	      url: '/api/session',
 	      type: 'POST',
 	      data: { user: credentials },
 	      success: function (currentUser) {
@@ -32846,7 +32934,7 @@
 	
 	  logout: function () {
 	    $.ajax({
-	      url: 'api/session',
+	      url: '/api/session',
 	      type: 'DELETE',
 	      success: function () {
 	        SessionActions.removeCurrentUser();
@@ -32856,7 +32944,7 @@
 	
 	  fetchCurrentUser: function () {
 	    $.ajax({
-	      url: 'api/session',
+	      url: '/api/session',
 	      type: 'GET',
 	      success: function (currentUser) {
 	        SessionActions.receiveCurrentUser(currentUser);
@@ -32903,7 +32991,23 @@
 	var AppDispatcher = __webpack_require__(250);
 	var ErrorConstants = __webpack_require__(255);
 	
-	var ErrorActions = {};
+	var ErrorActions = {
+	
+	  setErrors: function (form, errors) {
+	    AppDispatcher.dispatch({
+	      actionType: ErrorConstants.SET_ERRORS,
+	      form: form,
+	      errors: errors
+	    });
+	  },
+	
+	  clearErrors: function () {
+	    AppDispatcher.dispatch({
+	      actionType: ErrorConstants.CLEAR_ERRORS
+	    });
+	  }
+	
+	};
 	
 	module.exports = ErrorActions;
 

@@ -7,7 +7,7 @@ var UserApiUtil = require('../util/user_api_util');
 var LoginForm = React.createClass({
 
   getInitialState: function () {
-    return { email_address: "", password: "", errors: {} };
+    return { emailAddress: "", password: "", errors: {} };
   },
 
   contextTypes: {
@@ -50,11 +50,21 @@ var LoginForm = React.createClass({
     }
   },
 
+  emailAddressChange: function (e) {
+    var newEmailAddress = e.target.value;
+    this.setState( { emailAddress: newEmailAddress } );
+  },
+
+  passwordChange: function (e) {
+    var newPassword = e.target.value;
+    this.setState( { password: newPassword } );
+  },
+
   handleSubmit: function (e) {
     e.preventDefault();
 
     var formData = {
-      email_address: this.state.email_address,
+      email_address: this.state.emailAddress,
       password: this.state.password
     };
 
@@ -65,14 +75,26 @@ var LoginForm = React.createClass({
     }
   },
 
-  form: function () {
-
-  },
-
   render: function () {
+
+
     return (
       <div>
-        One Day I Will Be A Form
+        <form onSubmit={this.handleSubmit}>
+          <label>Email Address
+            <input
+              type="text"
+              value={this.state.emailAddress}
+              onChange={this.emailAddressChange}/>
+          </label>
+          <label>Password
+            <input
+              type="password"
+              value={this.state.password}
+              onChange={this.passwordChange}/>
+            <input type="submit" value="Log In"/>
+          </label>
+        </form>
       </div>
     );
   }
