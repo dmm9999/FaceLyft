@@ -78,23 +78,52 @@ var LoginForm = React.createClass({
   render: function () {
 
 
+
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
-          <label>Email Address
-            <input
-              type="text"
-              value={this.state.emailAddress}
-              onChange={this.emailAddressChange}/>
-          </label>
-          <label>Password
-            <input
-              type="password"
-              value={this.state.password}
-              onChange={this.passwordChange}/>
-            <input type="submit" value="Log In"/>
-          </label>
-        </form>
+        <nav className="group">
+          {this.fieldErrors("base")}
+          <h1 className="logo">
+              FaceLyft
+          </h1>
+
+          <form onSubmit={this.handleSubmit} className="login">
+            <ul>
+
+              <li>
+                <label for="email">Email Address</label>
+                  {this.fieldErrors("emailAddress")}
+                  <input
+                    className="email"
+                    id="email"
+                    type="text"
+                    value={this.state.emailAddress}
+                    onChange={this.emailAddressChange}/>
+              </li>
+
+              <li>
+                <label for="password">Password</label>
+                  {this.fieldErrors("password")}
+                  <input
+                    className="password"
+                    id="password"
+                    type="password"
+                    value={this.state.password}
+                    onChange={this.passwordChange}/>
+              </li>
+
+              <li>
+                <label for="button"> </label>
+                <input
+                  className="button"
+                  id="button"
+                  type="submit"
+                  value="Log In"/>
+              </li>
+
+            </ul>
+          </form>
+        </nav>
       </div>
     );
   }

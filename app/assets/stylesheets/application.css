@@ -13,3 +13,66 @@
  *= require_tree .
  *= require_self
  */
+
+div, html, body, section, article, h1, h2, p, nav, ul, li {
+
+  margin: 0;
+  border: 0;
+  padding: 0;
+
+  font: inherit;
+  text-align: inherit;
+  text-decoration: inherit;
+  color: inherit;
+
+  background: transparent;
+}
+
+nav {
+  background: #3b5998;
+  height: 80px;
+  font-family: helvetica;
+  color: #f9fafc;
+}
+
+.logo {
+  float: left;
+  font-size: 36px;
+  font-family: helvetica;
+  font-weight: bold;
+}
+
+.login {
+  float: right;
+  margin: 15px 450px 35px 0px;
+  width: 420px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.login li {
+  float: left;
+  width: 110px;
+  margin-right: 25px;
+}
+
+.login li label {
+  float: left;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.button {
+  background: #5972a7;
+  font-size: 12px;
+  font-weight: bold;
+  color: #f9fafc;
+}
+
+.group:after {
+  content: "";
+  display: block;
+  clear: both;
+}

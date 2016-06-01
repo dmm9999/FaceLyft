@@ -10,7 +10,7 @@ class Api::SessionsController < ApplicationController
       login(@user)
       render 'api/users/show'
     else
-      @errors
+      render json: {base: ["Invalid username/password combo"]}, status: 401
     end
 
   end

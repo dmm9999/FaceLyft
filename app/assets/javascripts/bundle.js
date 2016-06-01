@@ -25963,26 +25963,67 @@
 	      'div',
 	      null,
 	      React.createElement(
-	        'form',
-	        { onSubmit: this.handleSubmit },
+	        'nav',
+	        { className: 'group' },
+	        this.fieldErrors("base"),
 	        React.createElement(
-	          'label',
-	          null,
-	          'Email Address',
-	          React.createElement('input', {
-	            type: 'text',
-	            value: this.state.emailAddress,
-	            onChange: this.emailAddressChange })
+	          'h1',
+	          { className: 'logo' },
+	          'FaceLyft'
 	        ),
 	        React.createElement(
-	          'label',
-	          null,
-	          'Password',
-	          React.createElement('input', {
-	            type: 'password',
-	            value: this.state.password,
-	            onChange: this.passwordChange }),
-	          React.createElement('input', { type: 'submit', value: 'Log In' })
+	          'form',
+	          { onSubmit: this.handleSubmit, className: 'login' },
+	          React.createElement(
+	            'ul',
+	            null,
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement(
+	                'label',
+	                { 'for': 'email' },
+	                'Email Address'
+	              ),
+	              this.fieldErrors("emailAddress"),
+	              React.createElement('input', {
+	                className: 'email',
+	                id: 'email',
+	                type: 'text',
+	                value: this.state.emailAddress,
+	                onChange: this.emailAddressChange })
+	            ),
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement(
+	                'label',
+	                { 'for': 'password' },
+	                'Password'
+	              ),
+	              this.fieldErrors("password"),
+	              React.createElement('input', {
+	                className: 'password',
+	                id: 'password',
+	                type: 'password',
+	                value: this.state.password,
+	                onChange: this.passwordChange })
+	            ),
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement(
+	                'label',
+	                { 'for': 'button' },
+	                ' '
+	              ),
+	              React.createElement('input', {
+	                className: 'button',
+	                id: 'button',
+	                type: 'submit',
+	                value: 'Log In' })
+	            )
+	          )
 	        )
 	      )
 	    );
@@ -32961,7 +33002,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var SessionConstants = __webpack_require__(249);
-	var SessionApiUtil = __webpack_require__(257);
 	var SessionStore = __webpack_require__(230);
 	var AppDispatcher = __webpack_require__(250);
 	
