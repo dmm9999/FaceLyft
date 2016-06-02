@@ -12,7 +12,7 @@ FaceLyft is a web application inspired by Facebook that will be build using Ruby
 - [ ] Smooth, bug-free navigation
 - [ ] Adequate seed data to demonstrate the site's features
 - [ ] The minimally necessary features for a Facebook-inspired site: users have a profile page, users can search for other users using a search bar, users can friend other users, users can create posts, users can comment on posts, users can like posts, posts appear on a newsfeed page
-- [ ] Hosting on Heroku
+- [X] Hosting on Heroku
 - [ ] CSS styling that is satisfactorily visually appealing
 - [ ] A production README, replacing this README (**NB**: check out the [sample production README](https://github.com/appacademy/sample-project-proposal/blob/master/docs/production_readme.md) -- you'll write this later)
 
@@ -57,10 +57,10 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 
 **Objective:** Functioning rails project with Authentication
 
-- [ ] create new project
-- [ ] create `User` model and controller to handle user sign up
-- [ ] create `Session` controller to handle user sign in
-- [ ] authentication
+- [X] create new project
+- [X] create `User` model and controller to handle user sign up
+- [X] create `Session` controller to handle user sign in
+- [X] authentication
 - [ ] user signup/signin pages
 - [ ] style pages to match Facebook
 
@@ -102,25 +102,41 @@ deny said requests
 - [ ] test out API interaction in the console
 - [ ] style friend requests and friend buttons to match Facebook
 
-### Phase 5: Comments, Likes and Tags (2 days)
+### Phase 5: Comments Model, API, and basic APIUtil (1 day)
 
-**Objective:** Users can comment on posts, like posts and comments and
-tag users in posts and comments through the API
+**Objective:** Users can comment on posts
 
-- [ ] create `Comment`, `Like` and `Tag` models and controllers
-- build out API, Flux loop, and components for:
-  - [ ] Comment CRUD
-  - [ ] Like CRUD
-  - [ ] Tag CRUD
-- Use CSS to style new views
+- [ ] create `Comment` model and controller
+- [ ] amend seeded data to reflect friendships
+- [ ] create `JSON-API` for `Comment`
+- [ ] setup `APIUtil` to interact with the API
+- [ ] create `React` `Comment` components
+- [ ] test out API interaction in the console
+- [ ] style comments to match Facebook
 
-### Phase 6: Styling Cleanup and Seeding (1 day)
+### Phase 6: Likes Model, API, and basic APIUtil (1 day)
 
-**objective:** Make the site feel more cohesive and awesome.
+**Objective:** Users can like and unlike posts
 
-- [ ] Get feedback on my UI from others
-- [ ] Refactor HTML classes & CSS rules
-- [ ] Add modals, transitions, and other styling flourishes.
+- [ ] create `Like` model and controller
+- [ ] amend seeded data to reflect friendships
+- [ ] create `JSON-API` for `Like`
+- [ ] setup `APIUtil` to interact with the API
+- [ ] create `React` `Like` components
+- [ ] test out API interaction in the console
+- [ ] style likes to match Facebook
+
+### Phase 7: Tags Model, API, and basic APIUtil (1 day)
+
+**Objective:** Users can tag other users in posts and comments
+
+- [ ] create `Tag` model and controller
+- [ ] amend seeded data to reflect friendships
+- [ ] create `JSON-API` for `Tag`
+- [ ] setup `APIUtil` to interact with the API
+- [ ] create `React` `Tag` components
+- [ ] test out API interaction in the console
+- [ ] style tagging to match Facebook
 
 ### Bonus Features (TBD)
 - [ ] Notifications when users are tagged
