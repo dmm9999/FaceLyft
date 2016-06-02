@@ -28,13 +28,14 @@ var SessionApiUtil = {
     });
   },
 
-  fetchCurrentUser: function () {
+  fetchCurrentUser: function (complete) {
     $.ajax({
       url: '/api/session',
       type: 'GET',
       success: function (currentUser) {
         SessionActions.receiveCurrentUser(currentUser);
       },
+      complete: complete
     });
   }
 

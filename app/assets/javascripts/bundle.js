@@ -52,9 +52,12 @@
 	var Route = ReactRouter.Route;
 	var IndexRoute = ReactRouter.IndexRoute;
 	var hashHistory = ReactRouter.hashHistory;
+	var SessionApiUtil = __webpack_require__(258);
 	var UserApiUtil = __webpack_require__(229);
+	var SessionStore = __webpack_require__(232);
 	
-	var LoginForm = __webpack_require__(256);
+	var Login = __webpack_require__(259);
+	var Profile = __webpack_require__(263);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -72,6 +75,7 @@
 	          'FaceLyft'
 	        )
 	      ),
+	      React.createElement('input', { type: 'submit', value: 'Log Out', onClick: SessionApiUtil.logout }),
 	      this.props.children
 	    );
 	  }
@@ -80,9 +84,43 @@
 	var Router = React.createElement(
 	  Router,
 	  { history: hashHistory },
-	  React.createElement(Route, { path: '/login', component: LoginForm }),
-	  React.createElement(Route, { path: '/', component: App })
+	  React.createElement(Route, { path: '/login', onEnter: _ensureNotLoggedIn, component: Login }),
+	  React.createElement(
+	    Route,
+	    { path: '/', onEnter: _ensureLoggedIn, component: App },
+	    React.createElement(Route, { path: '/profile', component: Profile })
+	  )
 	);
+	
+	function _ensureLoggedIn(nextState, replace, asyncDoneCallback) {
+	  if (SessionStore.currentUserHasBeenFetched()) {
+	    redirectIfNotLoggedIn();
+	  } else {
+	    SessionApiUtil.fetchCurrentUser(redirectIfNotLoggedIn);
+	  }
+	
+	  function redirectIfNotLoggedIn() {
+	    if (!SessionStore.isUserLoggedIn()) {
+	      replace('/login');
+	    }
+	    asyncDoneCallback();
+	  }
+	}
+	
+	function _ensureNotLoggedIn(nextState, replace, asyncDoneCallback) {
+	  if (SessionStore.currentUserHasBeenFetched()) {
+	    redirectIfLoggedIn();
+	  } else {
+	    SessionApiUtil.fetchCurrentUser(redirectIfLoggedIn);
+	  }
+	
+	  function redirectIfLoggedIn() {
+	    if (SessionStore.isUserLoggedIn()) {
+	      replace('/profile');
+	    }
+	    asyncDoneCallback();
+	  }
+	}
 	
 	document.addEventListener("DOMContentLoaded", function () {
 	  ReactDOM.render(Router, document.getElementById('content'));
@@ -32781,206 +32819,7 @@
 	module.exports = ErrorConstants;
 
 /***/ },
-/* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var SessionStore = __webpack_require__(232);
-	var ErrorStore = __webpack_require__(257);
-	var SessionApiUtil = __webpack_require__(258);
-	var UserApiUtil = __webpack_require__(229);
-	
-	function overlay() {
-	  el = document.getElementById("overlay");
-	  el.style.visibility = el.style.visibility == "visible" ? "hidden" : "visible";
-	}
-	
-	var LoginForm = React.createClass({
-	  displayName: 'LoginForm',
-	
-	
-	  getInitialState: function () {
-	    return { emailAddress: "", password: "", errors: {} };
-	  },
-	
-	  contextTypes: {
-	    router: React.PropTypes.object.isRequired
-	  },
-	
-	  fieldErrors: function (field) {
-	    var errors = ErrorStore.formErrors(this.formType());
-	    if (!errors[field]) {
-	      return;
-	    }
-	    var messages = errors[field].map(function (errorMsg, i) {
-	      return React.createElement(
-	        'li',
-	        { key: i },
-	        errorMsg
-	      );
-	    });
-	    return React.createElement(
-	      'ul',
-	      null,
-	      messages
-	    );
-	  },
-	
-	  formType: function () {
-	    return this.props.location.pathname.slice(1);
-	  },
-	
-	  updateErrors: function () {
-	    this.setState({ errors: ErrorStore.all() });
-	    setTimeout(function () {
-	      this.setState({ errors: {} });
-	    }.bind(this), 2000);
-	  },
-	
-	  componentDidMount: function () {
-	    this.errorListener = ErrorStore.addListener(this.updateErrors);
-	    this.sessionListener = SessionStore.addListener(this.redirectIfLoggedIn);
-	  },
-	
-	  componentWillUnmount: function () {
-	    this.errorListener.remove();
-	    this.sessionListener.remove();
-	  },
-	
-	  redirectIfLoggedIn: function () {
-	    if (SessionStore.isUserLoggedIn()) {
-	      this.context.router.push("/");
-	    }
-	  },
-	
-	  emailAddressChange: function (e) {
-	    var newEmailAddress = e.target.value;
-	    this.setState({ emailAddress: newEmailAddress });
-	  },
-	
-	  passwordChange: function (e) {
-	    var newPassword = e.target.value;
-	    this.setState({ password: newPassword });
-	  },
-	
-	  handleSubmit: function (e) {
-	    e.preventDefault();
-	
-	    var formData = {
-	      email_address: this.state.emailAddress,
-	      password: this.state.password
-	    };
-	
-	    if (this.props.location.pathname === "/login") {
-	      SessionApiUtil.login(formData);
-	    } else {
-	      UserApiUtil.signup(formData);
-	    }
-	  },
-	
-	  render: function () {
-	
-	    var modalState;
-	
-	    console.log(this.state.errors);
-	
-	    if (Object.keys(this.state.errors).length !== 0) {
-	      modalState = "visible-error-modal";
-	    } else {
-	      modalState = "hidden-error-modal";
-	    }
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'nav',
-	        { className: 'group' },
-	        React.createElement(
-	          'nav',
-	          { className: 'loginbar' },
-	          React.createElement(
-	            'h1',
-	            { className: 'logo' },
-	            'FaceLyft'
-	          ),
-	          React.createElement(
-	            'form',
-	            { onSubmit: this.handleSubmit, className: 'login' },
-	            React.createElement(
-	              'ul',
-	              null,
-	              React.createElement(
-	                'li',
-	                null,
-	                React.createElement(
-	                  'label',
-	                  { 'for': 'email' },
-	                  'Email Address'
-	                ),
-	                React.createElement('input', {
-	                  className: 'email',
-	                  id: 'email',
-	                  type: 'text',
-	                  value: this.state.emailAddress,
-	                  onChange: this.emailAddressChange })
-	              ),
-	              React.createElement(
-	                'li',
-	                null,
-	                React.createElement(
-	                  'label',
-	                  { 'for': 'password' },
-	                  'Password'
-	                ),
-	                React.createElement('input', {
-	                  className: 'password',
-	                  id: 'password',
-	                  type: 'password',
-	                  value: this.state.password,
-	                  onChange: this.passwordChange })
-	              ),
-	              React.createElement(
-	                'li',
-	                null,
-	                React.createElement(
-	                  'label',
-	                  { 'for': 'button' },
-	                  ' '
-	                ),
-	                React.createElement('input', {
-	                  className: 'button',
-	                  id: 'button',
-	                  type: 'submit',
-	                  value: 'Log In' })
-	              )
-	            )
-	          )
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: modalState },
-	        React.createElement(
-	          'div',
-	          null,
-	          React.createElement(
-	            'p',
-	            null,
-	            this.fieldErrors("base"),
-	            this.fieldErrors("emailAddress"),
-	            this.fieldErrors("password")
-	          )
-	        )
-	      )
-	    );
-	  }
-	
-	});
-	
-	module.exports = LoginForm;
-
-/***/ },
+/* 256 */,
 /* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -33071,19 +32910,507 @@
 	    });
 	  },
 	
-	  fetchCurrentUser: function () {
+	  fetchCurrentUser: function (complete) {
 	    $.ajax({
 	      url: '/api/session',
 	      type: 'GET',
 	      success: function (currentUser) {
 	        SessionActions.receiveCurrentUser(currentUser);
-	      }
+	      },
+	      complete: complete
 	    });
 	  }
 	
 	};
 	
 	module.exports = SessionApiUtil;
+
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LoginForm = __webpack_require__(260);
+	var SignupForm = __webpack_require__(261);
+	var ErrorStore = __webpack_require__(257);
+	var SessionStore = __webpack_require__(232);
+	
+	var Login = React.createClass({
+	  displayName: 'Login',
+	
+	
+	  getInitialState: function () {
+	    return { errors: {} };
+	  },
+	
+	  redirectIfLoggedIn: function () {
+	    if (SessionStore.isUserLoggedIn()) {
+	      this.context.router.push("/");
+	    }
+	  },
+	
+	  fieldErrors: function (field) {
+	    var errors = ErrorStore.formErrors(this.formType());
+	    if (!errors[field]) {
+	      return;
+	    }
+	    var messages = errors[field].map(function (errorMsg, i) {
+	      return React.createElement(
+	        'li',
+	        { key: i },
+	        errorMsg
+	      );
+	    });
+	    return React.createElement(
+	      'ul',
+	      null,
+	      messages
+	    );
+	  },
+	
+	  formType: function () {
+	    return this.props.location.pathname.slice(1);
+	  },
+	
+	  updateErrors: function () {
+	    this.setState({ errors: ErrorStore.all() });
+	    setTimeout(function () {
+	      this.setState({ errors: {} });
+	    }.bind(this), 2000);
+	  },
+	
+	  render: function () {
+	
+	    var modalState;
+	
+	    if (Object.keys(this.state.errors).length !== 0) {
+	      modalState = "visible-error-modal";
+	    } else {
+	      modalState = "hidden-error-modal";
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(LoginForm, null),
+	        React.createElement(SignupForm, null)
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: modalState },
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(
+	            'p',
+	            null,
+	            this.fieldErrors("base"),
+	            this.fieldErrors("emailAddress"),
+	            this.fieldErrors("password")
+	          )
+	        )
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = Login;
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SessionStore = __webpack_require__(232);
+	var ErrorStore = __webpack_require__(257);
+	var SessionApiUtil = __webpack_require__(258);
+	
+	var LoginForm = React.createClass({
+	  displayName: 'LoginForm',
+	
+	
+	  getInitialState: function () {
+	    return { emailAddress: "", password: "", errors: {} };
+	  },
+	
+	  contextTypes: {
+	    router: React.PropTypes.object.isRequired
+	  },
+	
+	  componentDidMount: function () {
+	    this.errorListener = ErrorStore.addListener(this.updateErrors);
+	    this.sessionListener = SessionStore.addListener(this.redirectIfLoggedIn);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.errorListener.remove();
+	    this.sessionListener.remove();
+	  },
+	
+	  redirectIfLoggedIn: function () {
+	    if (SessionStore.isUserLoggedIn()) {
+	      this.context.router.push("/");
+	    }
+	  },
+	
+	  fieldErrors: function (field) {
+	    var errors = ErrorStore.formErrors(this.formType());
+	    if (!errors[field]) {
+	      return;
+	    }
+	    var messages = errors[field].map(function (errorMsg, i) {
+	      return React.createElement(
+	        'li',
+	        { key: i },
+	        errorMsg
+	      );
+	    });
+	    return React.createElement(
+	      'ul',
+	      null,
+	      messages
+	    );
+	  },
+	
+	  formType: function () {
+	    return this.props.location.pathname.slice(1);
+	  },
+	
+	  updateErrors: function () {
+	    this.setState({ errors: ErrorStore.all() });
+	    setTimeout(function () {
+	      this.setState({ errors: {} });
+	    }.bind(this), 2000);
+	  },
+	
+	  emailAddressChange: function (e) {
+	    var newEmailAddress = e.target.value;
+	    this.setState({ emailAddress: newEmailAddress });
+	  },
+	
+	  passwordChange: function (e) {
+	    var newPassword = e.target.value;
+	    this.setState({ password: newPassword });
+	  },
+	
+	  guestLogin: function () {
+	    var formData = {
+	      email_address: "guest@gmail.com",
+	      password: "password"
+	    };
+	    SessionApiUtil.login(formData);
+	  },
+	
+	  handleSubmit: function (e) {
+	    e.preventDefault();
+	
+	    var formData = {
+	      email_address: this.state.emailAddress,
+	      password: this.state.password
+	    };
+	
+	    SessionApiUtil.login(formData);
+	  },
+	
+	  render: function () {
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'nav',
+	        { className: 'group' },
+	        React.createElement(
+	          'nav',
+	          { className: 'loginbar' },
+	          React.createElement(
+	            'h1',
+	            { className: 'logo' },
+	            'FaceLyft'
+	          ),
+	          React.createElement(
+	            'ul',
+	            { className: 'guest-login-bar' },
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement('input', {
+	                type: 'submit',
+	                className: 'guest-login-button',
+	                onClick: this.guestLogin,
+	                value: 'Login as Guest' })
+	            )
+	          ),
+	          React.createElement(
+	            'form',
+	            { onSubmit: this.handleSubmit, className: 'login' },
+	            React.createElement(
+	              'ul',
+	              null,
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'label',
+	                  { 'for': 'email' },
+	                  'Email Address'
+	                ),
+	                React.createElement('input', {
+	                  className: 'email',
+	                  id: 'email',
+	                  type: 'text',
+	                  value: this.state.emailAddress,
+	                  onChange: this.emailAddressChange })
+	              ),
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'label',
+	                  { 'for': 'password' },
+	                  'Password'
+	                ),
+	                React.createElement('input', {
+	                  className: 'password',
+	                  id: 'password',
+	                  type: 'password',
+	                  value: this.state.password,
+	                  onChange: this.passwordChange })
+	              ),
+	              React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                  'label',
+	                  { 'for': 'button' },
+	                  ' '
+	                ),
+	                React.createElement('input', {
+	                  className: 'button',
+	                  id: 'button',
+	                  type: 'submit',
+	                  value: 'Log In' })
+	              )
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = LoginForm;
+
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SessionStore = __webpack_require__(232);
+	var ErrorStore = __webpack_require__(257);
+	var UserApiUtil = __webpack_require__(229);
+	
+	var SignupForm = React.createClass({
+	  displayName: 'SignupForm',
+	
+	
+	  getInitialState: function () {
+	    return { emailAddress: "", password: "" };
+	  },
+	
+	  contextTypes: {
+	    router: React.PropTypes.object.isRequired
+	  },
+	
+	  componentDidMount: function () {
+	    this.errorListener = ErrorStore.addListener(this.updateErrors);
+	    this.sessionListener = SessionStore.addListener(this.redirectIfLoggedIn);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.errorListener.remove();
+	    this.sessionListener.remove();
+	  },
+	
+	  redirectIfLoggedIn: function () {
+	    if (SessionStore.isUserLoggedIn()) {
+	      this.context.router.push("/");
+	    }
+	  },
+	
+	  fieldErrors: function (field) {
+	    var errors = ErrorStore.formErrors(this.formType());
+	    if (!errors[field]) {
+	      return;
+	    }
+	    var messages = errors[field].map(function (errorMsg, i) {
+	      return React.createElement(
+	        'li',
+	        { key: i },
+	        errorMsg
+	      );
+	    });
+	    return React.createElement(
+	      'ul',
+	      null,
+	      messages
+	    );
+	  },
+	
+	  formType: function () {
+	    return this.props.location.pathname.slice(1);
+	  },
+	
+	  updateErrors: function () {
+	    this.setState({ errors: ErrorStore.all() });
+	    setTimeout(function () {
+	      this.setState({ errors: {} });
+	    }.bind(this), 2000);
+	  },
+	
+	  emailAddressChange: function (e) {
+	    var newEmailAddress = e.target.value;
+	    this.setState({ emailAddress: newEmailAddress });
+	  },
+	
+	  passwordChange: function (e) {
+	    var newPassword = e.target.value;
+	    this.setState({ password: newPassword });
+	  },
+	
+	  handleSubmit: function (e) {
+	    e.preventDefault();
+	
+	    var formData = {
+	      email_address: this.state.emailAddress,
+	      password: this.state.password
+	    };
+	
+	    UserApiUtil.signup(formData);
+	  },
+	
+	  render: function () {
+	
+	    return React.createElement(
+	      'main',
+	      { className: 'signup' },
+	      React.createElement(
+	        'div',
+	        { className: 'signup-content group' },
+	        React.createElement(
+	          'ul',
+	          { className: 'splash' },
+	          React.createElement(
+	            'li',
+	            null,
+	            'Connect with friends and the world around you on FaceLyft'
+	          )
+	        ),
+	        React.createElement(
+	          'form',
+	          { onSubmit: this.handleSubmit },
+	          React.createElement(
+	            'ul',
+	            { className: 'signup-box' },
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement(
+	                'h1',
+	                { className: 'signup-welcome' },
+	                'Sign Up'
+	              )
+	            ),
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement('input', {
+	                type: 'text',
+	                className: 'signup-email',
+	                onChange: this.emailAddressChange,
+	                placeholder: 'Enter your email address',
+	                value: this.state.emailAddress })
+	            ),
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement('input', {
+	                type: 'password',
+	                className: 'signup-password',
+	                onChange: this.passwordChange,
+	                placeholder: 'New password',
+	                value: this.state.password })
+	            ),
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement('input', {
+	                type: 'submit',
+	                className: 'signup-button',
+	                value: 'Sign Up' })
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = SignupForm;
+
+/***/ },
+/* 262 */,
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Navbar = __webpack_require__(264);
+	
+	var Profile = React.createClass({
+	  displayName: 'Profile',
+	
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(Navbar, null),
+	      'I\'ll be your profile'
+	    );
+	  }
+	
+	});
+	
+	module.exports = Profile;
+
+/***/ },
+/* 264 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PropTypes = React.PropTypes;
+	
+	var Navbar = React.createClass({
+	  displayName: 'Navbar',
+	
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      'I\'m a navbar'
+	    );
+	  }
+	
+	});
+	
+	module.exports = Navbar;
 
 /***/ }
 /******/ ]);

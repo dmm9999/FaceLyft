@@ -55,6 +55,20 @@ nav {
   margin-top: 15px;
 }
 
+.guest-login-bar {
+
+}
+
+.guest-login-button {
+  background: #5972a7;
+  font-size: 12px;
+  font-weight: bold;
+  color: #f9fafc;
+  margin-top: 33px;
+  margin-left: 110px;
+  float: left;
+}
+
 ul {
   list-style-type: none;
   display: block;
@@ -125,4 +139,57 @@ ul {
 input {
   padding: 5px;
   border: 1px solid black;
+}
+
+.signup-content {
+  width: 1422px;
+  margin: auto;
+}
+
+.signup {
+  background: #edf0f5;
+  height: 100%;
+  width: 100%;
+  font-family: freight sans bold;
+  margin: auto;
+  position: absolute;
+}
+
+.splash {
+  float: left;
+  font-size: 24px;
+}
+
+.splash li {
+  margin: 30px 0px 5px 0px;
+  width: 500px;
+  font-size: 30px;
+}
+
+.signup-box {
+  float: left;
+  margin: 10px 0px 0px 200px;
+}
+
+.signup-welcome {
+  font-size: 36px;
+}
+
+.signup-button {
+  background: #5c9449;
+  width: 200px;
+  color: #ffffff;
+  font-size: 18px;
+  border-radius: 4px;
+}
+
+.signup-box li {
+  margin-bottom: 12px;
+}
+
+.signup-email, .signup-password {
+  font-size: 18px;
+  width: 400px;
+  border-radius: 4px;
+  padding: 10px;
 }

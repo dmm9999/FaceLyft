@@ -1,13 +1,7 @@
 var React = require('react');
-var SessionStore = require('../stores/session_store');
-var ErrorStore = require('../stores/error_store');
-var SessionApiUtil = require('../util/session_api_util');
-var UserApiUtil = require('../util/user_api_util');
-
-function overlay() {
-	el = document.getElementById("overlay");
-	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
-}
+var SessionStore = require('../../../stores/session_store');
+var ErrorStore = require('../../../stores/error_store');
+var SessionApiUtil = require('../../../util/session_api_util');
 
 var LoginForm = React.createClass({
 
@@ -17,6 +11,22 @@ var LoginForm = React.createClass({
 
   contextTypes: {
     router: React.PropTypes.object.isRequired
+  },
+
+  componentDidMount: function () {
+    this.errorListener = ErrorStore.addListener(this.updateErrors);
+    this.sessionListener = SessionStore.addListener(this.redirectIfLoggedIn);
+  },
+
+  componentWillUnmount: function () {
+    this.errorListener.remove();
+    this.sessionListener.remove();
+  },
+
+  redirectIfLoggedIn: function () {
+    if (SessionStore.isUserLoggedIn()) {
+      this.context.router.push("/");
+    }
   },
 
   fieldErrors: function (field) {
@@ -41,22 +51,6 @@ var LoginForm = React.createClass({
     }.bind(this), 2000);
   },
 
-  componentDidMount: function () {
-    this.errorListener = ErrorStore.addListener(this.updateErrors);
-    this.sessionListener = SessionStore.addListener(this.redirectIfLoggedIn);
-  },
-
-  componentWillUnmount: function () {
-    this.errorListener.remove();
-    this.sessionListener.remove();
-  },
-
-  redirectIfLoggedIn: function () {
-    if (SessionStore.isUserLoggedIn()) {
-      this.context.router.push("/");
-    }
-  },
-
   emailAddressChange: function (e) {
     var newEmailAddress = e.target.value;
     this.setState( { emailAddress: newEmailAddress } );
@@ -67,6 +61,14 @@ var LoginForm = React.createClass({
     this.setState( { password: newPassword } );
   },
 
+  guestLogin: function () {
+    var formData = {
+      email_address: "guest@gmail.com",
+      password: "password"
+    };
+    SessionApiUtil.login(formData);
+  },
+
   handleSubmit: function (e) {
     e.preventDefault();
 
@@ -75,24 +77,11 @@ var LoginForm = React.createClass({
       password: this.state.password
     };
 
-    if (this.props.location.pathname === "/login") {
-      SessionApiUtil.login(formData);
-    } else {
-      UserApiUtil.signup(formData);
-    }
+    SessionApiUtil.login(formData);
+
   },
 
   render: function () {
-
-    var modalState;
-
-    console.log(this.state.errors);
-
-    if (Object.keys(this.state.errors).length !== 0) {
-      modalState = "visible-error-modal";
-    } else {
-      modalState = "hidden-error-modal";
-    }
 
     return (
       <div>
@@ -103,6 +92,18 @@ var LoginForm = React.createClass({
             <h1 className="logo">
                 FaceLyft
             </h1>
+
+            <ul className="guest-login-bar">
+
+              <li>
+                <input
+                  type="submit"
+                  className="guest-login-button"
+                  onClick={this.guestLogin}
+                  value="Login as Guest"/>
+              </li>
+
+            </ul>
 
             <form onSubmit={this.handleSubmit} className="login">
 
@@ -142,16 +143,6 @@ var LoginForm = React.createClass({
           </nav>
 
         </nav>
-
-        <div className={modalState}>
-            <div>
-              <p>
-                {this.fieldErrors("base")}
-                {this.fieldErrors("emailAddress")}
-                {this.fieldErrors("password")}
-              </p>
-            </div>
-        </div>
 
       </div>
     );
