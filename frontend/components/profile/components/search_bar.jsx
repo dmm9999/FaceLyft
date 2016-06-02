@@ -10,11 +10,9 @@ var SearchBar = React.createClass({
           type="text"
           className="search-bar"
           placeholder="Search FaceLyft"/>
-        <i class="fa fa-search" aria-hidden="true"></i>
-        <input
-          type="submit"
-          className="search-button"
-          value="Search"/>
+        <div className="search-button">
+          <i className="fa fa-search" aria-hidden="true"></i>
+        </div>
       </div>
     );
   }

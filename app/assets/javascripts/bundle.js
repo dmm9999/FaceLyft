@@ -33233,7 +33233,7 @@
 	
 	
 	  getInitialState: function () {
-	    return { emailAddress: "", password: "" };
+	    return { emailAddress: "", password: "", errors: {} };
 	  },
 	
 	  contextTypes: {
@@ -33457,11 +33457,11 @@
 	        type: "text",
 	        className: "search-bar",
 	        placeholder: "Search FaceLyft" }),
-	      React.createElement("i", { "class": "fa fa-search", "aria-hidden": "true" }),
-	      React.createElement("input", {
-	        type: "submit",
-	        className: "search-button",
-	        value: "Search" })
+	      React.createElement(
+	        "div",
+	        { className: "search-button" },
+	        React.createElement("i", { className: "fa fa-search", "aria-hidden": "true" })
+	      )
 	    );
 	  }
 	

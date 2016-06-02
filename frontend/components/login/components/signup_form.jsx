@@ -6,7 +6,7 @@ var UserApiUtil = require('../../../util/user_api_util');
 var SignupForm = React.createClass({
 
   getInitialState: function () {
-    return ( { emailAddress: "", password: "" } );
+    return ( { emailAddress: "", password: "", errors: {} } );
   },
 
   contextTypes: {
