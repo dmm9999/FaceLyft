@@ -53,7 +53,7 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 
 ## Implementation Timeline
 
-### Phase 1: Backend setup and User Authentication (0.5 days)
+### Phase 1: Backend setup and User Authentication (1.5 days)
 
 **Objective:** Functioning rails project with Authentication
 
@@ -76,7 +76,7 @@ personal info through the API.
 - [ ] test out API interaction in the console
 - [ ] style profile page (without posts) to match Facebook
 
-### Phase 3: Posts Model, API, and basic APIUtil (1.5 days)
+### Phase 3: Posts Model, API, and basic APIUtil (1 day)
 
 **Objective:** Posts can be created, read, edited and destroyed through
 the API.

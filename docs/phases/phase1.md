@@ -1,4 +1,4 @@
-# Phase 1: User Authentication
+# Phase 1: User Authentication (1.5 days)
 
 ## Rails
 ### Models
