@@ -14,7 +14,7 @@
  *= require_self
  */
 
-div, html, body, section, article, h1, h2, p, nav, ul, li {
+div, html, body, section, article, h1, h2, p, nav, ul, li, fa {
 
   margin: 0;
   border: 0;
@@ -192,4 +192,38 @@ input {
   width: 400px;
   border-radius: 4px;
   padding: 10px;
+}
+
+.navbar {
+  background: #3B5998;
+  height: 44px;
+}
+
+.search-bar {
+  float: left;
+  margin-top: 5px;
+  width: 400px;
+  padding: 8px;
+  border: 1px solid white;
+  border-radius: 3px 0px 0px 3px;
+}
+
+.search-button {
+  float: left;
+  margin-top: 4px;
+  border-radius: 0px 3px 3px 0px;
+  padding: 9px;
+}
+
+.logout-button {
+  float: right;
+}
+
+.fa-facebook{
+  float: left;
+  background: #ffffff;
+  color: #3b5998;
+  width: 25px;
+  margin: 5px 10px 0px 40px;
+  text-align: right;
 }

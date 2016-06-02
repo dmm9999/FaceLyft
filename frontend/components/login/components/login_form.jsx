@@ -61,11 +61,14 @@ var LoginForm = React.createClass({
     this.setState( { password: newPassword } );
   },
 
-  guestLogin: function () {
+  guestLogin: function (e) {
+    e.preventDefault();
+
     var formData = {
       email_address: "guest@gmail.com",
       password: "password"
     };
+    
     SessionApiUtil.login(formData);
   },
 

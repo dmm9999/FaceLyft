@@ -62,20 +62,29 @@
 	var App = React.createClass({
 	  displayName: 'App',
 	
+	
+	  contextTypes: {
+	    router: React.PropTypes.object.isRequired
+	  },
+	
+	  componentDidMount: function () {
+	    this.sessionListener = SessionStore.addListener(this.redirectIfLoggedOut);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.sessionListener.remove();
+	  },
+	
+	  redirectIfLoggedOut: function () {
+	    if (!SessionStore.isUserLoggedIn()) {
+	      this.context.router.push('/login');
+	    }
+	  },
+	
 	  render: function () {
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement(
-	        'header',
-	        null,
-	        React.createElement(
-	          'h1',
-	          null,
-	          'FaceLyft'
-	        )
-	      ),
-	      React.createElement('input', { type: 'submit', value: 'Log Out', onClick: SessionApiUtil.logout }),
 	      this.props.children
 	    );
 	  }
@@ -88,7 +97,7 @@
 	  React.createElement(
 	    Route,
 	    { path: '/', onEnter: _ensureLoggedIn, component: App },
-	    React.createElement(Route, { path: '/profile', component: Profile })
+	    React.createElement(IndexRoute, { component: Profile })
 	  )
 	);
 	
@@ -116,7 +125,7 @@
 	
 	  function redirectIfLoggedIn() {
 	    if (SessionStore.isUserLoggedIn()) {
-	      replace('/profile');
+	      replace('/');
 	    }
 	    asyncDoneCallback();
 	  }
@@ -25999,12 +26008,13 @@
 	  switch (payload.actionType) {
 	    case SessionConstants.LOGIN:
 	      _login(payload.currentUser);
+	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.LOGOUT:
 	      _logout();
+	      SessionStore.__emitChange();
 	      break;
 	  }
-	  SessionStore.__emitChange();
 	};
 	
 	SessionStore.currentUser = function () {
@@ -33097,11 +33107,14 @@
 	    this.setState({ password: newPassword });
 	  },
 	
-	  guestLogin: function () {
+	  guestLogin: function (e) {
+	    e.preventDefault();
+	
 	    var formData = {
 	      email_address: "guest@gmail.com",
 	      password: "password"
 	    };
+	
 	    SessionApiUtil.login(formData);
 	  },
 	
@@ -33394,7 +33407,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PropTypes = React.PropTypes;
+	
+	var SessionApiUtil = __webpack_require__(258);
+	
+	var SearchBar = __webpack_require__(265);
 	
 	var Navbar = React.createClass({
 	  displayName: 'Navbar',
@@ -33404,13 +33420,54 @@
 	    return React.createElement(
 	      'div',
 	      null,
-	      'I\'m a navbar'
+	      React.createElement(
+	        'nav',
+	        { className: 'navbar group' },
+	        React.createElement('i', { className: 'fa fa-facebook fa-2x', 'aria-hidden': 'true' }),
+	        React.createElement(SearchBar, null),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'logout-button',
+	          value: 'Log Out',
+	          onClick: SessionApiUtil.logout })
+	      )
 	    );
 	  }
 	
 	});
 	
 	module.exports = Navbar;
+
+/***/ },
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PropTypes = React.PropTypes;
+	
+	var SearchBar = React.createClass({
+	  displayName: "SearchBar",
+	
+	
+	  render: function () {
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement("input", {
+	        type: "text",
+	        className: "search-bar",
+	        placeholder: "Search FaceLyft" }),
+	      React.createElement("i", { "class": "fa fa-search", "aria-hidden": "true" }),
+	      React.createElement("input", {
+	        type: "submit",
+	        className: "search-button",
+	        value: "Search" })
+	    );
+	  }
+	
+	});
+	
+	module.exports = SearchBar;
 
 /***/ }
 /******/ ]);

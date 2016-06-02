@@ -14,11 +14,28 @@ var Login = require('./components/login/login');
 var Profile = require('./components/profile/profile');
 
 var App = React.createClass({
+
+  contextTypes : {
+    router: React.PropTypes.object.isRequired
+  },
+
+  componentDidMount: function () {
+    this.sessionListener = SessionStore.addListener(this.redirectIfLoggedOut);
+  },
+
+  componentWillUnmount: function () {
+    this.sessionListener.remove();
+  },
+
+  redirectIfLoggedOut: function () {
+    if (!SessionStore.isUserLoggedIn()) {
+      this.context.router.push('/login');
+    }
+  },
+
   render: function () {
     return (
       <div>
-        <header><h1>FaceLyft</h1></header>
-        <input type="submit" value="Log Out" onClick={SessionApiUtil.logout}/>
         {this.props.children}
       </div>
     );
@@ -29,7 +46,7 @@ var Router = (
   <Router history={hashHistory}>
     <Route path="/login" onEnter={_ensureNotLoggedIn} component={Login}/>
     <Route path="/" onEnter={_ensureLoggedIn} component={App}>
-      <Route path="/profile" component={Profile}/>
+      <IndexRoute component={Profile}/>
     </Route>
   </Router>
 );
@@ -58,7 +75,7 @@ function _ensureNotLoggedIn(nextState, replace, asyncDoneCallback) {
 
   function redirectIfLoggedIn () {
     if (SessionStore.isUserLoggedIn()) {
-      replace('/profile');
+      replace('/');
     }
     asyncDoneCallback();
   }

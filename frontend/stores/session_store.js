@@ -21,12 +21,13 @@ SessionStore.__onDispatch = function (payload) {
   switch (payload.actionType) {
     case SessionConstants.LOGIN:
       _login(payload.currentUser);
+      SessionStore.__emitChange();
       break;
     case SessionConstants.LOGOUT:
       _logout();
+      SessionStore.__emitChange();
       break;
   }
-  SessionStore.__emitChange();
 };
 
 SessionStore.currentUser = function () {
