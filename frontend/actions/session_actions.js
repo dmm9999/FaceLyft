@@ -15,7 +15,15 @@ var SessionActions = {
     AppDispatcher.dispatch({
       actionType: SessionConstants.LOGOUT,
     });
-  }
+  },
+
+  updateCurrentUser: function (updatedUser) {
+    debugger
+    AppDispatcher.dispatch({
+      actionType: SessionConstants.UPDATE_CURRENT_USER,
+      updatedUser: updatedUser
+    });
+  },
 
 };
 

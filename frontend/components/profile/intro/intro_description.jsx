@@ -1,6 +1,7 @@
 var React = require('react');
 var PropTypes = React.PropTypes;
-var UserActions = require('./../../../actions/user_actions');
+var SessionApiUtil = require('./../../../util/session_api_util');
+var SessionStore = require('./../../../stores/session_store');
 
 var IntroDescription = React.createClass({
 
@@ -22,9 +23,9 @@ var IntroDescription = React.createClass({
 
     e.preventDefault();
 
-    var currentUser = Object.assign({}, this.state);
+    var currentUser = this.state.currentUser;
 
-    UserActions.updateUser(currentUser);
+    SessionApiUtil.updateCurrentUser(currentUser);
 
   },
 
@@ -37,15 +38,18 @@ var IntroDescription = React.createClass({
           <textarea
             onChange={this.updateDescription}
             className="intro-description-form-text"
-            placeholder="Describe who you are"/>
+            placeholder="Describe who you are"
+            value={this.state.currentUser.description}/>
           <div
             className="intro-description-form-button-container">
             <input
+              type="submit"
               className="intro-description-form-save-button"
               value='Save'/>
-              <input
-                className="intro-description-form-cancel-button"
-                value='Cancel'/>
+            <input
+              type="submit"
+              className="intro-description-form-cancel-button"
+              value='Cancel'/>
           </div>
         </form>
       </div>

@@ -37,6 +37,19 @@ var SessionApiUtil = {
       },
       complete: complete
     });
+  },
+
+  updateCurrentUser: function (data) {
+    $.ajax({
+      url: '/api/user',
+      type: 'PATCH',
+      data: { user : data } ,
+      success: function (updatedCurrentUser) {
+        SessionActions.updateCurrentUser(updatedCurrentUser);
+      },
+      error: function () {
+      }
+    });
   }
 
 };

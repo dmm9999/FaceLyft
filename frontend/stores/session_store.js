@@ -27,6 +27,10 @@ SessionStore.__onDispatch = function (payload) {
       _logout();
       SessionStore.__emitChange();
       break;
+    case SessionConstants.UPDATE_CURRENT_USER:
+      _login(payload.updatedUser);
+      SessionStore.__emitChange();
+      break;
   }
 };
 
@@ -41,5 +45,6 @@ SessionStore.currentUserHasBeenFetched = function () {
 SessionStore.isUserLoggedIn = function () {
   return !!_currentUser.id;
 };
+
 
 module.exports = SessionStore;

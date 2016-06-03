@@ -1,6 +1,6 @@
 var React = require('react');
 var Navbar = require('./navbar');
-var Intro = require('./intro');
+var Intro = require('./intro/intro');
 
 var Profile = React.createClass({
 
@@ -8,7 +8,7 @@ var Profile = React.createClass({
     return (
       <div>
         <Navbar/>
-        <Intro/>  
+        <Intro/>
       </div>
     );
   }

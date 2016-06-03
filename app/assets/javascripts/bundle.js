@@ -25957,6 +25957,18 @@
 	      },
 	      complete: complete
 	    });
+	  },
+	
+	  updateCurrentUser: function (data) {
+	    $.ajax({
+	      url: '/api/user',
+	      type: 'PATCH',
+	      data: { user: data },
+	      success: function (updatedCurrentUser) {
+	        SessionActions.updateCurrentUser(updatedCurrentUser);
+	      },
+	      error: function () {}
+	    });
 	  }
 	
 	};
@@ -25984,6 +25996,14 @@
 	    AppDispatcher.dispatch({
 	      actionType: SessionConstants.LOGOUT
 	    });
+	  },
+	
+	  updateCurrentUser: function (updatedUser) {
+	    debugger;
+	    AppDispatcher.dispatch({
+	      actionType: SessionConstants.UPDATE_CURRENT_USER,
+	      updatedUser: updatedUser
+	    });
 	  }
 	
 	};
@@ -25996,7 +26016,8 @@
 
 	var SessionConstants = {
 	  LOGIN: "LOGIN",
-	  LOGOUT: "LOGOUT"
+	  LOGOUT: "LOGOUT",
+	  UPDATE_CURRENT_USER: "UPDATE_CURRENT_USER"
 	};
 	
 	module.exports = SessionConstants;
@@ -26032,6 +26053,10 @@
 	      break;
 	    case SessionConstants.LOGOUT:
 	      _logout();
+	      SessionStore.__emitChange();
+	      break;
+	    case SessionConstants.UPDATE_CURRENT_USER:
+	      _login(payload.updatedUser);
 	      SessionStore.__emitChange();
 	      break;
 	  }
@@ -33036,7 +33061,7 @@
 
 	var React = __webpack_require__(1);
 	var Navbar = __webpack_require__(264);
-	var Intro = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./intro\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var Intro = __webpack_require__(272);
 	
 	var Profile = React.createClass({
 	  displayName: 'Profile',
@@ -33478,6 +33503,113 @@
 	});
 	
 	module.exports = SignupForm;
+
+/***/ },
+/* 269 */,
+/* 270 */,
+/* 271 */,
+/* 272 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SessionStore = __webpack_require__(232);
+	
+	var IntroDescription = __webpack_require__(273);
+	
+	var Intro = React.createClass({
+	  displayName: 'Intro',
+	
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'intro-container' },
+	      React.createElement(
+	        'header',
+	        { className: 'intro-header group' },
+	        React.createElement('img', { src: window.globeIcon, className: 'intro-icon' }),
+	        React.createElement(
+	          'h1',
+	          { className: 'intro-title' },
+	          'Intro'
+	        )
+	      ),
+	      React.createElement(IntroDescription, null)
+	    );
+	  }
+	
+	});
+	
+	module.exports = Intro;
+
+/***/ },
+/* 273 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PropTypes = React.PropTypes;
+	var SessionApiUtil = __webpack_require__(229);
+	var SessionStore = __webpack_require__(232);
+	
+	var IntroDescription = React.createClass({
+	  displayName: 'IntroDescription',
+	
+	
+	  getInitialState: function () {
+	
+	    return { currentUser: SessionStore.currentUser() };
+	  },
+	
+	  updateDescription: function (e) {
+	
+	    e.preventDefault();
+	
+	    this.setState({ currentUser: { description: e.target.value } });
+	  },
+	
+	  handleSubmit: function (e) {
+	
+	    e.preventDefault();
+	
+	    var currentUser = this.state.currentUser;
+	
+	    SessionApiUtil.updateCurrentUser(currentUser);
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        {
+	          onSubmit: this.handleSubmit,
+	          className: 'intro-description-form' },
+	        React.createElement('textarea', {
+	          onChange: this.updateDescription,
+	          className: 'intro-description-form-text',
+	          placeholder: 'Describe who you are',
+	          value: this.state.currentUser.description }),
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'intro-description-form-button-container' },
+	          React.createElement('input', {
+	            type: 'submit',
+	            className: 'intro-description-form-save-button',
+	            value: 'Save' }),
+	          React.createElement('input', {
+	            type: 'submit',
+	            className: 'intro-description-form-cancel-button',
+	            value: 'Cancel' })
+	        )
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = IntroDescription;
 
 /***/ }
 /******/ ]);

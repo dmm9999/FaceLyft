@@ -1,5 +1,5 @@
 var React = require('react');
-var SessionStore = require('./../../stores/session_store');
+var SessionStore = require('./../../../stores/session_store');
 
 var IntroDescription = require('./intro_description');
 
