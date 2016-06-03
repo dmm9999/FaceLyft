@@ -1,7 +1,7 @@
 var React = require('react');
-var SessionStore = require('../../../stores/session_store');
-var ErrorStore = require('../../../stores/error_store');
-var SessionApiUtil = require('../../../util/session_api_util');
+var SessionStore = require('../../stores/session_store');
+var ErrorStore = require('../../stores/error_store');
+var SessionApiUtil = require('../../util/session_api_util');
 
 var LoginForm = React.createClass({
 
@@ -68,7 +68,7 @@ var LoginForm = React.createClass({
       email_address: "guest@gmail.com",
       password: "password"
     };
-    
+
     SessionApiUtil.login(formData);
   },
 

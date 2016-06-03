@@ -14,7 +14,7 @@
  *= require_self
  */
 
-div, html, body, section, article, h1, h2, p, nav, ul, li, fa {
+div, html, body, section, article, h1, h2, p, nav, ul, li, button, fa {
 
   margin: 0;
   border: 0;
@@ -26,6 +26,10 @@ div, html, body, section, article, h1, h2, p, nav, ul, li, fa {
   color: inherit;
 
   background: transparent;
+}
+
+body {
+  background: #E9EBEE;
 }
 
 nav {
@@ -220,6 +224,10 @@ input {
   font-size: 20px;
 }
 
+.search-button:hover {
+  background: #4080ff;
+}
+
 .logout-button {
   float: right;
 }
@@ -231,4 +239,68 @@ input {
   width: 25px;
   margin: 5px 10px 0px 40px;
   text-align: right;
+}
+
+.home-button {
+  margin-top: 5px;
+  margin-left: 500px;
+  padding: 8px;
+  border-radius: 4px;
+  color: white;
+  background: #3B5998;
+  font-size: 12px;
+  border-left: 1px solid #365089;
+}
+
+.home-button:hover {
+  background: rgba(0, 0, 0, .1);
+}
+
+.intro-container {
+  width: 330px;
+  height: 460px;
+  background: #ffffff;
+}
+
+.intro-icon {
+  width: 20px;
+  float: left;
+  margin: 10px
+}
+
+.intro-title {
+  float:left;
+  margin: 12px;
+  font-family: helvetica;
+}
+
+.intro-description-form-text {
+  margin: 10px;
+  width: 300px;
+  height: 100px;
+  text-align: center;
+}
+
+.intro-description-form-cancel-button {
+  background: #F6F7F9;
+  border-radius: 2px;
+  float: right;
+  width: 40px;
+  text-align: center;
+  font-family: helvetica;
+  color: #595D63;
+  font-weight: bold;
+}
+
+.intro-description-form-save-button {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 40px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
 }

@@ -1,5 +1,6 @@
 var React = require('react');
-var Navbar = require('./components/navbar');
+var Navbar = require('./navbar');
+var Intro = require('./intro');
 
 var Profile = React.createClass({
 
@@ -7,7 +8,7 @@ var Profile = React.createClass({
     return (
       <div>
         <Navbar/>
-        I'll be your profile
+        <Intro/>  
       </div>
     );
   }

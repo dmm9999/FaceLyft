@@ -1,6 +1,6 @@
 var React = require('react');
-var LoginForm = require('./components/login_form');
-var SignupForm = require('./components/signup_form');
+var LoginForm = require('./login_form');
+var SignupForm = require('./signup_form');
 var ErrorStore = require('./../../stores/error_store');
 var SessionStore = require('./../../stores/session_store');
 

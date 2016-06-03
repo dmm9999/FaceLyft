@@ -52,12 +52,12 @@
 	var Route = ReactRouter.Route;
 	var IndexRoute = ReactRouter.IndexRoute;
 	var hashHistory = ReactRouter.hashHistory;
-	var SessionApiUtil = __webpack_require__(258);
-	var UserApiUtil = __webpack_require__(229);
+	var SessionApiUtil = __webpack_require__(229);
+	var UserApiUtil = __webpack_require__(256);
 	var SessionStore = __webpack_require__(232);
 	
-	var Login = __webpack_require__(259);
-	var Profile = __webpack_require__(263);
+	var Login = __webpack_require__(257);
+	var Profile = __webpack_require__(261);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -25921,27 +25921,47 @@
 	var SessionActions = __webpack_require__(230);
 	var ErrorActions = __webpack_require__(254);
 	
-	var UserApiUtil = {
+	var SessionApiUtil = {
 	
-	  signup: function (formData) {
+	  login: function (credentials) {
 	    $.ajax({
+	      url: '/api/session',
 	      type: 'POST',
-	      url: 'api/users',
-	      dataType: 'json',
-	      data: { user: formData },
+	      data: { user: credentials },
 	      success: function (currentUser) {
 	        SessionActions.receiveCurrentUser(currentUser);
 	      },
 	      error: function (xhr) {
 	        var errors = xhr.responseJSON;
-	        ErrorActions.setErrors("signup", errors);
+	        ErrorActions.setErrors("login", errors);
 	      }
+	    });
+	  },
+	
+	  logout: function () {
+	    $.ajax({
+	      url: '/api/session',
+	      type: 'DELETE',
+	      success: function () {
+	        SessionActions.removeCurrentUser();
+	      }
+	    });
+	  },
+	
+	  fetchCurrentUser: function (complete) {
+	    $.ajax({
+	      url: '/api/session',
+	      type: 'GET',
+	      success: function (currentUser) {
+	        SessionActions.receiveCurrentUser(currentUser);
+	      },
+	      complete: complete
 	    });
 	  }
 	
 	};
 	
-	module.exports = UserApiUtil;
+	module.exports = SessionApiUtil;
 
 /***/ },
 /* 230 */
@@ -32829,120 +32849,41 @@
 	module.exports = ErrorConstants;
 
 /***/ },
-/* 256 */,
-/* 257 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(233);
-	var Store = __webpack_require__(237).Store;
-	var ErrorConstants = __webpack_require__(255);
-	
-	var ErrorStore = new Store(AppDispatcher);
-	
-	var _errors = {};
-	var _form = "";
-	
-	ErrorStore.all = function () {
-	  var results = [];
-	  for (var i in _errors) {
-	    results.push(_errors[i]);
-	  }
-	  return results;
-	};
-	
-	ErrorStore.formErrors = function (form) {
-	  if (form !== _form) {
-	    return {};
-	  }
-	
-	  var result = {};
-	
-	  var errors;
-	  Object.keys(_errors).forEach(function (field) {
-	    errors = _errors[field];
-	    result[field] = errors.slice();
-	  });
-	
-	  return result;
-	};
-	
-	ErrorStore.form = function () {
-	  return _form.slice();
-	};
-	
-	ErrorStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case ErrorConstants.SET_ERRORS:
-	      _errors = payload.errors;
-	      _form = payload.form;
-	      break;
-	    case ErrorConstants.CLEAR_ERRORS:
-	      _errors = {};
-	      _form = "";
-	      break;
-	  }
-	  ErrorStore.__emitChange();
-	};
-	
-	module.exports = ErrorStore;
-
-/***/ },
-/* 258 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var SessionActions = __webpack_require__(230);
 	var ErrorActions = __webpack_require__(254);
 	
-	var SessionApiUtil = {
+	var UserApiUtil = {
 	
-	  login: function (credentials) {
+	  signup: function (formData) {
 	    $.ajax({
-	      url: '/api/session',
 	      type: 'POST',
-	      data: { user: credentials },
+	      url: 'api/users',
+	      dataType: 'json',
+	      data: { user: formData },
 	      success: function (currentUser) {
 	        SessionActions.receiveCurrentUser(currentUser);
 	      },
 	      error: function (xhr) {
 	        var errors = xhr.responseJSON;
-	        ErrorActions.setErrors("login", errors);
+	        ErrorActions.setErrors("signup", errors);
 	      }
-	    });
-	  },
-	
-	  logout: function () {
-	    $.ajax({
-	      url: '/api/session',
-	      type: 'DELETE',
-	      success: function () {
-	        SessionActions.removeCurrentUser();
-	      }
-	    });
-	  },
-	
-	  fetchCurrentUser: function (complete) {
-	    $.ajax({
-	      url: '/api/session',
-	      type: 'GET',
-	      success: function (currentUser) {
-	        SessionActions.receiveCurrentUser(currentUser);
-	      },
-	      complete: complete
 	    });
 	  }
-	
 	};
 	
-	module.exports = SessionApiUtil;
+	module.exports = UserApiUtil;
 
 /***/ },
-/* 259 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LoginForm = __webpack_require__(260);
-	var SignupForm = __webpack_require__(261);
-	var ErrorStore = __webpack_require__(257);
+	var LoginForm = __webpack_require__(267);
+	var SignupForm = __webpack_require__(268);
+	var ErrorStore = __webpack_require__(259);
 	var SessionStore = __webpack_require__(232);
 	
 	var Login = React.createClass({
@@ -33031,13 +32972,174 @@
 	module.exports = Login;
 
 /***/ },
-/* 260 */
+/* 258 */,
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(233);
+	var Store = __webpack_require__(237).Store;
+	var ErrorConstants = __webpack_require__(255);
+	
+	var ErrorStore = new Store(AppDispatcher);
+	
+	var _errors = {};
+	var _form = "";
+	
+	ErrorStore.all = function () {
+	  var results = [];
+	  for (var i in _errors) {
+	    results.push(_errors[i]);
+	  }
+	  return results;
+	};
+	
+	ErrorStore.formErrors = function (form) {
+	  if (form !== _form) {
+	    return {};
+	  }
+	
+	  var result = {};
+	
+	  var errors;
+	  Object.keys(_errors).forEach(function (field) {
+	    errors = _errors[field];
+	    result[field] = errors.slice();
+	  });
+	
+	  return result;
+	};
+	
+	ErrorStore.form = function () {
+	  return _form.slice();
+	};
+	
+	ErrorStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case ErrorConstants.SET_ERRORS:
+	      _errors = payload.errors;
+	      _form = payload.form;
+	      break;
+	    case ErrorConstants.CLEAR_ERRORS:
+	      _errors = {};
+	      _form = "";
+	      break;
+	  }
+	  ErrorStore.__emitChange();
+	};
+	
+	module.exports = ErrorStore;
+
+/***/ },
+/* 260 */,
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Navbar = __webpack_require__(264);
+	var Intro = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./intro\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	
+	var Profile = React.createClass({
+	  displayName: 'Profile',
+	
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(Navbar, null),
+	      React.createElement(Intro, null)
+	    );
+	  }
+	
+	});
+	
+	module.exports = Profile;
+
+/***/ },
+/* 262 */,
+/* 263 */,
+/* 264 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionApiUtil = __webpack_require__(229);
+	
+	var SearchBar = __webpack_require__(265);
+	
+	var Navbar = React.createClass({
+	  displayName: 'Navbar',
+	
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'nav',
+	        { className: 'navbar group' },
+	        React.createElement('i', { className: 'fa fa-facebook fa-2x', 'aria-hidden': 'true' }),
+	        React.createElement(SearchBar, null),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'home-button'
+	          },
+	          'Home'
+	        ),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'logout-button',
+	          value: 'Log Out',
+	          onClick: SessionApiUtil.logout })
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = Navbar;
+
+/***/ },
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PropTypes = React.PropTypes;
+	
+	var SearchBar = React.createClass({
+	  displayName: "SearchBar",
+	
+	
+	  render: function () {
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement("input", {
+	        type: "text",
+	        className: "search-bar",
+	        placeholder: "Search FaceLyft" }),
+	      React.createElement(
+	        "div",
+	        { className: "search-button" },
+	        React.createElement("i", { className: "fa fa-search", "aria-hidden": "true" })
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = SearchBar;
+
+/***/ },
+/* 266 */,
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var SessionStore = __webpack_require__(232);
-	var ErrorStore = __webpack_require__(257);
-	var SessionApiUtil = __webpack_require__(258);
+	var ErrorStore = __webpack_require__(259);
+	var SessionApiUtil = __webpack_require__(229);
 	
 	var LoginForm = React.createClass({
 	  displayName: 'LoginForm',
@@ -33220,13 +33322,13 @@
 	module.exports = LoginForm;
 
 /***/ },
-/* 261 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var SessionStore = __webpack_require__(232);
-	var ErrorStore = __webpack_require__(257);
-	var UserApiUtil = __webpack_require__(229);
+	var ErrorStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
 	
 	var SignupForm = React.createClass({
 	  displayName: 'SignupForm',
@@ -33376,98 +33478,6 @@
 	});
 	
 	module.exports = SignupForm;
-
-/***/ },
-/* 262 */,
-/* 263 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var Navbar = __webpack_require__(264);
-	
-	var Profile = React.createClass({
-	  displayName: 'Profile',
-	
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(Navbar, null),
-	      'I\'ll be your profile'
-	    );
-	  }
-	
-	});
-	
-	module.exports = Profile;
-
-/***/ },
-/* 264 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var SessionApiUtil = __webpack_require__(258);
-	
-	var SearchBar = __webpack_require__(265);
-	
-	var Navbar = React.createClass({
-	  displayName: 'Navbar',
-	
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'nav',
-	        { className: 'navbar group' },
-	        React.createElement('i', { className: 'fa fa-facebook fa-2x', 'aria-hidden': 'true' }),
-	        React.createElement(SearchBar, null),
-	        React.createElement('input', {
-	          type: 'submit',
-	          className: 'logout-button',
-	          value: 'Log Out',
-	          onClick: SessionApiUtil.logout })
-	      )
-	    );
-	  }
-	
-	});
-	
-	module.exports = Navbar;
-
-/***/ },
-/* 265 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PropTypes = React.PropTypes;
-	
-	var SearchBar = React.createClass({
-	  displayName: "SearchBar",
-	
-	
-	  render: function () {
-	    return React.createElement(
-	      "div",
-	      null,
-	      React.createElement("input", {
-	        type: "text",
-	        className: "search-bar",
-	        placeholder: "Search FaceLyft" }),
-	      React.createElement(
-	        "div",
-	        { className: "search-button" },
-	        React.createElement("i", { className: "fa fa-search", "aria-hidden": "true" })
-	      )
-	    );
-	  }
-	
-	});
-	
-	module.exports = SearchBar;
 
 /***/ }
 /******/ ]);

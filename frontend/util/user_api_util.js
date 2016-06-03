@@ -18,7 +18,6 @@ var UserApiUtil = {
       }
     });
   },
-
 };
 
 module.exports = UserApiUtil;

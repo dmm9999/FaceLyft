@@ -1,7 +1,7 @@
 var React = require('react');
-var SessionStore = require('../../../stores/session_store');
-var ErrorStore = require('../../../stores/error_store');
-var UserApiUtil = require('../../../util/user_api_util');
+var SessionStore = require('../../stores/session_store');
+var ErrorStore = require('../../stores/error_store');
+var UserApiUtil = require('../../util/user_api_util');
 
 var SignupForm = React.createClass({
 
