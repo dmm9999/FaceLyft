@@ -34,7 +34,7 @@ var IntroDescription = React.createClass({
       <div>
         <form
           onSubmit={this.handleSubmit}
-          className="intro-description-form">
+          className="intro-description-form group">
           <textarea
             onChange={this.updateDescription}
             className="intro-description-form-text"

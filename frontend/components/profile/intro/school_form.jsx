@@ -2,7 +2,7 @@ var React = require('react');
 var SessionStore = require('./../../../stores/session_store');
 var SessionApiUtil = require('./../../../util/session_api_util');
 
-var HometownForm = React.createClass({
+var SchoolForm = React.createClass({
 
   getInitialState: function () {
 
@@ -12,11 +12,11 @@ var HometownForm = React.createClass({
 
   },
 
-  updateHometown: function (e) {
+  updateSchool: function (e) {
 
     e.preventDefault();
 
-    this.setState( { currentUser : { hometown: e.target.value } } );
+    this.setState( { currentUser : { school : e.target.value } } );
   },
 
   handleSubmit: function (e) {
@@ -35,9 +35,9 @@ var HometownForm = React.createClass({
           onSubmit={this.handleSubmit}>
           <input
             type="text"
-            value={this.state.currentUser.hometown}
-            onChange={this.updateHometown}
-            placeholder="What's your hometown?"
+            value={this.state.currentUser.school}
+            onChange={this.updateSchool}
+            placeholder="Where did you go to school?"
             />
           <input
             type="submit"
@@ -50,4 +50,4 @@ var HometownForm = React.createClass({
 
 });
 
-module.exports = HometownForm;
+module.exports = SchoolForm;

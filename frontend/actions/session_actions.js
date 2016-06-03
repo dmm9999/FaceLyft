@@ -18,7 +18,6 @@ var SessionActions = {
   },
 
   updateCurrentUser: function (updatedUser) {
-    debugger
     AppDispatcher.dispatch({
       actionType: SessionConstants.UPDATE_CURRENT_USER,
       updatedUser: updatedUser

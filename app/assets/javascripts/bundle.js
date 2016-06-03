@@ -25999,7 +25999,6 @@
 	  },
 	
 	  updateCurrentUser: function (updatedUser) {
-	    debugger;
 	    AppDispatcher.dispatch({
 	      actionType: SessionConstants.UPDATE_CURRENT_USER,
 	      updatedUser: updatedUser
@@ -33515,6 +33514,8 @@
 	var SessionStore = __webpack_require__(232);
 	
 	var IntroDescription = __webpack_require__(273);
+	var HometownForm = __webpack_require__(274);
+	var SchoolForm = __webpack_require__(276);
 	
 	var Intro = React.createClass({
 	  displayName: 'Intro',
@@ -33534,7 +33535,9 @@
 	          'Intro'
 	        )
 	      ),
-	      React.createElement(IntroDescription, null)
+	      React.createElement(IntroDescription, null),
+	      React.createElement(HometownForm, null),
+	      React.createElement(SchoolForm, null)
 	    );
 	  }
 	
@@ -33584,7 +33587,7 @@
 	        'form',
 	        {
 	          onSubmit: this.handleSubmit,
-	          className: 'intro-description-form' },
+	          className: 'intro-description-form group' },
 	        React.createElement('textarea', {
 	          onChange: this.updateDescription,
 	          className: 'intro-description-form-text',
@@ -33610,6 +33613,129 @@
 	});
 	
 	module.exports = IntroDescription;
+
+/***/ },
+/* 274 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	
+	var HometownForm = React.createClass({
+	  displayName: 'HometownForm',
+	
+	
+	  getInitialState: function () {
+	
+	    var currentUser = SessionStore.currentUser();
+	
+	    return { currentUser: currentUser };
+	  },
+	
+	  updateHometown: function (e) {
+	
+	    e.preventDefault();
+	
+	    this.setState({ currentUser: { hometown: e.target.value } });
+	  },
+	
+	  handleSubmit: function (e) {
+	
+	    e.preventDefault();
+	
+	    var currentUser = this.state.currentUser;
+	
+	    SessionApiUtil.updateCurrentUser(currentUser);
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        {
+	          onSubmit: this.handleSubmit },
+	        React.createElement('input', {
+	          type: 'text',
+	          value: this.state.currentUser.hometown,
+	          onChange: this.updateHometown,
+	          placeholder: 'What\'s your hometown?'
+	        }),
+	        React.createElement('input', {
+	          type: 'submit',
+	          value: 'Save'
+	        })
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = HometownForm;
+
+/***/ },
+/* 275 */,
+/* 276 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	
+	var SchoolForm = React.createClass({
+	  displayName: 'SchoolForm',
+	
+	
+	  getInitialState: function () {
+	
+	    var currentUser = SessionStore.currentUser();
+	
+	    return { currentUser: currentUser };
+	  },
+	
+	  updateSchool: function (e) {
+	
+	    e.preventDefault();
+	
+	    this.setState({ currentUser: { school: e.target.value } });
+	  },
+	
+	  handleSubmit: function (e) {
+	
+	    e.preventDefault();
+	
+	    var currentUser = this.state.currentUser;
+	
+	    SessionApiUtil.updateCurrentUser(currentUser);
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        {
+	          onSubmit: this.handleSubmit },
+	        React.createElement('input', {
+	          type: 'text',
+	          value: this.state.currentUser.school,
+	          onChange: this.updateSchool,
+	          placeholder: 'Where did you go to school?'
+	        }),
+	        React.createElement('input', {
+	          type: 'submit',
+	          value: 'Save'
+	        })
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = SchoolForm;
 
 /***/ }
 /******/ ]);
