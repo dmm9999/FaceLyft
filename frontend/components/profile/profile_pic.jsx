@@ -30,7 +30,7 @@ var ProfilePic = React.createClass({
     return (
       <div>
         <img src={this.state.imageUrl}/>
-        <input type="file" onClick={this.updateFile}/>
+        <input type="file" onChange={this.updateFile}/>
       </div>
     );
 

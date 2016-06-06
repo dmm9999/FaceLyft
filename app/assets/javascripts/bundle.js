@@ -33930,7 +33930,7 @@
 	      "div",
 	      null,
 	      React.createElement("img", { src: this.state.imageUrl }),
-	      React.createElement("input", { type: "file", onClick: this.updateFile })
+	      React.createElement("input", { type: "file", onChange: this.updateFile })
 	    );
 	  }
 	
