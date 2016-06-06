@@ -8,14 +8,17 @@ var CoverPic = require('./coverpic');
 var Profile = React.createClass({
 
   render: function() {
+
+    var pageId = parseInt(this.props.params.id);
+
     return (
       <div>
         <Navbar/>
-        <CoverPic>
+        <CoverPic id={pageId} >
           <ProfilePic/>
         </CoverPic>
-        <Intro/>
-        <Friends/>
+        <Intro id={pageId}/>
+        <Friends id={pageId}/>
       </div>
     );
   }

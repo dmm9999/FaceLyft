@@ -32901,6 +32901,18 @@
 	        ErrorActions.setErrors("signup", errors);
 	      }
 	    });
+	  },
+	
+	  fetchUser: function (id) {
+	    debugger;
+	    $.ajax({
+	      type: 'GET',
+	      url: 'api/users/' + parseInt(id),
+	      dataType: 'json',
+	      success: function (fetchedUser) {
+	        UserActions.receiveFetchedUser(fetchedUser);
+	      }
+	    });
 	  }
 	};
 	
@@ -33421,17 +33433,20 @@
 	
 	
 	  render: function () {
+	
+	    var pageId = parseInt(this.props.params.id);
+	
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(Navbar, null),
 	      React.createElement(
 	        CoverPic,
-	        null,
+	        { id: pageId },
 	        React.createElement(ProfilePic, null)
 	      ),
-	      React.createElement(Intro, null),
-	      React.createElement(Friends, null)
+	      React.createElement(Intro, { id: pageId }),
+	      React.createElement(Friends, { id: pageId })
 	    );
 	  }
 	
@@ -33992,6 +34007,8 @@
 	
 	var SessionStore = __webpack_require__(232);
 	var SessionApiUtil = __webpack_require__(229);
+	var UserApiUtil = __webpack_require__(256);
+	var UserStore = __webpack_require__(275);
 	
 	var CoverPic = React.createClass({
 	  displayName: 'CoverPic',
@@ -33999,7 +34016,26 @@
 	
 	  getInitialState: function () {
 	
-	    return { imageUrl: SessionStore.currentUser().coverpic_url };
+	    debugger;
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { imageUrl: SessionStore.currentUser().coverpic_url };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { imageUrl: UserStore.retrieveUser.coverpic_url };
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ fetchedUser: UserStore.retrieveUser() });
 	  },
 	
 	  updateFile: function (e) {
@@ -34044,6 +34080,77 @@
 	});
 	
 	module.exports = CoverPic;
+
+/***/ },
+/* 275 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(233);
+	var Store = __webpack_require__(237).Store;
+	var UserConstants = __webpack_require__(276);
+	
+	var UserStore = new Store(AppDispatcher);
+	
+	var _user, _errors;
+	
+	UserStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case UserConstants.LOGIN:
+	      UserStore.login(payload.user);
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.LOGOUT:
+	      UserStore.logout();
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.ERROR:
+	      UserStore.setErrors(payload.errors);
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.RECEIVE_FETCHED_USER:
+	      UserStore.receiveFetchedUser(payload.fetchedUser);
+	      UserStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	UserStore.login = function (user) {
+	  _currentUser = user;
+	  _errors = null;
+	};
+	
+	UserStore.logout = function () {
+	  _currentUser = null;
+	  _errors = null;
+	};
+	
+	UserStore.setErrors = function (errors) {
+	  _errors = errors;
+	};
+	
+	UserStore.receiveFetchedUser = function (fetchedUser) {
+	  _user = fetchedUser;
+	};
+	
+	UserStore.retrieveUser = function () {
+	  return _user;
+	};
+	
+	module.exports = UserStore;
+
+/***/ },
+/* 276 */
+/***/ function(module, exports) {
+
+	var UserConstants = {
+		LOGIN: "LOGIN",
+		ERROR: "ERROR",
+		LOGOUT: "LOGOUT",
+		RECEIVE_DATA: "RECEIVE_DATA",
+		RECEIVE_FETCHED_USER: "RECEIVE_FETCHED_USER"
+	};
+	
+	module.exports = UserConstants;
 
 /***/ }
 /******/ ]);

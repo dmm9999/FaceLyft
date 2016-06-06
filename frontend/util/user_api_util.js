@@ -18,6 +18,18 @@ var UserApiUtil = {
       }
     });
   },
+
+  fetchUser: function (id) {
+    debugger
+    $.ajax({
+      type: 'GET',
+      url: 'api/users/' + parseInt(id),
+      dataType: 'json',
+      success: function (fetchedUser) {
+        UserActions.receiveFetchedUser(fetchedUser);
+      }
+    });
+  }
 };
 
 module.exports = UserApiUtil;
