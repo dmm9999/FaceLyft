@@ -41,9 +41,11 @@ var SessionApiUtil = {
 
   updateCurrentUser: function (data) {
     $.ajax({
-      url: '/api/users',
+      url: '/api/user',
       type: 'PATCH',
-      data: { user : data } ,
+      processData : false,
+      contentType : false,
+      data: data,
       success: function (updatedCurrentUser) {
         SessionActions.updateCurrentUser(updatedCurrentUser);
       },

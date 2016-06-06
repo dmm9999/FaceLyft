@@ -11,3 +11,4 @@ json.current_city @user.current_city
 json.phone_number @user.phone_number
 json.birthday @user.birthday
 json.profile_pic_url asset_path(@user.profile_pic.url)
+json.coverpic_url asset_path(@user.coverpic.url)

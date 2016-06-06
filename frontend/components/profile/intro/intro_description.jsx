@@ -25,7 +25,7 @@ var IntroDescription = React.createClass({
 
     var currentUser = this.state.currentUser;
 
-    SessionApiUtil.updateCurrentUser(currentUser);
+    SessionApiUtil.updateCurrentUser({ user: currentUser } );
 
   },
 

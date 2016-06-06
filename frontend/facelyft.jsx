@@ -46,7 +46,7 @@ var Router = (
   <Router history={hashHistory}>
     <Route path="/login" onEnter={_ensureNotLoggedIn} component={Login}/>
     <Route path="/" onEnter={_ensureLoggedIn} component={App}>
-      <IndexRoute component={Profile}/>
+      <Route path="/users/:id" component={Profile}/>
     </Route>
   </Router>
 );

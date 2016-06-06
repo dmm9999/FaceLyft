@@ -11,6 +11,9 @@ class User < ActiveRecord::Base
   has_attached_file :profile_pic, default_url: "Profile_Pictures_For_Facebook_02.jpg"
   validates_attachment_content_type :profile_pic, content_type: /\Aimage\/.*\Z/
 
+  has_attached_file :coverpic, default_url: "Profile_Pictures_For_Facebook_02.jpg"
+  validates_attachment_content_type :coverpic, content_type: /\Aimage\/.*\Z/
+
   has_many :friender_friendships,
     -> { where accepted: true},
     class_name: "Friendship",
@@ -32,7 +35,9 @@ class User < ActiveRecord::Base
     source: :friender_user
 
 
-
+  def friends
+    friended_friends + friender_friends
+  end
 
   def self.find_by_credentials(email_address, password)
     user = User.find_by_email_address(email_address)

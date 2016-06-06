@@ -3,11 +3,11 @@ var React = require('react');
 var SessionStore = require('./../../stores/session_store');
 var SessionApiUtil = require('./../../util/session_api_util');
 
-var ProfilePic = React.createClass({
+var CoverPic = React.createClass({
 
   getInitialState: function () {
 
-    return( { imageUrl : SessionStore.currentUser().profile_pic_url } ) ;
+    return( { imageUrl : SessionStore.currentUser().coverpic_url } ) ;
 
   },
 
@@ -35,7 +35,7 @@ var ProfilePic = React.createClass({
     e.preventDefault();
 
     var formData = new FormData();
-    formData.append("user[profile_pic]", this.state.imageFile);
+    formData.append("user[coverpic]", this.state.imageFile);
 
     SessionApiUtil.updateCurrentUser(formData);
   },
@@ -43,18 +43,17 @@ var ProfilePic = React.createClass({
   render: function () {
 
     return (
-      <div className="profile-pic">
+      <div className="cover-pic">
         <img src={this.state.imageUrl}/>
         <input type="file" onChange={this.updateFile}/>
-        <input type="submit" value="Save Profile Pic" onClick={this.savePic} />
+        <input type="submit" value="Save Cover Pic" onClick={this.savePic} />
+        {this.props.children}
       </div>
     );
 
   }
 
+
 });
 
-
-
-
-module.exports = ProfilePic;
+module.exports = CoverPic;

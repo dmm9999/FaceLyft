@@ -35,16 +35,28 @@ var Friends = React.createClass({
 
     if (this.state.friends !== null) {
       friends = this.state.friends.map(function(friend) {
-        return <li key={friend.id}>
-                  <img src={friend.profile_pic_url} />
-              </li>
+        return <li key={friend.id} className="friend-picture">
+                  <img className="friend-image" src={friend.profile_pic_url} />
+              </li>;
       });
     } else {
-      friends = <div>Friends</div>
+      friends = <div>Friends</div>;
+    }
+
+    var length = <div/>;
+
+    if (this.state.friends !== null &&
+        this.state.friends.length !== 0) {
+      length = <div>{this.state.friends.length}</div>;
     }
 
     return (
-      <ul>
+      <ul className="friends-container">
+        <header className="friends-header group">
+          <img src={window.friendsIcon} className="friends-icon"/>
+          <title className="friends-title">Friends</title>
+          <div className="friends-count">{length}</div>
+        </header>
         {friends}
       </ul>
     );

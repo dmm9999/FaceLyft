@@ -25,13 +25,13 @@ class Api::UsersController < ApplicationController
 
   def friends
     @user = User.find_by_id(params[:id])
-    @friends = @user.friender_friends + @user.friended_friends
+    @friends = @user.friends
   end
 
   private
 
   def user_params
-    params.require(:user).permit(:email_address, :password, :description, :hometown, :school, :work, :current_city, :phone_number, :birthday)
+    params.require(:user).permit(:id, :email_address, :password, :description, :hometown, :school, :work, :current_city, :phone_number, :birthday, :profile_pic, :coverpic)
   end
 
 end

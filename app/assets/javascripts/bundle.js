@@ -97,7 +97,7 @@
 	  React.createElement(
 	    Route,
 	    { path: '/', onEnter: _ensureLoggedIn, component: App },
-	    React.createElement(IndexRoute, { component: Profile })
+	    React.createElement(Route, { path: '/users/:id', component: Profile })
 	  )
 	);
 	
@@ -25961,9 +25961,11 @@
 	
 	  updateCurrentUser: function (data) {
 	    $.ajax({
-	      url: '/api/users',
+	      url: '/api/user',
 	      type: 'PATCH',
-	      data: { user: data },
+	      processData: false,
+	      contentType: false,
+	      data: data,
 	      success: function (updatedCurrentUser) {
 	        SessionActions.updateCurrentUser(updatedCurrentUser);
 	      },
@@ -32888,7 +32890,7 @@
 	  signup: function (formData) {
 	    $.ajax({
 	      type: 'POST',
-	      url: 'api/users',
+	      url: 'api/user',
 	      dataType: 'json',
 	      data: { user: formData },
 	      success: function (currentUser) {
@@ -33412,6 +33414,7 @@
 	var Intro = __webpack_require__(264);
 	var Friends = __webpack_require__(268);
 	var ProfilePic = __webpack_require__(273);
+	var CoverPic = __webpack_require__(274);
 	
 	var Profile = React.createClass({
 	  displayName: 'Profile',
@@ -33422,7 +33425,11 @@
 	      'div',
 	      null,
 	      React.createElement(Navbar, null),
-	      React.createElement(ProfilePic, null),
+	      React.createElement(
+	        CoverPic,
+	        null,
+	        React.createElement(ProfilePic, null)
+	      ),
 	      React.createElement(Intro, null),
 	      React.createElement(Friends, null)
 	    );
@@ -33576,7 +33583,7 @@
 	
 	    var currentUser = this.state.currentUser;
 	
-	    SessionApiUtil.updateCurrentUser(currentUser);
+	    SessionApiUtil.updateCurrentUser({ user: currentUser });
 	  },
 	
 	  render: function () {
@@ -33780,8 +33787,8 @@
 	      friends = this.state.friends.map(function (friend) {
 	        return React.createElement(
 	          'li',
-	          { key: friend.id },
-	          React.createElement('img', { src: friend.profile_pic_url })
+	          { key: friend.id, className: 'friend-picture' },
+	          React.createElement('img', { className: 'friend-image', src: friend.profile_pic_url })
 	        );
 	      });
 	    } else {
@@ -33792,9 +33799,34 @@
 	      );
 	    }
 	
+	    var length = React.createElement('div', null);
+	
+	    if (this.state.friends !== null && this.state.friends.length !== 0) {
+	      length = React.createElement(
+	        'div',
+	        null,
+	        this.state.friends.length
+	      );
+	    }
+	
 	    return React.createElement(
 	      'ul',
-	      null,
+	      { className: 'friends-container' },
+	      React.createElement(
+	        'header',
+	        { className: 'friends-header group' },
+	        React.createElement('img', { src: window.friendsIcon, className: 'friends-icon' }),
+	        React.createElement(
+	          'title',
+	          { className: 'friends-title' },
+	          'Friends'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'friends-count' },
+	          length
+	        )
+	      ),
 	      friends
 	    );
 	  }
@@ -33907,45 +33939,111 @@
 	
 	  getInitialState: function () {
 	
-	    return { currentUser: SessionStore.currentUser() };
+	    return { imageUrl: SessionStore.currentUser().profile_pic_url };
 	  },
 	
 	  updateFile: function (e) {
+	
+	    e.preventDefault();
+	
 	    var reader = new FileReader();
 	    var file = e.currentTarget.files[0];
 	    reader.onloadend = function () {
-	      this.setState({ currentUser: { imageUrl: reader.result, imageFile: file } });
+	      this.setState({ imageUrl: reader.result, imageFile: file });
 	    }.bind(this);
 	
 	    if (file) {
 	      reader.readAsDataURL(file);
 	    } else {
-	      this.setState({ currentUser: { imageUrl: "", imageFile: null } });
-	    };
+	      this.setState({ imageFile: null });
+	    }
+	  },
 	
-	    var file = this.state.imageFile;
+	  savePic: function (e) {
+	
+	    e.preventDefault();
 	
 	    var formData = new FormData();
-	    formData.append("user[profile_pic]", file);
+	    formData.append("user[profile_pic]", this.state.imageFile);
 	
-	    var currentUser = this.state.currentUser;
-	
-	    SessionApiUtil.updateCurrentUser(currentUser);
+	    SessionApiUtil.updateCurrentUser(formData);
 	  },
 	
 	  render: function () {
 	
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'profile-pic' },
 	      React.createElement('img', { src: this.state.imageUrl }),
-	      React.createElement('input', { type: 'file', onChange: this.updateFile })
+	      React.createElement('input', { type: 'file', onChange: this.updateFile }),
+	      React.createElement('input', { type: 'submit', value: 'Save Profile Pic', onClick: this.savePic })
 	    );
 	  }
 	
 	});
 	
 	module.exports = ProfilePic;
+
+/***/ },
+/* 274 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	
+	var CoverPic = React.createClass({
+	  displayName: 'CoverPic',
+	
+	
+	  getInitialState: function () {
+	
+	    return { imageUrl: SessionStore.currentUser().coverpic_url };
+	  },
+	
+	  updateFile: function (e) {
+	
+	    e.preventDefault();
+	
+	    var reader = new FileReader();
+	    var file = e.currentTarget.files[0];
+	    reader.onloadend = function () {
+	      this.setState({ imageUrl: reader.result, imageFile: file });
+	    }.bind(this);
+	
+	    if (file) {
+	      reader.readAsDataURL(file);
+	    } else {
+	      this.setState({ imageFile: null });
+	    }
+	  },
+	
+	  savePic: function (e) {
+	
+	    e.preventDefault();
+	
+	    var formData = new FormData();
+	    formData.append("user[coverpic]", this.state.imageFile);
+	
+	    SessionApiUtil.updateCurrentUser(formData);
+	  },
+	
+	  render: function () {
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'cover-pic' },
+	      React.createElement('img', { src: this.state.imageUrl }),
+	      React.createElement('input', { type: 'file', onChange: this.updateFile }),
+	      React.createElement('input', { type: 'submit', value: 'Save Cover Pic', onClick: this.savePic }),
+	      this.props.children
+	    );
+	  }
+	
+	});
+	
+	module.exports = CoverPic;
 
 /***/ }
 /******/ ]);

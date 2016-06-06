@@ -3,6 +3,7 @@ var Navbar = require('./navbar');
 var Intro = require('./intro/intro');
 var Friends = require('./friends/friends');
 var ProfilePic = require('./profile_pic');
+var CoverPic = require('./coverpic');
 
 var Profile = React.createClass({
 
@@ -10,7 +11,9 @@ var Profile = React.createClass({
     return (
       <div>
         <Navbar/>
-        <ProfilePic/>
+        <CoverPic>
+          <ProfilePic/>
+        </CoverPic>
         <Intro/>
         <Friends/>
       </div>
