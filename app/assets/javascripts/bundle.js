@@ -25961,7 +25961,7 @@
 	
 	  updateCurrentUser: function (data) {
 	    $.ajax({
-	      url: '/api/user',
+	      url: '/api/users',
 	      type: 'PATCH',
 	      data: { user: data },
 	      success: function (updatedCurrentUser) {
@@ -26063,6 +26063,10 @@
 	
 	SessionStore.currentUser = function () {
 	  return $.extend({}, _currentUser);
+	};
+	
+	SessionStore.currentUserId = function () {
+	  return _currentUser.id;
 	};
 	
 	SessionStore.currentUserHasBeenFetched = function () {
@@ -32884,7 +32888,7 @@
 	  signup: function (formData) {
 	    $.ajax({
 	      type: 'POST',
-	      url: 'api/user',
+	      url: 'api/users',
 	      dataType: 'json',
 	      data: { user: formData },
 	      success: function (currentUser) {
@@ -32905,8 +32909,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LoginForm = __webpack_require__(267);
-	var SignupForm = __webpack_require__(268);
+	var LoginForm = __webpack_require__(258);
+	var SignupForm = __webpack_require__(260);
 	var ErrorStore = __webpack_require__(259);
 	var SessionStore = __webpack_require__(232);
 	
@@ -32996,168 +33000,7 @@
 	module.exports = Login;
 
 /***/ },
-/* 258 */,
-/* 259 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(233);
-	var Store = __webpack_require__(237).Store;
-	var ErrorConstants = __webpack_require__(255);
-	
-	var ErrorStore = new Store(AppDispatcher);
-	
-	var _errors = {};
-	var _form = "";
-	
-	ErrorStore.all = function () {
-	  var results = [];
-	  for (var i in _errors) {
-	    results.push(_errors[i]);
-	  }
-	  return results;
-	};
-	
-	ErrorStore.formErrors = function (form) {
-	  if (form !== _form) {
-	    return {};
-	  }
-	
-	  var result = {};
-	
-	  var errors;
-	  Object.keys(_errors).forEach(function (field) {
-	    errors = _errors[field];
-	    result[field] = errors.slice();
-	  });
-	
-	  return result;
-	};
-	
-	ErrorStore.form = function () {
-	  return _form.slice();
-	};
-	
-	ErrorStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case ErrorConstants.SET_ERRORS:
-	      _errors = payload.errors;
-	      _form = payload.form;
-	      break;
-	    case ErrorConstants.CLEAR_ERRORS:
-	      _errors = {};
-	      _form = "";
-	      break;
-	  }
-	  ErrorStore.__emitChange();
-	};
-	
-	module.exports = ErrorStore;
-
-/***/ },
-/* 260 */,
-/* 261 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var Navbar = __webpack_require__(264);
-	var Intro = __webpack_require__(272);
-	
-	var Profile = React.createClass({
-	  displayName: 'Profile',
-	
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(Navbar, null),
-	      React.createElement(Intro, null)
-	    );
-	  }
-	
-	});
-	
-	module.exports = Profile;
-
-/***/ },
-/* 262 */,
-/* 263 */,
-/* 264 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var SessionApiUtil = __webpack_require__(229);
-	
-	var SearchBar = __webpack_require__(265);
-	
-	var Navbar = React.createClass({
-	  displayName: 'Navbar',
-	
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'nav',
-	        { className: 'navbar group' },
-	        React.createElement('i', { className: 'fa fa-facebook fa-2x', 'aria-hidden': 'true' }),
-	        React.createElement(SearchBar, null),
-	        React.createElement(
-	          'button',
-	          {
-	            className: 'home-button'
-	          },
-	          'Home'
-	        ),
-	        React.createElement('input', {
-	          type: 'submit',
-	          className: 'logout-button',
-	          value: 'Log Out',
-	          onClick: SessionApiUtil.logout })
-	      )
-	    );
-	  }
-	
-	});
-	
-	module.exports = Navbar;
-
-/***/ },
-/* 265 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PropTypes = React.PropTypes;
-	
-	var SearchBar = React.createClass({
-	  displayName: "SearchBar",
-	
-	
-	  render: function () {
-	    return React.createElement(
-	      "div",
-	      null,
-	      React.createElement("input", {
-	        type: "text",
-	        className: "search-bar",
-	        placeholder: "Search FaceLyft" }),
-	      React.createElement(
-	        "div",
-	        { className: "search-button" },
-	        React.createElement("i", { className: "fa fa-search", "aria-hidden": "true" })
-	      )
-	    );
-	  }
-	
-	});
-	
-	module.exports = SearchBar;
-
-/***/ },
-/* 266 */,
-/* 267 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33346,7 +33189,64 @@
 	module.exports = LoginForm;
 
 /***/ },
-/* 268 */
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(233);
+	var Store = __webpack_require__(237).Store;
+	var ErrorConstants = __webpack_require__(255);
+	
+	var ErrorStore = new Store(AppDispatcher);
+	
+	var _errors = {};
+	var _form = "";
+	
+	ErrorStore.all = function () {
+	  var results = [];
+	  for (var i in _errors) {
+	    results.push(_errors[i]);
+	  }
+	  return results;
+	};
+	
+	ErrorStore.formErrors = function (form) {
+	  if (form !== _form) {
+	    return {};
+	  }
+	
+	  var result = {};
+	
+	  var errors;
+	  Object.keys(_errors).forEach(function (field) {
+	    errors = _errors[field];
+	    result[field] = errors.slice();
+	  });
+	
+	  return result;
+	};
+	
+	ErrorStore.form = function () {
+	  return _form.slice();
+	};
+	
+	ErrorStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case ErrorConstants.SET_ERRORS:
+	      _errors = payload.errors;
+	      _form = payload.form;
+	      break;
+	    case ErrorConstants.CLEAR_ERRORS:
+	      _errors = {};
+	      _form = "";
+	      break;
+	  }
+	  ErrorStore.__emitChange();
+	};
+	
+	module.exports = ErrorStore;
+
+/***/ },
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33504,18 +33404,118 @@
 	module.exports = SignupForm;
 
 /***/ },
-/* 269 */,
-/* 270 */,
-/* 271 */,
-/* 272 */
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Navbar = __webpack_require__(262);
+	var Intro = __webpack_require__(264);
+	var Friends = __webpack_require__(268);
+	var ProfilePic = __webpack_require__(273);
+	
+	var Profile = React.createClass({
+	  displayName: 'Profile',
+	
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(Navbar, null),
+	      React.createElement(ProfilePic, null),
+	      React.createElement(Intro, null),
+	      React.createElement(Friends, null)
+	    );
+	  }
+	
+	});
+	
+	module.exports = Profile;
+
+/***/ },
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionApiUtil = __webpack_require__(229);
+	
+	var SearchBar = __webpack_require__(263);
+	
+	var Navbar = React.createClass({
+	  displayName: 'Navbar',
+	
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'nav',
+	        { className: 'navbar group' },
+	        React.createElement('i', { className: 'fa fa-facebook fa-2x', 'aria-hidden': 'true' }),
+	        React.createElement(SearchBar, null),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'home-button'
+	          },
+	          'Home'
+	        ),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'logout-button',
+	          value: 'Log Out',
+	          onClick: SessionApiUtil.logout })
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = Navbar;
+
+/***/ },
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PropTypes = React.PropTypes;
+	
+	var SearchBar = React.createClass({
+	  displayName: "SearchBar",
+	
+	
+	  render: function () {
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement("input", {
+	        type: "text",
+	        className: "search-bar",
+	        placeholder: "Search FaceLyft" }),
+	      React.createElement(
+	        "div",
+	        { className: "search-button" },
+	        React.createElement("i", { className: "fa fa-search", "aria-hidden": "true" })
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = SearchBar;
+
+/***/ },
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var SessionStore = __webpack_require__(232);
 	
-	var IntroDescription = __webpack_require__(273);
-	var HometownForm = __webpack_require__(274);
-	var SchoolForm = __webpack_require__(276);
+	var IntroDescription = __webpack_require__(265);
+	var HometownForm = __webpack_require__(266);
+	var SchoolForm = __webpack_require__(267);
 	
 	var Intro = React.createClass({
 	  displayName: 'Intro',
@@ -33546,7 +33546,7 @@
 	module.exports = Intro;
 
 /***/ },
-/* 273 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33615,7 +33615,7 @@
 	module.exports = IntroDescription;
 
 /***/ },
-/* 274 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33676,8 +33676,7 @@
 	module.exports = HometownForm;
 
 /***/ },
-/* 275 */,
-/* 276 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33736,6 +33735,208 @@
 	});
 	
 	module.exports = SchoolForm;
+
+/***/ },
+/* 268 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var FriendStore = __webpack_require__(269);
+	var FriendApiUtil = __webpack_require__(270);
+	var SessionStore = __webpack_require__(232);
+	
+	var Friends = React.createClass({
+	  displayName: 'Friends',
+	
+	
+	  getInitialState: function () {
+	
+	    var currentUser = SessionStore.currentUser();
+	
+	    return { friends: null };
+	  },
+	
+	  componentDidMount: function () {
+	    var currentUserId = SessionStore.currentUserId();
+	    var friends = FriendApiUtil.fetchFriends(currentUserId);
+	    this.listener = FriendStore.addListener(this._handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  _handleChange: function (e) {
+	
+	    this.setState({ friends: FriendStore.all() });
+	  },
+	
+	  render: function () {
+	
+	    var friends;
+	
+	    if (this.state.friends !== null) {
+	      friends = this.state.friends.map(function (friend) {
+	        return React.createElement(
+	          'li',
+	          { key: friend.id },
+	          React.createElement('img', { src: friend.profile_pic_url })
+	        );
+	      });
+	    } else {
+	      friends = React.createElement(
+	        'div',
+	        null,
+	        'Friends'
+	      );
+	    }
+	
+	    return React.createElement(
+	      'ul',
+	      null,
+	      friends
+	    );
+	  }
+	
+	});
+	
+	module.exports = Friends;
+
+/***/ },
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(237).Store;
+	var AppDispatcher = __webpack_require__(233);
+	
+	var FriendStore = new Store(AppDispatcher);
+	
+	var _friends = {};
+	
+	FriendStore.all = function () {
+	  var result = [];
+	  for (var i in _friends) {
+	    result.push(_friends[i]);
+	  }
+	  return result;
+	};
+	
+	_resetFriends = function (friends) {
+	  friends.forEach(function (friend) {
+	    _friends[friend.id] = friend;
+	  });
+	};
+	
+	FriendStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "RECEIVE_FRIENDS":
+	      _resetFriends(payload.friends);
+	      FriendStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = FriendStore;
+
+/***/ },
+/* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var FriendActions = __webpack_require__(271);
+	
+	var FriendApiUtil = {
+	
+	  fetchFriends: function (id) {
+	    $.ajax({
+	      type: 'GET',
+	      url: 'api/users/' + id + '/friends',
+	      dataType: 'json',
+	      success: function (friends) {
+	        FriendActions.receiveFriends(friends);
+	      }
+	    });
+	  }
+	
+	};
+	
+	module.exports = FriendApiUtil;
+
+/***/ },
+/* 271 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(233);
+	var FriendConstants = __webpack_require__(272);
+	
+	var FriendActions = {
+	
+	  receiveFriends: function (friends) {
+	    AppDispatcher.dispatch({
+	      actionType: FriendConstants.RECEIVE_FRIENDS,
+	      friends: friends
+	    });
+	  }
+	
+	};
+	
+	module.exports = FriendActions;
+
+/***/ },
+/* 272 */
+/***/ function(module, exports) {
+
+	var FriendConstants = {
+	  RECEIVE_FRIENDS: "RECEIVE_FRIENDS"
+	};
+	
+	module.exports = FriendConstants;
+
+/***/ },
+/* 273 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var ProfilePic = React.createClass({
+	  displayName: "ProfilePic",
+	
+	
+	  getInitialState: function () {
+	
+	    return {
+	      imageFile: null,
+	      imageUrl: null
+	    };
+	  },
+	
+	  updateFile: function (e) {
+	    var reader = new FileReader();
+	    var file = e.currentTarget.files[0];
+	    reader.onloadend = function () {
+	      this.setState({ imageUrl: reader.result, imageFile: file });
+	    }.bind(this);
+	
+	    if (file) {
+	      reader.readAsDataURL(file);
+	    } else {
+	      this.setState({ imageUrl: "", imageFile: null });
+	    };
+	  },
+	
+	  render: function () {
+	
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement("img", { src: this.state.imageUrl }),
+	      React.createElement("input", { type: "file", onClick: this.updateFile })
+	    );
+	  }
+	
+	});
+	
+	module.exports = ProfilePic;
 
 /***/ }
 /******/ ]);

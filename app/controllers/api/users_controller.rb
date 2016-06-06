@@ -23,6 +23,11 @@ class Api::UsersController < ApplicationController
     end
   end
 
+  def friends
+    @user = User.find_by_id(params[:id])
+    @friends = @user.friender_friends + @user.friended_friends
+  end
+
   private
 
   def user_params

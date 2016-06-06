@@ -1,6 +1,8 @@
 var React = require('react');
 var Navbar = require('./navbar');
 var Intro = require('./intro/intro');
+var Friends = require('./friends/friends');
+var ProfilePic = require('./profile_pic');
 
 var Profile = React.createClass({
 
@@ -8,7 +10,9 @@ var Profile = React.createClass({
     return (
       <div>
         <Navbar/>
+        <ProfilePic/>
         <Intro/>
+        <Friends/>
       </div>
     );
   }

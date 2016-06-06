@@ -24,6 +24,10 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
+gem 'paperclip', '5.0.0.beta1'
+gem 'figaro'
+gem 'aws-sdk', '>= 2.0'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
@@ -41,6 +45,7 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'pry-rails'
+  gem 'faker'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'

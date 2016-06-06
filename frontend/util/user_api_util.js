@@ -6,7 +6,7 @@ var UserApiUtil = {
   signup: function (formData) {
     $.ajax({
       type: 'POST',
-      url: 'api/user',
+      url: 'api/users',
       dataType: 'json',
       data: {user: formData},
       success: function (currentUser) {

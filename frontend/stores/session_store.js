@@ -38,6 +38,10 @@ SessionStore.currentUser = function () {
   return $.extend({}, _currentUser);
 };
 
+SessionStore.currentUserId = function () {
+  return _currentUser.id;
+};
+
 SessionStore.currentUserHasBeenFetched = function () {
   return _currentUserHasBeenFetched;
 };

@@ -11,17 +11,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160603204707) do
+ActiveRecord::Schema.define(version: 20160606032511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "friendships", force: :cascade do |t|
+    t.integer  "friender_id",                 null: false
+    t.integer  "friended_id",                 null: false
+    t.boolean  "accepted",    default: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "friendships", ["friended_id"], name: "index_friendships_on_friended_id", using: :btree
+  add_index "friendships", ["friender_id"], name: "index_friendships_on_friender_id", using: :btree
+
   create_table "users", force: :cascade do |t|
-    t.string   "email_address",   null: false
-    t.string   "password_digest", null: false
-    t.string   "session_token",   null: false
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.string   "email_address",            null: false
+    t.string   "password_digest",          null: false
+    t.string   "session_token",            null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.text     "description"
     t.string   "hometown"
     t.string   "work"
@@ -29,6 +40,10 @@ ActiveRecord::Schema.define(version: 20160603204707) do
     t.string   "current_city"
     t.integer  "phone_number"
     t.date     "birthday"
+    t.string   "profile_pic_file_name"
+    t.string   "profile_pic_content_type"
+    t.integer  "profile_pic_file_size"
+    t.datetime "profile_pic_updated_at"
   end
 
   add_index "users", ["email_address"], name: "index_users_on_email_address", unique: true, using: :btree
