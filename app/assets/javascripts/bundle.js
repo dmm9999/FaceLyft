@@ -33898,39 +33898,48 @@
 
 	var React = __webpack_require__(1);
 	
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	
 	var ProfilePic = React.createClass({
-	  displayName: "ProfilePic",
+	  displayName: 'ProfilePic',
 	
 	
 	  getInitialState: function () {
 	
-	    return {
-	      imageFile: null,
-	      imageUrl: null
-	    };
+	    return { currentUser: SessionStore.currentUser() };
 	  },
 	
 	  updateFile: function (e) {
 	    var reader = new FileReader();
 	    var file = e.currentTarget.files[0];
 	    reader.onloadend = function () {
-	      this.setState({ imageUrl: reader.result, imageFile: file });
+	      this.setState({ currentUser: { imageUrl: reader.result, imageFile: file } });
 	    }.bind(this);
 	
 	    if (file) {
 	      reader.readAsDataURL(file);
 	    } else {
-	      this.setState({ imageUrl: "", imageFile: null });
+	      this.setState({ currentUser: { imageUrl: "", imageFile: null } });
 	    };
+	
+	    var file = this.state.imageFile;
+	
+	    var formData = new FormData();
+	    formData.append("user[profile_pic]", file);
+	
+	    var currentUser = this.state.currentUser;
+	
+	    SessionApiUtil.updateCurrentUser(currentUser);
 	  },
 	
 	  render: function () {
 	
 	    return React.createElement(
-	      "div",
+	      'div',
 	      null,
-	      React.createElement("img", { src: this.state.imageUrl }),
-	      React.createElement("input", { type: "file", onChange: this.updateFile })
+	      React.createElement('img', { src: this.state.imageUrl }),
+	      React.createElement('input', { type: 'file', onChange: this.updateFile })
 	    );
 	  }
 	

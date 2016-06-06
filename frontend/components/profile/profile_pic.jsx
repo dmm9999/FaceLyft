@@ -1,13 +1,13 @@
 var React = require('react');
 
+var SessionStore = require('./../../stores/session_store');
+var SessionApiUtil = require('./../../util/session_api_util');
+
 var ProfilePic = React.createClass({
 
   getInitialState: function () {
 
-    return ( {
-      imageFile : null,
-      imageUrl : null
-    });
+    return( { currentUser : SessionStore.currentUser() } ) ;
 
   },
 
@@ -15,14 +15,26 @@ var ProfilePic = React.createClass({
     var reader = new FileReader();
     var file = e.currentTarget.files[0];
     reader.onloadend = function() {
-      this.setState({ imageUrl: reader.result, imageFile: file});
+      this.setState({ currentUser : { imageUrl: reader.result, imageFile: file } } );
     }.bind(this);
+
+
 
     if (file) {
       reader.readAsDataURL(file);
     } else {
-      this.setState({ imageUrl: "", imageFile: null });
+      this.setState( { currentUser : { imageUrl: "", imageFile: null } } );
     };
+
+    var file = this.state.imageFile;
+
+    var formData = new FormData();
+    formData.append("user[profile_pic]", file);
+
+    var currentUser = this.state.currentUser;
+
+    SessionApiUtil.updateCurrentUser(currentUser);
+
   },
 
   render: function () {
