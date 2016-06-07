@@ -43,6 +43,7 @@ UserStore.setErrors = function (errors) {
 
 UserStore.receiveFetchedUser = function (fetchedUser) {
   _user = fetchedUser;
+  return _user;
 };
 
 UserStore.retrieveUser = function () {

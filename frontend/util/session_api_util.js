@@ -40,7 +40,6 @@ var SessionApiUtil = {
   },
 
   updateCurrentUser: function (data) {
-    debugger
     $.ajax({
       url: '/api/user',
       type: 'PATCH',

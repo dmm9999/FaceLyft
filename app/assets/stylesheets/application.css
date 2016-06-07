@@ -460,3 +460,30 @@ input {
   left: 0;
   right: 0;
 }
+
+.friend-request {
+  position: absolute;
+  top: 270px;
+  left: 600px;
+  width: 100px;
+  height: 25px;
+  background: #F6F7F9;
+  text-align: center;
+  font-family: helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  color: #4b4f56;
+  vertical-align: middle;
+  line-height: 25px;
+  border: 1px solid #1E230E;
+}
+
+.friend-request-icon {
+  float: left;
+  width: 10px;
+}
+
+.friend-request-title {
+  display: block;
+  float: right;
+}

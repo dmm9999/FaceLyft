@@ -1,6 +1,7 @@
 # json.extract! @user, :id, :email_address, :description, :hometown, :work,
 # :school, :current_city, :phone_number, :birthday, :profile_pic.url
 
+
 json.id @user.id
 json.name @user.name
 json.email_address @user.email_address
@@ -13,3 +14,13 @@ json.phone_number @user.phone_number
 json.birthday @user.birthday
 json.profile_pic_url asset_path(@user.profile_pic.url)
 json.coverpic_url asset_path(@user.coverpic.url)
+
+json.friends do
+  json.array!(@user.friends) do |friend|
+    json.id friend.id
+    json.name friend.name
+    json.email_address friend.email_address
+    json.profile_pic_url asset_path(friend.profile_pic.url)
+    json.coverpic_url asset_path(friend.coverpic.url)
+  end
+end

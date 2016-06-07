@@ -5,6 +5,7 @@ var Friends = require('./friends/friends');
 var ProfilePic = require('./profile_pic');
 var CoverPic = require('./coverpic');
 var NameBox = require('./name_box');
+var FriendRequest = require('./friend_request');
 
 var Profile = React.createClass({
 
@@ -18,6 +19,7 @@ var Profile = React.createClass({
         <CoverPic id={pageId} >
           <ProfilePic id={pageId}/>
           <NameBox id={pageId}/>
+          <FriendRequest id={pageId}/>
         </CoverPic>
         <Intro id={pageId}/>
         <Friends id={pageId}/>

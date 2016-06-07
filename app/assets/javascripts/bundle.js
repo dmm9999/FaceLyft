@@ -25960,7 +25960,6 @@
 	  },
 	
 	  updateCurrentUser: function (data) {
-	    debugger;
 	    $.ajax({
 	      url: '/api/user',
 	      type: 'PATCH',
@@ -33054,6 +33053,7 @@
 	
 	UserStore.receiveFetchedUser = function (fetchedUser) {
 	  _user = fetchedUser;
+	  return _user;
 	};
 	
 	UserStore.retrieveUser = function () {
@@ -33572,6 +33572,7 @@
 	var ProfilePic = __webpack_require__(276);
 	var CoverPic = __webpack_require__(277);
 	var NameBox = __webpack_require__(278);
+	var FriendRequest = __webpack_require__(279);
 	
 	var Profile = React.createClass({
 	  displayName: 'Profile',
@@ -33589,7 +33590,8 @@
 	        CoverPic,
 	        { id: pageId },
 	        React.createElement(ProfilePic, { id: pageId }),
-	        React.createElement(NameBox, { id: pageId })
+	        React.createElement(NameBox, { id: pageId }),
+	        React.createElement(FriendRequest, { id: pageId })
 	      ),
 	      React.createElement(Intro, { id: pageId }),
 	      React.createElement(Friends, { id: pageId })
@@ -33998,9 +34000,9 @@
 	var Router = __webpack_require__(168);
 	var Link = Router.Link;
 	
-	var FriendStore = __webpack_require__(272);
-	var FriendApiUtil = __webpack_require__(273);
 	var SessionStore = __webpack_require__(232);
+	var UserStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
 	
 	var Friends = React.createClass({
 	  displayName: 'Friends',
@@ -34008,33 +34010,40 @@
 	
 	  getInitialState: function () {
 	
-	    var currentUser = SessionStore.currentUser();
-	
-	    return { friends: null };
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { friends: SessionStore.currentUser().friends };
+	    } else {
+	      return { friends: [] };
+	    }
 	  },
 	
 	  componentDidMount: function () {
-	    var currentUserId = SessionStore.currentUserId();
-	    var friends = FriendApiUtil.fetchFriends(currentUserId);
-	    this.listener = FriendStore.addListener(this._handleChange);
+	    this.listener = UserStore.addListener(this.handleChange);
+	    UserApiUtil.fetchUser(this.props.id);
 	  },
 	
 	  componentWillUnmount: function () {
 	    this.listener.remove();
 	  },
 	
-	  _handleChange: function (e) {
+	  handleChange: function () {
 	
-	    this.setState({ friends: FriendStore.all() });
+	    this.setState({ friends: UserStore.retrieveUser().friends });
 	  },
 	
 	  render: function () {
 	
 	    var friends;
+	    var length = React.createElement('div', null);
 	
-	    if (this.state.friends !== null) {
+	    if (this.state.friends && this.state.friends.length !== 0) {
+	      length = React.createElement(
+	        'div',
+	        null,
+	        this.state.friends.length
+	      );
 	      friends = this.state.friends.map(function (friend) {
-	        var path = "users/" + friend.id;
+	        var path = "/users/" + friend.id;
 	        return React.createElement(
 	          'li',
 	          { key: friend.id, className: 'friend-picture' },
@@ -34048,23 +34057,8 @@
 	        );
 	      });
 	    } else {
-	      friends = React.createElement(
-	        'div',
-	        null,
-	        'Friends'
-	      );
+	      friends = React.createElement('div', null);
 	    }
-	
-	    var length = React.createElement('div', null);
-	
-	    if (this.state.friends !== null && this.state.friends.length !== 0) {
-	      length = React.createElement(
-	        'div',
-	        null,
-	        this.state.friends.length
-	      );
-	    }
-	
 	    return React.createElement(
 	      'ul',
 	      { className: 'friends-container' },
@@ -34092,95 +34086,10 @@
 	module.exports = Friends;
 
 /***/ },
-/* 272 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(237).Store;
-	var AppDispatcher = __webpack_require__(233);
-	
-	var FriendStore = new Store(AppDispatcher);
-	
-	var _friends = {};
-	
-	FriendStore.all = function () {
-	  var result = [];
-	  for (var i in _friends) {
-	    result.push(_friends[i]);
-	  }
-	  return result;
-	};
-	
-	_resetFriends = function (friends) {
-	  friends.forEach(function (friend) {
-	    _friends[friend.id] = friend;
-	  });
-	};
-	
-	FriendStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case "RECEIVE_FRIENDS":
-	      _resetFriends(payload.friends);
-	      FriendStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = FriendStore;
-
-/***/ },
-/* 273 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var FriendActions = __webpack_require__(274);
-	
-	var FriendApiUtil = {
-	
-	  fetchFriends: function (id) {
-	    $.ajax({
-	      type: 'GET',
-	      url: 'api/users/' + id + '/friends',
-	      dataType: 'json',
-	      success: function (friends) {
-	        FriendActions.receiveFriends(friends);
-	      }
-	    });
-	  }
-	
-	};
-	
-	module.exports = FriendApiUtil;
-
-/***/ },
-/* 274 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(233);
-	var FriendConstants = __webpack_require__(275);
-	
-	var FriendActions = {
-	
-	  receiveFriends: function (friends) {
-	    AppDispatcher.dispatch({
-	      actionType: FriendConstants.RECEIVE_FRIENDS,
-	      friends: friends
-	    });
-	  }
-	
-	};
-	
-	module.exports = FriendActions;
-
-/***/ },
-/* 275 */
-/***/ function(module, exports) {
-
-	var FriendConstants = {
-	  RECEIVE_FRIENDS: "RECEIVE_FRIENDS"
-	};
-	
-	module.exports = FriendConstants;
-
-/***/ },
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */,
 /* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -34404,6 +34313,34 @@
 	});
 	
 	module.exports = NameBox;
+
+/***/ },
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var FriendRequest = React.createClass({
+	  displayName: "FriendRequest",
+	
+	
+	  render: function () {
+	
+	    return React.createElement(
+	      "div",
+	      { className: "friend-request group" },
+	      React.createElement(
+	        "title",
+	        { className: "friend-request-title" },
+	        "Add Friend"
+	      ),
+	      React.createElement("img", { src: friendRequestIcon, className: "friend-request-icon" })
+	    );
+	  }
+	
+	});
+	
+	module.exports = FriendRequest;
 
 /***/ }
 /******/ ]);
