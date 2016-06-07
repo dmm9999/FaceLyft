@@ -1,4 +1,6 @@
 var React = require('react');
+var Router = require('react-router');
+var Link = Router.Link;
 
 var FriendStore = require('./../../../stores/friend_store');
 var FriendApiUtil = require('./../../../util/friend_api_util');
@@ -33,10 +35,14 @@ var Friends = React.createClass({
 
     var friends;
 
+
     if (this.state.friends !== null) {
       friends = this.state.friends.map(function(friend) {
+        var path = "users/" + friend.id
         return <li key={friend.id} className="friend-picture">
+                  <Link to={path} className="friend-link"/>
                   <img className="friend-image" src={friend.profile_pic_url} />
+                  <title className="friend-name">{friend.name}</title>
               </li>;
       });
     } else {

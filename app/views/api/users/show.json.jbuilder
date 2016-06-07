@@ -2,6 +2,7 @@
 # :school, :current_city, :phone_number, :birthday, :profile_pic.url
 
 json.id @user.id
+json.name @user.name
 json.email_address @user.email_address
 json.description @user.description
 json.hometown @user.hometown

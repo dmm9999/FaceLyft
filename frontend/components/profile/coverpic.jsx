@@ -62,8 +62,8 @@ var CoverPic = React.createClass({
       return (
         <div className="cover-pic">
         <img src={this.state.imageUrl}/>
-        <input type="file" onChange={this.updateFile}/>
-        <input type="submit" value="Save Cover Pic" onClick={this.savePic} />
+        <input type="file" onChange={this.updateFile} className="cover-pic-select"/>
+        <input type="submit" value="Save Cover Pic" onClick={this.savePic} className="cover-pic-save"/>
         {this.props.children}
       </div>
       )

@@ -56,8 +56,8 @@
 	var UserApiUtil = __webpack_require__(256);
 	var SessionStore = __webpack_require__(232);
 	
-	var Login = __webpack_require__(257);
-	var Profile = __webpack_require__(261);
+	var Login = __webpack_require__(260);
+	var Profile = __webpack_require__(264);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -32885,7 +32885,7 @@
 
 	var SessionActions = __webpack_require__(230);
 	var ErrorActions = __webpack_require__(254);
-	var UserActions = __webpack_require__(277);
+	var UserActions = __webpack_require__(257);
 	
 	var UserApiUtil = {
 	
@@ -32923,10 +32923,153 @@
 /* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var UserConstants = __webpack_require__(258);
+	var UserApiUtil = __webpack_require__(256);
+	var UserStore = __webpack_require__(259);
+	var AppDispatcher = __webpack_require__(233);
+	
+	var UserActions = {
+	
+	  fetchCurrentUser: function () {
+	    UserApiUtil.fetchCurrentUser(UserActions.receiveCurrentUser, UserActions.handleError);
+	  },
+	
+	  signup: function (user) {
+	    UserApiUtil.post({
+	      url: 'api/user',
+	      user: user,
+	      success: UserActions.receiveCurrentUser,
+	      error: UserActions.handleError
+	    });
+	  },
+	
+	  login: function (user) {
+	    UserApiUtil.post({
+	      url: 'api/session',
+	      user: user,
+	      success: UserActions.receiveCurrentUser,
+	      error: UserActions.handleError
+	    });
+	  },
+	
+	  guestLogin: function () {
+	    UserActions.login({ username: "guest", password: "password" });
+	  },
+	
+	  receiveCurrentUser: function (user) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.LOGIN,
+	      user: user
+	    });
+	  },
+	
+	  receiveFetchedUser: function (fetchedUser) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.RECEIVE_FETCHED_USER,
+	      fetchedUser: fetchedUser
+	    });
+	  },
+	
+	  handleError: function (error) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.ERROR,
+	      errors: error.responseJSON.errors
+	    });
+	  },
+	
+	  removeCurrentUser: function () {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.LOGOUT
+	    });
+	  },
+	
+	  logout: function () {
+	    UserApiUtil.logout(UserActions.removeCurrentUser, UserActions.handleError);
+	  }
+	
+	};
+	
+	module.exports = UserActions;
+
+/***/ },
+/* 258 */
+/***/ function(module, exports) {
+
+	var UserConstants = {
+		LOGIN: "LOGIN",
+		ERROR: "ERROR",
+		LOGOUT: "LOGOUT",
+		RECEIVE_DATA: "RECEIVE_DATA",
+		RECEIVE_FETCHED_USER: "RECEIVE_FETCHED_USER"
+	};
+	
+	module.exports = UserConstants;
+
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(233);
+	var Store = __webpack_require__(237).Store;
+	var UserConstants = __webpack_require__(258);
+	
+	var UserStore = new Store(AppDispatcher);
+	
+	var _user, _errors;
+	
+	UserStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case UserConstants.LOGIN:
+	      UserStore.login(payload.user);
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.LOGOUT:
+	      UserStore.logout();
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.ERROR:
+	      UserStore.setErrors(payload.errors);
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.RECEIVE_FETCHED_USER:
+	      UserStore.receiveFetchedUser(payload.fetchedUser);
+	      UserStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	UserStore.login = function (user) {
+	  _currentUser = user;
+	  _errors = null;
+	};
+	
+	UserStore.logout = function () {
+	  _currentUser = null;
+	  _errors = null;
+	};
+	
+	UserStore.setErrors = function (errors) {
+	  _errors = errors;
+	};
+	
+	UserStore.receiveFetchedUser = function (fetchedUser) {
+	  _user = fetchedUser;
+	};
+	
+	UserStore.retrieveUser = function () {
+	  return _user;
+	};
+	
+	module.exports = UserStore;
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var React = __webpack_require__(1);
-	var LoginForm = __webpack_require__(258);
-	var SignupForm = __webpack_require__(260);
-	var ErrorStore = __webpack_require__(259);
+	var LoginForm = __webpack_require__(261);
+	var SignupForm = __webpack_require__(263);
+	var ErrorStore = __webpack_require__(262);
 	var SessionStore = __webpack_require__(232);
 	
 	var Login = React.createClass({
@@ -33015,12 +33158,12 @@
 	module.exports = Login;
 
 /***/ },
-/* 258 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var SessionStore = __webpack_require__(232);
-	var ErrorStore = __webpack_require__(259);
+	var ErrorStore = __webpack_require__(262);
 	var SessionApiUtil = __webpack_require__(229);
 	
 	var LoginForm = React.createClass({
@@ -33204,7 +33347,7 @@
 	module.exports = LoginForm;
 
 /***/ },
-/* 259 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(233);
@@ -33261,12 +33404,12 @@
 	module.exports = ErrorStore;
 
 /***/ },
-/* 260 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var SessionStore = __webpack_require__(232);
-	var ErrorStore = __webpack_require__(259);
+	var ErrorStore = __webpack_require__(262);
 	var UserApiUtil = __webpack_require__(256);
 	
 	var SignupForm = React.createClass({
@@ -33419,15 +33562,16 @@
 	module.exports = SignupForm;
 
 /***/ },
-/* 261 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var Navbar = __webpack_require__(262);
-	var Intro = __webpack_require__(264);
-	var Friends = __webpack_require__(268);
-	var ProfilePic = __webpack_require__(273);
-	var CoverPic = __webpack_require__(274);
+	var Navbar = __webpack_require__(265);
+	var Intro = __webpack_require__(267);
+	var Friends = __webpack_require__(271);
+	var ProfilePic = __webpack_require__(276);
+	var CoverPic = __webpack_require__(277);
+	var NameBox = __webpack_require__(278);
 	
 	var Profile = React.createClass({
 	  displayName: 'Profile',
@@ -33444,7 +33588,8 @@
 	      React.createElement(
 	        CoverPic,
 	        { id: pageId },
-	        React.createElement(ProfilePic, { id: pageId })
+	        React.createElement(ProfilePic, { id: pageId }),
+	        React.createElement(NameBox, { id: pageId })
 	      ),
 	      React.createElement(Intro, { id: pageId }),
 	      React.createElement(Friends, { id: pageId })
@@ -33456,14 +33601,14 @@
 	module.exports = Profile;
 
 /***/ },
-/* 262 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
 	var SessionApiUtil = __webpack_require__(229);
 	
-	var SearchBar = __webpack_require__(263);
+	var SearchBar = __webpack_require__(266);
 	
 	var Navbar = React.createClass({
 	  displayName: 'Navbar',
@@ -33499,7 +33644,7 @@
 	module.exports = Navbar;
 
 /***/ },
-/* 263 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33530,15 +33675,15 @@
 	module.exports = SearchBar;
 
 /***/ },
-/* 264 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var SessionStore = __webpack_require__(232);
 	
-	var IntroDescription = __webpack_require__(265);
-	var HometownForm = __webpack_require__(266);
-	var SchoolForm = __webpack_require__(267);
+	var IntroDescription = __webpack_require__(268);
+	var HometownForm = __webpack_require__(269);
+	var SchoolForm = __webpack_require__(270);
 	
 	var Intro = React.createClass({
 	  displayName: 'Intro',
@@ -33569,7 +33714,7 @@
 	module.exports = Intro;
 
 /***/ },
-/* 265 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33577,7 +33722,7 @@
 	var SessionApiUtil = __webpack_require__(229);
 	var SessionStore = __webpack_require__(232);
 	var UserApiUtil = __webpack_require__(256);
-	var UserStore = __webpack_require__(275);
+	var UserStore = __webpack_require__(259);
 	
 	var IntroDescription = React.createClass({
 	  displayName: 'IntroDescription',
@@ -33585,7 +33730,7 @@
 	
 	  getInitialState: function () {
 	
-	    if (SessionStore.currentUserId() === this.props.id) {
+	    if (SessionStore.currentUserId() === this.props.id && SessionStore.currentUser().description !== null) {
 	      return { description: SessionStore.currentUser().description };
 	    } else {
 	      UserApiUtil.fetchUser(this.props.id);
@@ -33667,14 +33812,14 @@
 	module.exports = IntroDescription;
 
 /***/ },
-/* 266 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var SessionStore = __webpack_require__(232);
 	var SessionApiUtil = __webpack_require__(229);
 	var UserApiUtil = __webpack_require__(256);
-	var UserStore = __webpack_require__(275);
+	var UserStore = __webpack_require__(259);
 	
 	var HometownForm = React.createClass({
 	  displayName: 'HometownForm',
@@ -33757,14 +33902,14 @@
 	module.exports = HometownForm;
 
 /***/ },
-/* 267 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var SessionStore = __webpack_require__(232);
 	var SessionApiUtil = __webpack_require__(229);
 	var UserApiUtil = __webpack_require__(256);
-	var UserStore = __webpack_require__(275);
+	var UserStore = __webpack_require__(259);
 	
 	var SchoolForm = React.createClass({
 	  displayName: 'SchoolForm',
@@ -33846,13 +33991,15 @@
 	module.exports = SchoolForm;
 
 /***/ },
-/* 268 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var Router = __webpack_require__(168);
+	var Link = Router.Link;
 	
-	var FriendStore = __webpack_require__(269);
-	var FriendApiUtil = __webpack_require__(270);
+	var FriendStore = __webpack_require__(272);
+	var FriendApiUtil = __webpack_require__(273);
 	var SessionStore = __webpack_require__(232);
 	
 	var Friends = React.createClass({
@@ -33887,10 +34034,17 @@
 	
 	    if (this.state.friends !== null) {
 	      friends = this.state.friends.map(function (friend) {
+	        var path = "users/" + friend.id;
 	        return React.createElement(
 	          'li',
 	          { key: friend.id, className: 'friend-picture' },
-	          React.createElement('img', { className: 'friend-image', src: friend.profile_pic_url })
+	          React.createElement(Link, { to: path, className: 'friend-link' }),
+	          React.createElement('img', { className: 'friend-image', src: friend.profile_pic_url }),
+	          React.createElement(
+	            'title',
+	            { className: 'friend-name' },
+	            friend.name
+	          )
 	        );
 	      });
 	    } else {
@@ -33938,7 +34092,7 @@
 	module.exports = Friends;
 
 /***/ },
-/* 269 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(237).Store;
@@ -33974,10 +34128,10 @@
 	module.exports = FriendStore;
 
 /***/ },
-/* 270 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FriendActions = __webpack_require__(271);
+	var FriendActions = __webpack_require__(274);
 	
 	var FriendApiUtil = {
 	
@@ -33997,11 +34151,11 @@
 	module.exports = FriendApiUtil;
 
 /***/ },
-/* 271 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(233);
-	var FriendConstants = __webpack_require__(272);
+	var FriendConstants = __webpack_require__(275);
 	
 	var FriendActions = {
 	
@@ -34017,7 +34171,7 @@
 	module.exports = FriendActions;
 
 /***/ },
-/* 272 */
+/* 275 */
 /***/ function(module, exports) {
 
 	var FriendConstants = {
@@ -34027,7 +34181,7 @@
 	module.exports = FriendConstants;
 
 /***/ },
-/* 273 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -34035,7 +34189,7 @@
 	var SessionStore = __webpack_require__(232);
 	var SessionApiUtil = __webpack_require__(229);
 	var UserApiUtil = __webpack_require__(256);
-	var UserStore = __webpack_require__(275);
+	var UserStore = __webpack_require__(259);
 	
 	var ProfilePic = React.createClass({
 	  displayName: 'ProfilePic',
@@ -34097,8 +34251,8 @@
 	        'div',
 	        { className: 'profile-pic' },
 	        React.createElement('img', { src: this.state.imageUrl }),
-	        React.createElement('input', { type: 'file', onChange: this.updateFile }),
-	        React.createElement('input', { type: 'submit', value: 'Save Profile Pic', onClick: this.savePic }),
+	        React.createElement('input', { type: 'file', onChange: this.updateFile, className: 'profile-pic-select' }),
+	        React.createElement('input', { type: 'submit', value: 'Save Profile Pic', onClick: this.savePic, className: 'profile-pic-save' }),
 	        this.props.children
 	      );
 	    } else {
@@ -34116,7 +34270,7 @@
 	module.exports = ProfilePic;
 
 /***/ },
-/* 274 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -34124,7 +34278,7 @@
 	var SessionStore = __webpack_require__(232);
 	var SessionApiUtil = __webpack_require__(229);
 	var UserApiUtil = __webpack_require__(256);
-	var UserStore = __webpack_require__(275);
+	var UserStore = __webpack_require__(259);
 	
 	var CoverPic = React.createClass({
 	  displayName: 'CoverPic',
@@ -34186,8 +34340,8 @@
 	        'div',
 	        { className: 'cover-pic' },
 	        React.createElement('img', { src: this.state.imageUrl }),
-	        React.createElement('input', { type: 'file', onChange: this.updateFile }),
-	        React.createElement('input', { type: 'submit', value: 'Save Cover Pic', onClick: this.savePic }),
+	        React.createElement('input', { type: 'file', onChange: this.updateFile, className: 'cover-pic-select' }),
+	        React.createElement('input', { type: 'submit', value: 'Save Cover Pic', onClick: this.savePic, className: 'cover-pic-save' }),
 	        this.props.children
 	      );
 	    } else {
@@ -34204,147 +34358,52 @@
 	module.exports = CoverPic;
 
 /***/ },
-/* 275 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AppDispatcher = __webpack_require__(233);
-	var Store = __webpack_require__(237).Store;
-	var UserConstants = __webpack_require__(276);
+	var React = __webpack_require__(1);
 	
-	var UserStore = new Store(AppDispatcher);
-	
-	var _user, _errors;
-	
-	UserStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case UserConstants.LOGIN:
-	      UserStore.login(payload.user);
-	      UserStore.__emitChange();
-	      break;
-	    case UserConstants.LOGOUT:
-	      UserStore.logout();
-	      UserStore.__emitChange();
-	      break;
-	    case UserConstants.ERROR:
-	      UserStore.setErrors(payload.errors);
-	      UserStore.__emitChange();
-	      break;
-	    case UserConstants.RECEIVE_FETCHED_USER:
-	      UserStore.receiveFetchedUser(payload.fetchedUser);
-	      UserStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	UserStore.login = function (user) {
-	  _currentUser = user;
-	  _errors = null;
-	};
-	
-	UserStore.logout = function () {
-	  _currentUser = null;
-	  _errors = null;
-	};
-	
-	UserStore.setErrors = function (errors) {
-	  _errors = errors;
-	};
-	
-	UserStore.receiveFetchedUser = function (fetchedUser) {
-	  _user = fetchedUser;
-	};
-	
-	UserStore.retrieveUser = function () {
-	  return _user;
-	};
-	
-	module.exports = UserStore;
-
-/***/ },
-/* 276 */
-/***/ function(module, exports) {
-
-	var UserConstants = {
-		LOGIN: "LOGIN",
-		ERROR: "ERROR",
-		LOGOUT: "LOGOUT",
-		RECEIVE_DATA: "RECEIVE_DATA",
-		RECEIVE_FETCHED_USER: "RECEIVE_FETCHED_USER"
-	};
-	
-	module.exports = UserConstants;
-
-/***/ },
-/* 277 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var UserConstants = __webpack_require__(276);
+	var SessionStore = __webpack_require__(232);
+	var UserStore = __webpack_require__(259);
 	var UserApiUtil = __webpack_require__(256);
-	var UserStore = __webpack_require__(275);
-	var AppDispatcher = __webpack_require__(233);
 	
-	var UserActions = {
+	var NameBox = React.createClass({
+	  displayName: 'NameBox',
 	
-	  fetchCurrentUser: function () {
-	    UserApiUtil.fetchCurrentUser(UserActions.receiveCurrentUser, UserActions.handleError);
+	
+	  getInitialState: function () {
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { name: SessionStore.currentUser().name };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { name: "" };
+	    }
 	  },
 	
-	  signup: function (user) {
-	    UserApiUtil.post({
-	      url: 'api/user',
-	      user: user,
-	      success: UserActions.receiveCurrentUser,
-	      error: UserActions.handleError
-	    });
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
 	  },
 	
-	  login: function (user) {
-	    UserApiUtil.post({
-	      url: 'api/session',
-	      user: user,
-	      success: UserActions.receiveCurrentUser,
-	      error: UserActions.handleError
-	    });
+	  componentWillUnmount: function () {
+	    this.listener.remove();
 	  },
 	
-	  guestLogin: function () {
-	    UserActions.login({ username: "guest", password: "password" });
+	  handleChange: function () {
+	    this.setState({ name: UserStore.retrieveUser().name });
 	  },
 	
-	  receiveCurrentUser: function (user) {
-	    AppDispatcher.dispatch({
-	      actionType: UserConstants.LOGIN,
-	      user: user
-	    });
-	  },
-	
-	  receiveFetchedUser: function (fetchedUser) {
-	    AppDispatcher.dispatch({
-	      actionType: UserConstants.RECEIVE_FETCHED_USER,
-	      fetchedUser: fetchedUser
-	    });
-	  },
-	
-	  handleError: function (error) {
-	    AppDispatcher.dispatch({
-	      actionType: UserConstants.ERROR,
-	      errors: error.responseJSON.errors
-	    });
-	  },
-	
-	  removeCurrentUser: function () {
-	    AppDispatcher.dispatch({
-	      actionType: UserConstants.LOGOUT
-	    });
-	  },
-	
-	  logout: function () {
-	    UserApiUtil.logout(UserActions.removeCurrentUser, UserActions.handleError);
+	  render: function () {
+	    return React.createElement(
+	      'title',
+	      { className: 'name-box' },
+	      this.state.name
+	    );
 	  }
 	
-	};
+	});
 	
-	module.exports = UserActions;
+	module.exports = NameBox;
 
 /***/ }
 /******/ ]);

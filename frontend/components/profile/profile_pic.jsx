@@ -62,8 +62,8 @@ var ProfilePic = React.createClass({
       return (
         <div className="profile-pic">
           <img src={this.state.imageUrl}/>
-          <input type="file" onChange={this.updateFile}/>
-          <input type="submit" value="Save Profile Pic" onClick={this.savePic} />
+          <input type="file" onChange={this.updateFile} className="profile-pic-select"/>
+          <input type="submit" value="Save Profile Pic" onClick={this.savePic} className="profile-pic-save"/>
           {this.props.children}
         </div>
       );

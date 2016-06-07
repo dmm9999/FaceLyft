@@ -39,6 +39,14 @@ class User < ActiveRecord::Base
     friended_friends + friender_friends
   end
 
+  def name
+    if first_name && last_name
+      first_name + " " + last_name
+    else
+      ""
+    end
+  end
+
   def self.find_by_credentials(email_address, password)
     user = User.find_by_email_address(email_address)
     user.try(:is_password?, password) ? user : nil

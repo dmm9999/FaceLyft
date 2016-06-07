@@ -9,8 +9,9 @@ var IntroDescription = React.createClass({
 
   getInitialState: function () {
 
-    if (SessionStore.currentUserId() === this.props.id) {
-      return( { description : SessionStore.currentUser().description } ) ;
+    if (SessionStore.currentUserId() === this.props.id &&
+        SessionStore.currentUser().description !== null) {
+        return( { description : SessionStore.currentUser().description } ) ;
     } else {
       UserApiUtil.fetchUser(this.props.id);
       return( { description : ""} );
