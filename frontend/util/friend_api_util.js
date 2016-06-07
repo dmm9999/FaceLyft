@@ -11,8 +11,31 @@ var FriendApiUtil = {
         FriendActions.receiveFriends(friends);
       }
     });
+  },
 
-  }
+  createFriendship: function (frienderid, friended_id) {
+    $.ajax({
+      type: 'POST',
+      url: 'api/users/' + frienderid + '/friends',
+      dataType: 'json',
+      data: {friended_id : friended_id},
+      success: function (friendship) {
+        FriendActions.receiveFriendship(friendship);
+      }
+    });
+  },
+
+  deleteFriendship: function (currentUserId, userProfileId) {
+    $.ajax({
+      type: 'POST',
+      url: 'api/users/' + currentUserId + '/friends',
+      dataType: 'json',
+      data: {userProfileId : userProfileId},
+      success: function (friendship) {
+        FriendActions.removeFriendship(friendship);
+      }
+    });
+  },
 
 };
 

@@ -465,9 +465,22 @@ input {
   position: absolute;
   top: 270px;
   left: 600px;
+  border: 1px solid #1E230E;
   width: 100px;
   height: 25px;
   background: #F6F7F9;
+}
+
+.friend-request-icon-container {
+  display: block;
+  float: left;
+  margin: 5px 0px 5px 10px;
+}
+
+.friend-request-title {
+  display: block;
+  float: right;
+  width: 80px;
   text-align: center;
   font-family: helvetica;
   font-size: 12px;
@@ -475,15 +488,57 @@ input {
   color: #4b4f56;
   vertical-align: middle;
   line-height: 25px;
-  border: 1px solid #1E230E;
+  margin-top: 1px;
 }
 
-.friend-request-icon {
+.friend-request-pending {
+  position: absolute;
+  top: 270px;
+  left: 560px;
+  width: 280px;
+  height: 25px;
+}
+
+.friend-request-sent {
   float: left;
-  width: 10px;
+  text-align: center;
+  font-family: helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  color: #4b4f56;
+  background: #F6F7F9;
+  border: 1px solid #1E230E;
+  padding: 5px;
 }
 
-.friend-request-title {
-  display: block;
-  float: right;
+.friend-request-cancel {
+  float:right;
+  text-align: center;
+  font-family: helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  color: #4b4f56;
+  background: #F6F7F9;
+  border: 1px solid #1E230E;
+  padding: 5px;
+}
+
+.unfriend {
+  position: absolute;
+  top: 270px;
+  left: 600px;
+  width: 100px;
+  height: 25px;
+}
+
+.unfriend-title {
+  float:left;
+  text-align: center;
+  font-family: helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  color: #4b4f56;
+  background: #F6F7F9;
+  border: 1px solid #1E230E;
+  padding: 5px;
 }

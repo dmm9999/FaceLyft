@@ -34086,10 +34086,151 @@
 	module.exports = Friends;
 
 /***/ },
-/* 272 */,
-/* 273 */,
-/* 274 */,
-/* 275 */,
+/* 272 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(237).Store;
+	var AppDispatcher = __webpack_require__(233);
+	var SessionStore = __webpack_require__(232);
+	
+	var FriendStore = new Store(AppDispatcher);
+	
+	var _friends = {};
+	
+	FriendStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "RECEIVE_FRIENDSHIP":
+	      _setFriendship(payload.friendship);
+	      FriendStore.__emitChange();
+	      break;
+	    case "REMOVE_FRIENDSHIP":
+	      _removeFriendship(payload.friendship);
+	      FriendStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	_setFriendship = function (friendship) {
+	  _friends[friendship.id] = friendship;
+	};
+	
+	_removeFriendship = function (friendship) {
+	  delete _friends[friendship.id];
+	};
+	
+	FriendStore.friendStatus = function (id) {
+	
+	  var friends = SessionStore.currentUser().friends;
+	  var pending_friends = SessionStore.currentUser().pending_friends;
+	  var status = null;
+	
+	  if (SessionStore.currentUserId() === id) {
+	    status = "self";
+	  }
+	
+	  friends.forEach(function (friend) {
+	    if (friend.id === id) {
+	      status = "friends";
+	    }
+	  }.bind(this));
+	
+	  pending_friends.forEach(function (pending_friend) {
+	    if (pending_friend.id === id) {
+	      status = "pending";
+	    }
+	  }.bind(this));
+	
+	  return status;
+	};
+	
+	module.exports = FriendStore;
+
+/***/ },
+/* 273 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var FriendActions = __webpack_require__(274);
+	
+	var FriendApiUtil = {
+	
+	  fetchFriends: function (id) {
+	    $.ajax({
+	      type: 'GET',
+	      url: 'api/users/' + id + '/friends',
+	      dataType: 'json',
+	      success: function (friends) {
+	        FriendActions.receiveFriends(friends);
+	      }
+	    });
+	  },
+	
+	  createFriendship: function (frienderid, friended_id) {
+	    $.ajax({
+	      type: 'POST',
+	      url: 'api/users/' + frienderid + '/friends',
+	      dataType: 'json',
+	      data: { friended_id: friended_id },
+	      success: function (friendship) {
+	        FriendActions.receiveFriendship(friendship);
+	      }
+	    });
+	  },
+	
+	  deleteFriendship: function (currentUserId, userProfileId) {
+	    $.ajax({
+	      type: 'POST',
+	      url: 'api/users/' + currentUserId + '/friends',
+	      dataType: 'json',
+	      data: { userProfileId: userProfileId },
+	      success: function (friendship) {
+	        FriendActions.removeFriendship(friendship);
+	      }
+	    });
+	  }
+	
+	};
+	
+	module.exports = FriendApiUtil;
+
+/***/ },
+/* 274 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(233);
+	var FriendConstants = __webpack_require__(275);
+	
+	var FriendActions = {
+	
+	  receiveFriendship: function (friendship) {
+	    AppDispatcher.dispatch({
+	      actionType: FriendConstants.RECEIVE_FRIENDSHIP,
+	      friendship: friendship
+	    });
+	  },
+	
+	  removeFriendship: function (friendship) {
+	    AppDispatcher.dispatch({
+	      actionType: FriendConstants.REMOVE_FRIENDSHIP,
+	      friendship: friendship
+	    });
+	  }
+	
+	};
+	
+	module.exports = FriendActions;
+
+/***/ },
+/* 275 */
+/***/ function(module, exports) {
+
+	var FriendConstants = {
+	  RECEIVE_FRIENDSHIP: "RECEIVE_FRIENDSHIP",
+	  REMOVE_FRIENDSHIP: "REMOVE_FRIENDSHIP"
+	};
+	
+	module.exports = FriendConstants;
+
+/***/ },
 /* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -34320,22 +34461,88 @@
 
 	var React = __webpack_require__(1);
 	
-	var FriendRequest = React.createClass({
-	  displayName: "FriendRequest",
+	var FriendApiUtil = __webpack_require__(273);
+	var FriendStore = __webpack_require__(272);
+	var SessionStore = __webpack_require__(232);
 	
+	var FriendRequest = React.createClass({
+	  displayName: 'FriendRequest',
+	
+	
+	  getInitialState: function () {
+	
+	    return { status: FriendStore.friendStatus(this.props.id) };
+	  },
+	
+	  componentDidMount: function () {
+	    FriendStore.addListener(this.handleChange);
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ status: FriendStore.friendStatus(this.props.id) });
+	  },
+	
+	  handleRequest: function (e) {
+	
+	    e.preventDefault();
+	
+	    FriendApiUtil.createFriendship(SessionStore.currentUserId(), this.props.id);
+	  },
+	
+	  handleCancel: function (e) {
+	
+	    e.preventDefault();
+	
+	    FriendApiUtil.deleteFriendship(SessionStore.currentUserId(), this.props.id);
+	  },
+	
+	  handleUnfriend: function () {},
 	
 	  render: function () {
 	
-	    return React.createElement(
-	      "div",
-	      { className: "friend-request group" },
-	      React.createElement(
-	        "title",
-	        { className: "friend-request-title" },
-	        "Add Friend"
-	      ),
-	      React.createElement("img", { src: friendRequestIcon, className: "friend-request-icon" })
-	    );
+	    if (this.state.status === "self") {
+	      return React.createElement('div', null);
+	    } else if (this.state.status === null) {
+	      return React.createElement(
+	        'div',
+	        { className: 'friend-request group', onClick: this.handleRequest },
+	        React.createElement(
+	          'div',
+	          { className: 'friend-request-title' },
+	          'Add Friend'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'friend-request-icon-container' },
+	          React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' })
+	        )
+	      );
+	    } else if (this.state.status === "pending") {
+	      return React.createElement(
+	        'div',
+	        { className: 'friend-request-pending group' },
+	        React.createElement(
+	          'div',
+	          { className: 'friend-request-sent' },
+	          'Friend Request Sent'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'friend-request-cancel' },
+	          'Cancel Friend Request'
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { className: 'unfriend group', onClick: this.handleUnfriend },
+	        React.createElement(
+	          'div',
+	          { className: 'unfriend-title' },
+	          'Unfriend'
+	        )
+	      );
+	    }
 	  }
 	
 	});

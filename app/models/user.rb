@@ -8,10 +8,10 @@ class User < ActiveRecord::Base
   validates :password, length: {minimum: 6, allow_nil: true}
   validates :session_token, uniqueness: true
 
-  has_attached_file :profile_pic, default_url: "Profile_Pictures_For_Facebook_02.jpg"
+  has_attached_file :profile_pic, default_url: ActionController::Base.helpers.asset_path("maxresdefault.jpg")
   validates_attachment_content_type :profile_pic, content_type: /\Aimage\/.*\Z/
 
-  has_attached_file :coverpic, default_url: "Profile_Pictures_For_Facebook_02.jpg"
+  has_attached_file :coverpic, default_url: ActionController::Base.helpers.asset_path("maxresdefault.jpg")
   validates_attachment_content_type :coverpic, content_type: /\Aimage\/.*\Z/
 
   has_many :friender_friendships,
@@ -20,8 +20,21 @@ class User < ActiveRecord::Base
     foreign_key: :friender_id,
     primary_key: :id
 
+  has_many :pending_friender_friendships,
+    -> { where accepted: false},
+    class_name: "Friendship",
+    foreign_key: :friender_id,
+    primary_key: :id
+
+
   has_many :friended_friendships,
     -> { where accepted: true},
+    class_name: "Friendship",
+    foreign_key: :friended_id,
+    primary_key: :id
+
+  has_many :pending_friended_friendships,
+    -> { where accepted: false},
     class_name: "Friendship",
     foreign_key: :friended_id,
     primary_key: :id
@@ -30,13 +43,25 @@ class User < ActiveRecord::Base
     through: :friender_friendships,
     source: :friended_user
 
+  has_many :pending_friender_friends,
+    through: :pending_friender_friendships,
+    source: :friended_user
+
   has_many :friended_friends,
     through: :friended_friendships,
+    source: :friender_user
+
+  has_many :pending_friended_friends,
+    through: :pending_friended_friendships,
     source: :friender_user
 
 
   def friends
     friended_friends + friender_friends
+  end
+
+  def pending_friends
+    pending_friended_friends + pending_friender_friends
   end
 
   def name

@@ -1,5 +1,6 @@
 var FriendConstants = {
-  RECEIVE_FRIENDS: "RECEIVE_FRIENDS"
+  RECEIVE_FRIENDSHIP: "RECEIVE_FRIENDSHIP",
+  REMOVE_FRIENDSHIP: "REMOVE_FRIENDSHIP"
 };
 
 module.exports = FriendConstants;

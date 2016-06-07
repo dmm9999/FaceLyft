@@ -12,4 +12,8 @@ class Friendship < ActiveRecord::Base
     foreign_key: :friended_id,
     primary_key: :id
 
+    def self.find_by_ids(id1, id2)
+      @friendship = Friendship.where(friender_id: id1).where(friended_id: id2) ||
+      Friendship.where(friended_id: id1).where(friender_id: id2)
+    end
 end

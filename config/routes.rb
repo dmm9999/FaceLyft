@@ -8,6 +8,8 @@ Rails.application.routes.draw do
     resource :session, only: [:create, :destroy, :show]
 
     get '/users/:id/friends', to: 'users#friends'
+    post '/users/:id/friends', to: 'users#create_friendship'
+    delete '/users/:id/friends', to: 'users#delete_friendship'
   end
 
 end

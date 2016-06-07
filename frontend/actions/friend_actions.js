@@ -3,10 +3,17 @@ var FriendConstants = require('./../constants/friend_constants');
 
 var FriendActions = {
 
-  receiveFriends: function (friends) {
+  receiveFriendship: function (friendship) {
     AppDispatcher.dispatch({
-      actionType: FriendConstants.RECEIVE_FRIENDS,
-      friends: friends
+      actionType : FriendConstants.RECEIVE_FRIENDSHIP,
+      friendship : friendship
+    });
+  },
+
+  removeFriendship: function (friendship) {
+    AppDispatcher.dispatch({
+      actionType: FriendConstants.REMOVE_FRIENDSHIP,
+      friendship: friendship
     });
   }
 

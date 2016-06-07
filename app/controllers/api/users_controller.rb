@@ -15,7 +15,7 @@ class Api::UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     render "api/users/show"
-    
+
   end
 
   def update
@@ -32,6 +32,17 @@ class Api::UsersController < ApplicationController
   def friends
     @user = User.find(params[:id])
     @friends = @user.friends
+  end
+
+  def create_friendship
+    @friendship = Friendship.create(friender_id: current_user.id, friended_id: params[:friended_id].to_i)
+    render json: @friendship
+  end
+
+  def delete_friendship
+    @friendship = Friendship.find_by_ids(current_user, params[:userProfileId])
+    @friendship.destroy
+    render json: @friendship
   end
 
   private
