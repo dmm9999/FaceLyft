@@ -1,5 +1,6 @@
 var SessionActions = require('../actions/session_actions');
 var ErrorActions = require('../actions/error_actions');
+var UserActions = require('../actions/user_actions');
 
 var UserApiUtil = {
 
@@ -20,10 +21,9 @@ var UserApiUtil = {
   },
 
   fetchUser: function (id) {
-    debugger
     $.ajax({
       type: 'GET',
-      url: 'api/users/' + parseInt(id),
+      url: 'api/users/' + id,
       dataType: 'json',
       success: function (fetchedUser) {
         UserActions.receiveFetchedUser(fetchedUser);

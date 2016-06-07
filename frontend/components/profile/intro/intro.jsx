@@ -14,9 +14,9 @@ var Intro = React.createClass({
           <img src={window.globeIcon} className="intro-icon"/>
           <h1 className="intro-title">Intro</h1>
         </header>
-        <IntroDescription/>
-        <HometownForm/>
-        <SchoolForm/>
+        <IntroDescription id={this.props.id}/>
+        <HometownForm id={this.props.id}/>
+        <SchoolForm id={this.props.id}/>
       </div>
     );
   }

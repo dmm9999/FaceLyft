@@ -9,13 +9,11 @@ var CoverPic = React.createClass({
 
   getInitialState: function () {
 
-    debugger
-
     if (SessionStore.currentUserId() === this.props.id) {
       return( { imageUrl : SessionStore.currentUser().coverpic_url } ) ;
     } else {
       UserApiUtil.fetchUser(this.props.id);
-      return( { imageUrl : UserStore.retrieveUser.coverpic_url } );
+      return( { imageUrl : ""} );
     }
   },
 
@@ -28,7 +26,7 @@ var CoverPic = React.createClass({
   },
 
   handleChange: function () {
-    this.setState( { fetchedUser : UserStore.retrieveUser() } );
+    this.setState( { imageUrl : UserStore.retrieveUser().coverpic_url } );
   },
 
   updateFile: function (e) {
@@ -60,18 +58,25 @@ var CoverPic = React.createClass({
 
   render: function () {
 
-    return (
-      <div className="cover-pic">
+    if (SessionStore.currentUserId() === this.props.id) {
+      return (
+        <div className="cover-pic">
         <img src={this.state.imageUrl}/>
         <input type="file" onChange={this.updateFile}/>
         <input type="submit" value="Save Cover Pic" onClick={this.savePic} />
         {this.props.children}
       </div>
-    );
+      )
+    } else {
+      return (
+        <div className="cover-pic">
+        <img src={this.state.imageUrl}/>
+        {this.props.children}
+        </div>
+      )
+    };
 
   }
-
-
 });
 
 module.exports = CoverPic;

@@ -15,7 +15,7 @@ var Profile = React.createClass({
       <div>
         <Navbar/>
         <CoverPic id={pageId} >
-          <ProfilePic/>
+          <ProfilePic id={pageId}/>
         </CoverPic>
         <Intro id={pageId}/>
         <Friends id={pageId}/>

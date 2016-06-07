@@ -25960,6 +25960,7 @@
 	  },
 	
 	  updateCurrentUser: function (data) {
+	    debugger;
 	    $.ajax({
 	      url: '/api/user',
 	      type: 'PATCH',
@@ -32884,6 +32885,7 @@
 
 	var SessionActions = __webpack_require__(230);
 	var ErrorActions = __webpack_require__(254);
+	var UserActions = __webpack_require__(277);
 	
 	var UserApiUtil = {
 	
@@ -32904,10 +32906,9 @@
 	  },
 	
 	  fetchUser: function (id) {
-	    debugger;
 	    $.ajax({
 	      type: 'GET',
-	      url: 'api/users/' + parseInt(id),
+	      url: 'api/users/' + id,
 	      dataType: 'json',
 	      success: function (fetchedUser) {
 	        UserActions.receiveFetchedUser(fetchedUser);
@@ -33443,7 +33444,7 @@
 	      React.createElement(
 	        CoverPic,
 	        { id: pageId },
-	        React.createElement(ProfilePic, null)
+	        React.createElement(ProfilePic, { id: pageId })
 	      ),
 	      React.createElement(Intro, { id: pageId }),
 	      React.createElement(Friends, { id: pageId })
@@ -33557,9 +33558,9 @@
 	          'Intro'
 	        )
 	      ),
-	      React.createElement(IntroDescription, null),
-	      React.createElement(HometownForm, null),
-	      React.createElement(SchoolForm, null)
+	      React.createElement(IntroDescription, { id: this.props.id }),
+	      React.createElement(HometownForm, { id: this.props.id }),
+	      React.createElement(SchoolForm, { id: this.props.id })
 	    );
 	  }
 	
@@ -33572,9 +33573,11 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var PropTypes = React.PropTypes;
+	
 	var SessionApiUtil = __webpack_require__(229);
 	var SessionStore = __webpack_require__(232);
+	var UserApiUtil = __webpack_require__(256);
+	var UserStore = __webpack_require__(275);
 	
 	var IntroDescription = React.createClass({
 	  displayName: 'IntroDescription',
@@ -33582,54 +33585,81 @@
 	
 	  getInitialState: function () {
 	
-	    return { currentUser: SessionStore.currentUser() };
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { description: SessionStore.currentUser().description };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { description: "" };
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ description: UserStore.retrieveUser().description });
 	  },
 	
 	  updateDescription: function (e) {
 	
 	    e.preventDefault();
 	
-	    this.setState({ currentUser: { description: e.target.value } });
+	    this.setState({ description: e.target.value });
 	  },
 	
 	  handleSubmit: function (e) {
 	
 	    e.preventDefault();
 	
-	    var currentUser = this.state.currentUser;
-	
-	    SessionApiUtil.updateCurrentUser({ user: currentUser });
+	    SessionApiUtil.updateCurrentUser({ user: description });
 	  },
 	
 	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        {
-	          onSubmit: this.handleSubmit,
-	          className: 'intro-description-form group' },
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'form',
+	          {
+	            onSubmit: this.handleSubmit,
+	            className: 'intro-description-form group' },
+	          React.createElement('textarea', {
+	            onChange: this.updateDescription,
+	            className: 'intro-description-form-text',
+	            placeholder: 'Describe who you are',
+	            value: this.state.description }),
+	          React.createElement(
+	            'div',
+	            {
+	              className: 'intro-description-form-button-container' },
+	            React.createElement('input', {
+	              type: 'submit',
+	              className: 'intro-description-form-save-button',
+	              value: 'Save' }),
+	            React.createElement('input', {
+	              type: 'submit',
+	              className: 'intro-description-form-cancel-button',
+	              value: 'Cancel' })
+	          )
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        null,
 	        React.createElement('textarea', {
-	          onChange: this.updateDescription,
 	          className: 'intro-description-form-text',
 	          placeholder: 'Describe who you are',
-	          value: this.state.currentUser.description }),
-	        React.createElement(
-	          'div',
-	          {
-	            className: 'intro-description-form-button-container' },
-	          React.createElement('input', {
-	            type: 'submit',
-	            className: 'intro-description-form-save-button',
-	            value: 'Save' }),
-	          React.createElement('input', {
-	            type: 'submit',
-	            className: 'intro-description-form-cancel-button',
-	            value: 'Cancel' })
-	        )
-	      )
-	    );
+	          value: this.state.description })
+	      );
+	    }
 	  }
 	
 	});
@@ -33643,6 +33673,8 @@
 	var React = __webpack_require__(1);
 	var SessionStore = __webpack_require__(232);
 	var SessionApiUtil = __webpack_require__(229);
+	var UserApiUtil = __webpack_require__(256);
+	var UserStore = __webpack_require__(275);
 	
 	var HometownForm = React.createClass({
 	  displayName: 'HometownForm',
@@ -33650,47 +33682,74 @@
 	
 	  getInitialState: function () {
 	
-	    var currentUser = SessionStore.currentUser();
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { hometown: SessionStore.currentUser().hometown };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { hometown: "" };
+	    }
+	  },
 	
-	    return { currentUser: currentUser };
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ hometown: UserStore.retrieveUser().hometown });
 	  },
 	
 	  updateHometown: function (e) {
 	
 	    e.preventDefault();
 	
-	    this.setState({ currentUser: { hometown: e.target.value } });
+	    this.setState({ hometown: e.target.value });
 	  },
 	
 	  handleSubmit: function (e) {
 	
 	    e.preventDefault();
 	
-	    var currentUser = this.state.currentUser;
-	
-	    SessionApiUtil.updateCurrentUser(currentUser);
+	    SessionApiUtil.updateCurrentUser({ user: hometown });
 	  },
 	
 	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        {
-	          onSubmit: this.handleSubmit },
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'form',
+	          {
+	            onSubmit: this.handleSubmit },
+	          React.createElement('input', {
+	            type: 'text',
+	            value: this.state.hometown,
+	            onChange: this.updateHometown,
+	            placeholder: 'What\'s your hometown?'
+	          }),
+	          React.createElement('input', {
+	            type: 'submit',
+	            value: 'Save'
+	          })
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        null,
 	        React.createElement('input', {
 	          type: 'text',
-	          value: this.state.currentUser.hometown,
+	          value: this.state.hometown,
 	          onChange: this.updateHometown,
 	          placeholder: 'What\'s your hometown?'
-	        }),
-	        React.createElement('input', {
-	          type: 'submit',
-	          value: 'Save'
 	        })
-	      )
-	    );
+	      );
+	    }
 	  }
 	
 	});
@@ -33704,6 +33763,8 @@
 	var React = __webpack_require__(1);
 	var SessionStore = __webpack_require__(232);
 	var SessionApiUtil = __webpack_require__(229);
+	var UserApiUtil = __webpack_require__(256);
+	var UserStore = __webpack_require__(275);
 	
 	var SchoolForm = React.createClass({
 	  displayName: 'SchoolForm',
@@ -33711,47 +33772,73 @@
 	
 	  getInitialState: function () {
 	
-	    var currentUser = SessionStore.currentUser();
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { school: SessionStore.currentUser().school };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { school: "" };
+	    }
+	  },
 	
-	    return { currentUser: currentUser };
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ school: UserStore.retrieveUser().school });
 	  },
 	
 	  updateSchool: function (e) {
 	
 	    e.preventDefault();
 	
-	    this.setState({ currentUser: { school: e.target.value } });
+	    this.setState({ school: e.target.value });
 	  },
 	
 	  handleSubmit: function (e) {
 	
 	    e.preventDefault();
 	
-	    var currentUser = this.state.currentUser;
-	
-	    SessionApiUtil.updateCurrentUser(currentUser);
+	    SessionApiUtil.updateCurrentUser({ user: school });
 	  },
 	
 	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        {
-	          onSubmit: this.handleSubmit },
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'form',
+	          {
+	            onSubmit: this.handleSubmit },
+	          React.createElement('input', {
+	            type: 'text',
+	            value: this.state.school,
+	            onChange: this.updateSchool,
+	            placeholder: 'Where did you go to school?'
+	          }),
+	          React.createElement('input', {
+	            type: 'submit',
+	            value: 'Save'
+	          })
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        null,
 	        React.createElement('input', {
 	          type: 'text',
-	          value: this.state.currentUser.school,
-	          onChange: this.updateSchool,
+	          value: this.state.school,
 	          placeholder: 'Where did you go to school?'
-	        }),
-	        React.createElement('input', {
-	          type: 'submit',
-	          value: 'Save'
 	        })
-	      )
-	    );
+	      );
+	    }
 	  }
 	
 	});
@@ -33947,6 +34034,8 @@
 	
 	var SessionStore = __webpack_require__(232);
 	var SessionApiUtil = __webpack_require__(229);
+	var UserApiUtil = __webpack_require__(256);
+	var UserStore = __webpack_require__(275);
 	
 	var ProfilePic = React.createClass({
 	  displayName: 'ProfilePic',
@@ -33954,7 +34043,24 @@
 	
 	  getInitialState: function () {
 	
-	    return { imageUrl: SessionStore.currentUser().profile_pic_url };
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { imageUrl: SessionStore.currentUser().profile_pic_url };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { imageUrl: "" };
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ imageUrl: UserStore.retrieveUser().profile_pic_url });
 	  },
 	
 	  updateFile: function (e) {
@@ -33986,13 +34092,23 @@
 	
 	  render: function () {
 	
-	    return React.createElement(
-	      'div',
-	      { className: 'profile-pic' },
-	      React.createElement('img', { src: this.state.imageUrl }),
-	      React.createElement('input', { type: 'file', onChange: this.updateFile }),
-	      React.createElement('input', { type: 'submit', value: 'Save Profile Pic', onClick: this.savePic })
-	    );
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return React.createElement(
+	        'div',
+	        { className: 'profile-pic' },
+	        React.createElement('img', { src: this.state.imageUrl }),
+	        React.createElement('input', { type: 'file', onChange: this.updateFile }),
+	        React.createElement('input', { type: 'submit', value: 'Save Profile Pic', onClick: this.savePic }),
+	        this.props.children
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { className: 'profile-pic' },
+	        React.createElement('img', { src: this.state.imageUrl }),
+	        this.props.children
+	      );
+	    }
 	  }
 	
 	});
@@ -34016,13 +34132,11 @@
 	
 	  getInitialState: function () {
 	
-	    debugger;
-	
 	    if (SessionStore.currentUserId() === this.props.id) {
 	      return { imageUrl: SessionStore.currentUser().coverpic_url };
 	    } else {
 	      UserApiUtil.fetchUser(this.props.id);
-	      return { imageUrl: UserStore.retrieveUser.coverpic_url };
+	      return { imageUrl: "" };
 	    }
 	  },
 	
@@ -34035,7 +34149,7 @@
 	  },
 	
 	  handleChange: function () {
-	    this.setState({ fetchedUser: UserStore.retrieveUser() });
+	    this.setState({ imageUrl: UserStore.retrieveUser().coverpic_url });
 	  },
 	
 	  updateFile: function (e) {
@@ -34067,16 +34181,24 @@
 	
 	  render: function () {
 	
-	    return React.createElement(
-	      'div',
-	      { className: 'cover-pic' },
-	      React.createElement('img', { src: this.state.imageUrl }),
-	      React.createElement('input', { type: 'file', onChange: this.updateFile }),
-	      React.createElement('input', { type: 'submit', value: 'Save Cover Pic', onClick: this.savePic }),
-	      this.props.children
-	    );
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return React.createElement(
+	        'div',
+	        { className: 'cover-pic' },
+	        React.createElement('img', { src: this.state.imageUrl }),
+	        React.createElement('input', { type: 'file', onChange: this.updateFile }),
+	        React.createElement('input', { type: 'submit', value: 'Save Cover Pic', onClick: this.savePic }),
+	        this.props.children
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { className: 'cover-pic' },
+	        React.createElement('img', { src: this.state.imageUrl }),
+	        this.props.children
+	      );
+	    };
 	  }
-	
 	});
 	
 	module.exports = CoverPic;
@@ -34151,6 +34273,78 @@
 	};
 	
 	module.exports = UserConstants;
+
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var UserConstants = __webpack_require__(276);
+	var UserApiUtil = __webpack_require__(256);
+	var UserStore = __webpack_require__(275);
+	var AppDispatcher = __webpack_require__(233);
+	
+	var UserActions = {
+	
+	  fetchCurrentUser: function () {
+	    UserApiUtil.fetchCurrentUser(UserActions.receiveCurrentUser, UserActions.handleError);
+	  },
+	
+	  signup: function (user) {
+	    UserApiUtil.post({
+	      url: 'api/user',
+	      user: user,
+	      success: UserActions.receiveCurrentUser,
+	      error: UserActions.handleError
+	    });
+	  },
+	
+	  login: function (user) {
+	    UserApiUtil.post({
+	      url: 'api/session',
+	      user: user,
+	      success: UserActions.receiveCurrentUser,
+	      error: UserActions.handleError
+	    });
+	  },
+	
+	  guestLogin: function () {
+	    UserActions.login({ username: "guest", password: "password" });
+	  },
+	
+	  receiveCurrentUser: function (user) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.LOGIN,
+	      user: user
+	    });
+	  },
+	
+	  receiveFetchedUser: function (fetchedUser) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.RECEIVE_FETCHED_USER,
+	      fetchedUser: fetchedUser
+	    });
+	  },
+	
+	  handleError: function (error) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.ERROR,
+	      errors: error.responseJSON.errors
+	    });
+	  },
+	
+	  removeCurrentUser: function () {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.LOGOUT
+	    });
+	  },
+	
+	  logout: function () {
+	    UserApiUtil.logout(UserActions.removeCurrentUser, UserActions.handleError);
+	  }
+	
+	};
+	
+	module.exports = UserActions;
 
 /***/ }
 /******/ ]);
