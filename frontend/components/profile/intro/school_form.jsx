@@ -25,7 +25,7 @@ var SchoolForm = React.createClass({
   },
 
   handleChange: function () {
-    this.setState( { school : UserStore.retrieveUser().school } );
+    this.setState( { school : UserStore.retrieveUser().school || ""} );
   },
 
   updateSchool: function (e) {

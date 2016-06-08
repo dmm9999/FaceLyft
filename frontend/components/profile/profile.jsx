@@ -6,9 +6,8 @@ var ProfilePic = require('./profile_pic');
 var CoverPic = require('./coverpic');
 var NameBox = require('./name_box');
 var FriendRequest = require('./friend_request');
-var Feed = require('./feed/feed');
 var PostForm = require('./feed/post_form');
-var Posts = require('./feed/posts');
+var PostsIndex = require('./feed/posts_index');
 
 var Profile = React.createClass({
 
@@ -30,10 +29,10 @@ var Profile = React.createClass({
             <Friends id={pageId}/>
           </section>
           <section className="content-main">
-            <Feed>
+            <div className="timeline">
               <PostForm id={pageId}/>
-              <Posts/>
-            </Feed>
+              <PostsIndex id={pageId}/>
+            </div>
           </section>
         </main>
       </div>

@@ -27,7 +27,7 @@ var IntroDescription = React.createClass({
   },
 
   handleChange: function () {
-    this.setState( { description : UserStore.retrieveUser().description } );
+    this.setState( { description : UserStore.retrieveUser().description || "" } );
   },
 
   updateDescription: function (e) {

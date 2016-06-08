@@ -24,7 +24,7 @@ var FriendRequest = React.createClass({
 
     e.preventDefault();
 
-    FriendApiUtil.createFriendship(SessionStore.currentUserId(), this.props.id);
+    FriendApiUtil.createPendingFriendship(SessionStore.currentUserId(), this.props.id);
 
   },
 

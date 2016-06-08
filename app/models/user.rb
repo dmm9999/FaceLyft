@@ -55,6 +55,16 @@ class User < ActiveRecord::Base
     through: :pending_friended_friendships,
     source: :friender_user
 
+  has_many :posts,
+    class_name: "Post",
+    foreign_key: :author_id,
+    primary_key: :id
+
+  has_many :profile_posts,
+    class_name: "Post",
+    foreign_key: :profile_id,
+    primary_key: :id
+
 
   def friends
     friended_friends + friender_friends

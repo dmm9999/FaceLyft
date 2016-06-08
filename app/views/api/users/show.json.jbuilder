@@ -1,7 +1,3 @@
-# json.extract! @user, :id, :email_address, :description, :hometown, :work,
-# :school, :current_city, :phone_number, :birthday, :profile_pic.url
-
-
 json.id @user.id
 json.name @user.name
 json.first_name @user.first_name

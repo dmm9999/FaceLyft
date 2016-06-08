@@ -601,12 +601,48 @@ input {
   height: 35px;
 }
 
+.post-form-post-icon {
+  display: block;
+  float: left;
+  height: 15px;
+  width: 15px;
+  margin: 10px 5px 0px 20px;
+}
+
+.post-form-photo-icon {
+  display: block;
+  float: left;
+  height: 15px;
+  width: 15px;
+  margin: 10px 5px 0px 10px;
+  border: 1px solid #DFE0E4;
+}
+
+.post-form-status-tab {
+  float: left;
+  font-family: helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 11px;
+  color: #4B4F56;
+}
+
 .post-form-post-tab {
   float: left;
+  font-family: helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 11px;
+  color: #4B4F56;
 }
 
 .post-form-photo-tab {
   float: left;
+  font-family: helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 11px;
+  color: #4B4F56;
 }
 
 .post-form textarea {
@@ -625,4 +661,34 @@ input {
 
 .post-form footer {
   height: 40px;
+}
+
+.post-form-submit-button {
+  float: right;
+  margin: 5px 10px 0px 10px;
+  border-radius: 4px;
+  color: white;
+  background: #3B5998;
+  font-size: 12px;
+  border-left: 1px solid #365089;
+  width: 60px;
+  height: 25px;
+  font-family: helvetica;
+  text-align: center;
+}
+
+.posts-index-item {
+  width: 510px;
+  height: 170px;
+  background: #ffffff;
+  margin-bottom: 12px;
+  border: 1px solid #DFE0E4;
+}
+
+.posts-index-item-thumb {
+  display: block;
+  border: 1px solid #DFE0E4;
+  width: 40px;
+  height: 40px;
+  margin: 12px 0px 0px 12px;
 }

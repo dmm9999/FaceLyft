@@ -22,7 +22,7 @@ var ProfileButton = React.createClass({
   render: function () {
 
     var picUrl = this.state.currentUser.profile_pic_url;
-    var path = 'users/' + this.state.currentUser.id
+    var path = '/users/' + this.state.currentUser.id
 
     return (
       <div className="profile-link group">

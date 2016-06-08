@@ -3,10 +3,10 @@ var FriendConstants = require('./../constants/friend_constants');
 
 var FriendActions = {
 
-  receiveFriendship: function (friendship) {
+  receivePendingFriendship: function (pendingFriendship) {
     AppDispatcher.dispatch({
-      actionType : FriendConstants.RECEIVE_FRIENDSHIP,
-      friendship : friendship
+      actionType : FriendConstants.RECEIVE_PENDING_FRIENDSHIP,
+      pendingFriendship : pendingFriendship
     });
   },
 

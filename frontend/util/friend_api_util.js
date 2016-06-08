@@ -1,4 +1,4 @@
-var FriendActions = require('./../actions/friend_actions');
+  var FriendActions = require('./../actions/friend_actions');
 
 var FriendApiUtil = {
 
@@ -13,14 +13,14 @@ var FriendApiUtil = {
     });
   },
 
-  createFriendship: function (frienderid, friended_id) {
+  createPendingFriendship: function (friender_id, friended_id) {
     $.ajax({
       type: 'POST',
-      url: 'api/users/' + frienderid + '/friends',
+      url: 'api/users/' + friender_id + '/friends',
       dataType: 'json',
       data: {friended_id : friended_id},
-      success: function (friendship) {
-        FriendActions.receiveFriendship(friendship);
+      success: function (pendingFriendship) {
+        FriendActions.receivePendingFriendship(pendingFriendship);
       }
     });
   },

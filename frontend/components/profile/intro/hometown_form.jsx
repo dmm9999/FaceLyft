@@ -25,7 +25,7 @@ var HometownForm = React.createClass({
   },
 
   handleChange: function () {
-    this.setState( { hometown : UserStore.retrieveUser().hometown } );
+    this.setState( { hometown : UserStore.retrieveUser().hometown || "" } );
   },
 
   updateHometown: function (e) {

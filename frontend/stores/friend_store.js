@@ -5,12 +5,13 @@ var SessionStore = require('./session_store');
 var FriendStore = new Store(AppDispatcher);
 
 var _friends = {};
+var _pendingFriends = {};
 
 
 FriendStore.__onDispatch = function (payload) {
   switch(payload.actionType) {
-    case "RECEIVE_FRIENDSHIP":
-      _setFriendship(payload.friendship);
+    case "RECEIVE_PENDING_FRIENDSHIP":
+      _setPendingFriendship(payload.pendingFriendship);
       FriendStore.__emitChange();
       break;
     case "REMOVE_FRIENDSHIP":
@@ -20,41 +21,40 @@ FriendStore.__onDispatch = function (payload) {
   }
 };
 
-_setFriendship = function (friendship) {
-  _friends[friendship.id] = friendship;
+_setPendingFriendship = function (pendingFriendship) {
+  _pendingFriends = {};
+  _friends = {};
+  _pendingFriends[pendingFriendship.id] = pendingFriendship;
 };
 
 _removeFriendship = function () {
   _friends = {};
+  _pendingFriends = {};
 };
 
 FriendStore.friendStatus = function (id) {
 
-  var friends = SessionStore.currentUser().friends;
-  var pending_friends = SessionStore.currentUser().pending_friends;
   var status = null;
 
   if (SessionStore.currentUserId() === id ) {
     status = "self";
   }
 
-  friends.forEach(function(friend) {
-    if (friend.id === id) {
+  for (var requestId in _friends) {
+    if (parseInt(_friends[requestId].friender_id) === id ||
+        parseInt(_friends[requestId].friended_id) === id) {
       status = "friends";
     }
-  }.bind(this));
+  }
 
-  pending_friends.forEach(function(pending_friend) {
-    if (pending_friend.id === id) {
+  for (var pendingRequestId in _pendingFriends) {
+    if (parseInt(_pendingFriends[pendingRequestId].friender_id) === id ||
+        parseInt(_pendingFriends[pendingRequestId].friended_id) === id) {
       status = "pending";
     }
-  }.bind(this));
+  }
 
   return status;
 };
-
-
-
-
 
 module.exports = FriendStore;
