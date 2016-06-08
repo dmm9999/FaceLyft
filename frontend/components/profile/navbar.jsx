@@ -9,9 +9,9 @@ var Navbar = React.createClass({
 
   render: function() {
     return (
-      <div>
+      <nav>
 
-        <nav className="navbar group">
+        <div className="navbar group">
           <i className="fa fa-facebook fa-2x" aria-hidden="true"></i>
           <SearchBar/>
           <ProfileButton/>
@@ -23,9 +23,9 @@ var Navbar = React.createClass({
             className="logout-button"
             value="Log Out"
             onClick={SessionApiUtil.logout}/>
-        </nav>
+        </div>
 
-      </div>
+      </nav>
     );
   }
 

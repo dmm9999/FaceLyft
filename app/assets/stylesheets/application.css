@@ -37,7 +37,7 @@ nav {
   height: 82px;
   font-family: helvetica;
   color: #f9fafc;
-
+  height: 44px;
 }
 
 .loginbar {
@@ -71,6 +71,12 @@ nav {
   margin-top: 33px;
   margin-left: 110px;
   float: left;
+}
+
+.not-navbar {
+  display: block;
+  width: 862px;
+  margin: auto;
 }
 
 ul {
@@ -201,6 +207,8 @@ input {
 .navbar {
   background: #3B5998;
   height: 44px;
+  width: 1050px;
+  margin: auto;
 }
 
 .search-bar {
@@ -291,7 +299,6 @@ input {
   width: 330px;
   height: 460px;
   background: #ffffff;
-  margin-left: 130px;
   margin-bottom: 20px;
 }
 
@@ -339,7 +346,6 @@ input {
 }
 
 .friends-container {
-  margin-left: 130px;
 }
 
 .profile-pic {
@@ -385,7 +391,6 @@ input {
 
 .cover-pic {
   display: block;
-  margin-left: 130px;
   width: 850px;
   height: 315px;
   position: relative;
@@ -651,6 +656,8 @@ input {
   border: 1px solid transparent;
   margin-bottom: 17px;
   padding-top: 15px;
+  resize: none;
+  outline: none;
 }
 
 .post-form main {
@@ -686,9 +693,59 @@ input {
 }
 
 .posts-index-item-thumb {
+  float: left;
   display: block;
   border: 1px solid #DFE0E4;
   width: 40px;
   height: 40px;
-  margin: 12px 0px 0px 12px;
+  margin: 12px 0px 15px 12px;
+}
+
+.posts-index-item-author-name {
+  float: left;
+  font-family: helvetica;
+  font-size: 14px;
+  color: #365899;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-left: 5px;
+}
+
+.posts-index-item-body {
+  font-family: helvetica;
+  font-size: 14px;
+  color: #1d2129;
+  margin: 0px 15px 0px 12px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #DFE0E4;
+}
+
+.react-container {
+  border-bottom: 1px solid #DFE0E4;
+  height: 30px;
+}
+
+.react-like-text {
+  float: left;
+  font-family: helvetica;
+  font-size: 14px;
+  color: #7f7f7f;
+}
+
+.react-comment-text {
+  float: left;
+  font-family: helvetica;
+  font-size: 14px;
+  color: #7f7f7f;
+}
+
+.react-share-text {
+  float: left;
+  font-family: helvetica;
+  font-size: 14px;
+  color: #7f7f7f;
+}
+
+.reactions-container {
+  background: #898f9c;
 }

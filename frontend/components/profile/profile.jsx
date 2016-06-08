@@ -16,25 +16,27 @@ var Profile = React.createClass({
     var pageId = parseInt(this.props.params.id);
 
     return (
-      <div>
+      <div className="profile">
         <Navbar/>
-        <CoverPic id={pageId} >
-          <ProfilePic id={pageId}/>
-          <NameBox id={pageId}/>
-          <FriendRequest id={pageId}/>
-        </CoverPic>
-        <main className="content group">
-          <section className="content-sidebar">
-            <Intro id={pageId}/>
-            <Friends id={pageId}/>
-          </section>
-          <section className="content-main">
-            <div className="timeline">
-              <PostForm id={pageId}/>
-              <PostsIndex id={pageId}/>
-            </div>
-          </section>
-        </main>
+        <div className="not-navbar">
+          <CoverPic id={pageId} >
+            <ProfilePic id={pageId}/>
+            <NameBox id={pageId}/>
+            <FriendRequest id={pageId}/>
+          </CoverPic>
+          <main className="content group">
+            <section className="content-sidebar">
+              <Intro id={pageId}/>
+              <Friends id={pageId}/>
+            </section>
+            <section className="content-main">
+              <div className="timeline">
+                <PostForm id={pageId}/>
+                <PostsIndex id={pageId}/>
+              </div>
+            </section>
+          </main>
+        </div>
       </div>
     );
   }

@@ -33586,32 +33586,36 @@
 	
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'profile' },
 	      React.createElement(Navbar, null),
 	      React.createElement(
-	        CoverPic,
-	        { id: pageId },
-	        React.createElement(ProfilePic, { id: pageId }),
-	        React.createElement(NameBox, { id: pageId }),
-	        React.createElement(FriendRequest, { id: pageId })
-	      ),
-	      React.createElement(
-	        'main',
-	        { className: 'content group' },
+	        'div',
+	        { className: 'not-navbar' },
 	        React.createElement(
-	          'section',
-	          { className: 'content-sidebar' },
-	          React.createElement(Intro, { id: pageId }),
-	          React.createElement(Friends, { id: pageId })
+	          CoverPic,
+	          { id: pageId },
+	          React.createElement(ProfilePic, { id: pageId }),
+	          React.createElement(NameBox, { id: pageId }),
+	          React.createElement(FriendRequest, { id: pageId })
 	        ),
 	        React.createElement(
-	          'section',
-	          { className: 'content-main' },
+	          'main',
+	          { className: 'content group' },
 	          React.createElement(
-	            'div',
-	            { className: 'timeline' },
-	            React.createElement(PostForm, { id: pageId }),
-	            React.createElement(PostsIndex, { id: pageId })
+	            'section',
+	            { className: 'content-sidebar' },
+	            React.createElement(Intro, { id: pageId }),
+	            React.createElement(Friends, { id: pageId })
+	          ),
+	          React.createElement(
+	            'section',
+	            { className: 'content-main' },
+	            React.createElement(
+	              'div',
+	              { className: 'timeline' },
+	              React.createElement(PostForm, { id: pageId }),
+	              React.createElement(PostsIndex, { id: pageId })
+	            )
 	          )
 	        )
 	      )
@@ -33639,10 +33643,10 @@
 	
 	  render: function () {
 	    return React.createElement(
-	      'div',
+	      'nav',
 	      null,
 	      React.createElement(
-	        'nav',
+	        'div',
 	        { className: 'navbar group' },
 	        React.createElement('i', { className: 'fa fa-facebook fa-2x', 'aria-hidden': 'true' }),
 	        React.createElement(SearchBar, null),
@@ -34885,8 +34889,6 @@
 	
 	  render: function () {
 	
-	    debugger;
-	
 	    return React.createElement(
 	      "div",
 	      { className: "posts-index-item" },
@@ -34897,14 +34899,38 @@
 	          className: "posts-index-item-thumb" }),
 	        React.createElement(
 	          "div",
-	          null,
+	          { className: "posts-index-item-author-name" },
 	          this.props.post.author_name
 	        )
 	      ),
 	      React.createElement(
 	        "div",
-	        null,
+	        { className: "posts-index-item-body" },
 	        this.props.post.body
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "react-container group" },
+	        React.createElement(
+	          "div",
+	          { className: "react-like-text" },
+	          "Like"
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "react-comment-text" },
+	          "Comment"
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "react-share-text" },
+	          "Share"
+	        )
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "reactions-container group" },
+	        React.createElement("textarea", null)
 	      )
 	    );
 	  }
