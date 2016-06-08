@@ -215,6 +215,7 @@ input {
 .search-button {
   float: left;
   margin-top: 5px;
+  margin-right: 225px;
   border-radius: 0px 3px 3px 0px;
   background: #F6F7F9;
   padding: 4px;
@@ -243,7 +244,7 @@ input {
 
 .home-button {
   margin-top: 5px;
-  margin-left: 500px;
+  margin-left: 10px;
   padding: 8px;
   border-radius: 4px;
   color: white;
@@ -254,6 +255,35 @@ input {
 
 .home-button:hover {
   background: rgba(0, 0, 0, .1);
+}
+
+.profile-link {
+  float: left;
+  width: 80px;
+  height: 25px;
+  margin-left: 50px;
+  margin-top: 5px;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.profile-link:hover {
+  background: rgba(0, 0, 0, .1);
+}
+
+.profile-button-pic {
+  float: left;
+  width: 25px;
+  height: 25px;
+}
+
+.profile-button {
+  float: left;
+  display: block;
+  width: 30px;
+  font-size: 12px;
+  margin-left: 5px;
+  margin-top: 5px;
 }
 
 .intro-container {
@@ -541,4 +571,58 @@ input {
   background: #F6F7F9;
   border: 1px solid #1E230E;
   padding: 5px;
+}
+
+.content-sidebar {
+  float: left;
+  margin-right: 20px;
+}
+
+.content-main {
+  float: left;
+}
+
+.post-form {
+  width: 500px;
+  height: 150px;
+  background: #ffffff;
+  border: 1px solid #D0D1D5;
+  margin-bottom: 40px;
+}
+
+.post-form-thumb {
+  width: 40px;
+  height: 40px;
+  margin: 15px;
+}
+
+.tab-container {
+  background: #F6F7F9;
+  height: 35px;
+}
+
+.post-form-post-tab {
+  float: left;
+}
+
+.post-form-photo-tab {
+  float: left;
+}
+
+.post-form textarea {
+  margin-right: 15px;
+  width: 409px;
+  border: 1px solid transparent;
+  margin-bottom: 17px;
+  padding-top: 15px;
+}
+
+.post-form main {
+  border-top: 1px solid #DDDFE2;
+  border-bottom: 1px solid #DDDFE2;
+  height: 75px;
+}
+
+.post-form footer {
+  height: 40px;
 }

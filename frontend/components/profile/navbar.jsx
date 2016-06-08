@@ -3,6 +3,7 @@ var React = require('react');
 var SessionApiUtil = require('../../util/session_api_util');
 
 var SearchBar = require('./search_bar');
+var ProfileButton = require('./profile_button');
 
 var Navbar = React.createClass({
 
@@ -13,6 +14,7 @@ var Navbar = React.createClass({
         <nav className="navbar group">
           <i className="fa fa-facebook fa-2x" aria-hidden="true"></i>
           <SearchBar/>
+          <ProfileButton/>
           <button
             className="home-button"
             >Home</button>

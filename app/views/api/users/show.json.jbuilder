@@ -4,6 +4,7 @@
 
 json.id @user.id
 json.name @user.name
+json.first_name @user.first_name
 json.email_address @user.email_address
 json.description @user.description
 json.hometown @user.hometown

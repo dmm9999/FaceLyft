@@ -35,7 +35,11 @@ var FriendRequest = React.createClass({
     FriendApiUtil.deleteFriendship(SessionStore.currentUserId(), this.props.id);
   },
 
-  handleUnfriend: function () {
+  handleUnfriend: function (e) {
+
+    e.preventDefault();
+
+    FriendApiUtil.deleteFriendship(SessionStore.currentUserId(), this.props.id);
 
   },
 
@@ -58,7 +62,8 @@ var FriendRequest = React.createClass({
         return (
           <div className="friend-request-pending group">
             <div className="friend-request-sent">Friend Request Sent</div>
-            <div className="friend-request-cancel">Cancel Friend Request</div>
+            <div className="friend-request-cancel"
+            onClick={this.handleCancel}>Cancel Friend Request</div>
           </div>
         );
     } else {

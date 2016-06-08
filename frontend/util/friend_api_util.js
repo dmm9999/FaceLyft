@@ -27,7 +27,7 @@ var FriendApiUtil = {
 
   deleteFriendship: function (currentUserId, userProfileId) {
     $.ajax({
-      type: 'POST',
+      type: 'DELETE',
       url: 'api/users/' + currentUserId + '/friends',
       dataType: 'json',
       data: {userProfileId : userProfileId},

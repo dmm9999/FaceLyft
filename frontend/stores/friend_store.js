@@ -14,7 +14,7 @@ FriendStore.__onDispatch = function (payload) {
       FriendStore.__emitChange();
       break;
     case "REMOVE_FRIENDSHIP":
-      _removeFriendship(payload.friendship);
+      _removeFriendship();
       FriendStore.__emitChange();
       break;
   }
@@ -24,8 +24,8 @@ _setFriendship = function (friendship) {
   _friends[friendship.id] = friendship;
 };
 
-_removeFriendship = function (friendship) {
-  delete _friends[friendship.id];
+_removeFriendship = function () {
+  _friends = {};
 };
 
 FriendStore.friendStatus = function (id) {
