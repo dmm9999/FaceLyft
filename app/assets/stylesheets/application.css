@@ -884,7 +884,6 @@ input {
   font-weight: bold;
 }
 
-<<<<<<< HEAD
 .right-sidebar {
   float: right;
 }
@@ -929,15 +928,6 @@ input {
   right: 0;
 }
 
-.random-user-name {
-  display: block;
-  color: white;
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  font-size: 12px;
-  font-weight: bold;
-=======
 .friend-requests {
   float: left;
 }
@@ -946,5 +936,13 @@ input {
   width: 25px;
   height: 25px;
   margin: 5px 20px 0px 0px;
->>>>>>> friendrequest
 }
+
+.random-user-name {
+  display: block;
+  color: white;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  font-size: 12px;
+  font-weight: bold;

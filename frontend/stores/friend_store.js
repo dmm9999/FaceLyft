@@ -73,11 +73,11 @@ FriendStore.friendRequests = function (id) {
 
   var requests = [];
 
-  for (var requestId in _pendingFriends) {
+  Object.keys(_pendingFriends).forEach(function(requestId) {
     if (parseInt(_pendingFriends[requestId].friended_id) === id) {
-      requests.push(_pendingFriends.id);
+      requests.push(_pendingFriends[requestId]);
     }
-  }
+  });
 
   return requests;
 

@@ -31,7 +31,7 @@ var FriendRequestNotifier = React.createClass({
 
       var friendRequests = this.state.friendRequests.map(function(friendRequest) {
         return (
-          <li>
+          <li key={friendRequest.id}>
             <div className="friend-request-text">{friendRequest.friender_user} wants to be your friend!</div>
             <button className="friend-request-accept">Accept</button>
             <button className="friend-request-deny">Deny</button>
@@ -55,8 +55,6 @@ var FriendRequestNotifier = React.createClass({
         </div>
       );
     }
-
-
 
   }
 

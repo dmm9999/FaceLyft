@@ -33613,7 +33613,7 @@
 	var React = __webpack_require__(1);
 	var Navbar = __webpack_require__(265);
 	var Intro = __webpack_require__(268);
-	var Friends = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./friends/friends\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var Friends = __webpack_require__(273);
 	var ProfilePic = __webpack_require__(274);
 	var CoverPic = __webpack_require__(275);
 	var NameBox = __webpack_require__(276);
@@ -34273,7 +34273,140 @@
 	module.exports = NameForm;
 
 /***/ },
-/* 273 */,
+/* 273 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Router = __webpack_require__(168);
+	var Link = Router.Link;
+	
+	var SessionStore = __webpack_require__(232);
+	var UserStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
+	
+	var Friends = React.createClass({
+	  displayName: 'Friends',
+	
+	
+	  getInitialState: function () {
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { friends: SessionStore.currentUser().friends };
+	    } else {
+	      return { friends: [] };
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	    if (this.props.id) {
+	      UserApiUtil.fetchUser(this.props.id);
+	    } else {
+	      UserApiUtil.fetchRandomUsers();
+	    }
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	
+	    if (this.props.id) {
+	      this.setState({ friends: UserStore.retrieveUser().friends });
+	    } else {
+	      this.setState({ friends: UserStore.randomUsers() });
+	    }
+	  },
+	
+	  render: function () {
+	
+	    if (this.props.id) {
+	      var friends;
+	      var length = React.createElement('div', null);
+	
+	      if (this.state.friends && this.state.friends.length !== 0) {
+	        length = React.createElement(
+	          'div',
+	          null,
+	          this.state.friends.length
+	        );
+	        friends = this.state.friends.map(function (friend) {
+	          var path = "/users/" + friend.id;
+	          return React.createElement(
+	            'li',
+	            { key: friend.id, className: 'friend-picture' },
+	            React.createElement(Link, { to: path, className: 'friend-link' }),
+	            React.createElement('img', { className: 'friend-image', src: friend.profile_pic_url }),
+	            React.createElement(
+	              'title',
+	              { className: 'friend-name' },
+	              friend.name
+	            )
+	          );
+	        });
+	      } else {
+	        friends = React.createElement('div', null);
+	      }
+	      return React.createElement(
+	        'ul',
+	        { className: 'friends-container' },
+	        React.createElement(
+	          'header',
+	          { className: 'friends-header group' },
+	          React.createElement('img', { src: window.friendsIcon, className: 'friends-icon' }),
+	          React.createElement(
+	            'title',
+	            { className: 'friends-title' },
+	            'Friends'
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'friends-count' },
+	            length
+	          )
+	        ),
+	        friends
+	      );
+	    } else {
+	
+	      randomUsers = this.state.friends.map(function (randomUser) {
+	        var path = "/users/" + randomUser.id;
+	        return React.createElement(
+	          'li',
+	          { key: randomUser.id, className: 'random-user-picture' },
+	          React.createElement(Link, { to: path, className: 'random-user-link' }),
+	          React.createElement('img', { className: 'random-user-image', src: randomUser.profile_pic_url }),
+	          React.createElement(
+	            'title',
+	            { className: 'random-user-name' },
+	            randomUser.name
+	          )
+	        );
+	      });
+	
+	      return React.createElement(
+	        'ul',
+	        { className: 'random-users-container' },
+	        React.createElement(
+	          'header',
+	          { className: 'random-users-header group' },
+	          React.createElement('img', { src: window.friendsIcon, className: 'friends-icon' }),
+	          React.createElement(
+	            'title',
+	            { className: 'random-users-title' },
+	            'Random Users'
+	          )
+	        ),
+	        randomUsers
+	      );
+	    }
+	  }
+	});
+	
+	module.exports = Friends;
+
+/***/ },
 /* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -34777,11 +34910,11 @@
 	
 	  var requests = [];
 	
-	  for (var requestId in _pendingFriends) {
+	  Object.keys(_pendingFriends).forEach(function (requestId) {
 	    if (parseInt(_pendingFriends[requestId].friended_id) === id) {
-	      requests.push(_pendingFriends.id);
+	      requests.push(_pendingFriends[requestId]);
 	    }
-	  }
+	  });
 	
 	  return requests;
 	};
@@ -35363,7 +35496,7 @@
 	var Navbar = __webpack_require__(265);
 	var PostForm = __webpack_require__(282);
 	var PostsIndex = __webpack_require__(286);
-	var Friends = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./../profile/friends/friends\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var Friends = __webpack_require__(273);
 	var SessionStore = __webpack_require__(232);
 	
 	var Feed = React.createClass({
@@ -35442,7 +35575,7 @@
 	      var friendRequests = this.state.friendRequests.map(function (friendRequest) {
 	        return React.createElement(
 	          'li',
-	          null,
+	          { key: friendRequest.id },
 	          React.createElement(
 	            'div',
 	            { className: 'friend-request-text' },
