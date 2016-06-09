@@ -32927,6 +32927,17 @@
 	        UserActions.receiveFetchedUser(fetchedUser);
 	      }
 	    });
+	  },
+	
+	  fetchRandomUsers: function () {
+	    $.ajax({
+	      type: 'GET',
+	      url: 'api/users/',
+	      dataType: 'json',
+	      success: function (randomUsers) {
+	        UserActions.receiveFetchedUsers(randomUsers);
+	      }
+	    });
 	  }
 	};
 	
@@ -32983,6 +32994,13 @@
 	    });
 	  },
 	
+	  receiveFetchedUsers: function (fetchedUsers) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.RECEIVE_FETCHED_USERS,
+	      fetchedUsers: fetchedUsers
+	    });
+	  },
+	
 	  handleError: function (error) {
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.ERROR,
@@ -33009,11 +33027,12 @@
 /***/ function(module, exports) {
 
 	var UserConstants = {
-		LOGIN: "LOGIN",
-		ERROR: "ERROR",
-		LOGOUT: "LOGOUT",
-		RECEIVE_DATA: "RECEIVE_DATA",
-		RECEIVE_FETCHED_USER: "RECEIVE_FETCHED_USER"
+	  LOGIN: "LOGIN",
+	  ERROR: "ERROR",
+	  LOGOUT: "LOGOUT",
+	  RECEIVE_DATA: "RECEIVE_DATA",
+	  RECEIVE_FETCHED_USER: "RECEIVE_FETCHED_USER",
+	  RECEIVE_FETCHED_USERS: "RECEIVE_FETCHED_USERS"
 	};
 	
 	module.exports = UserConstants;
@@ -33028,7 +33047,7 @@
 	
 	var UserStore = new Store(AppDispatcher);
 	
-	var _user, _errors;
+	var _user, _randomUsers, _errors;
 	
 	UserStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
@@ -33046,6 +33065,10 @@
 	      break;
 	    case UserConstants.RECEIVE_FETCHED_USER:
 	      UserStore.receiveFetchedUser(payload.fetchedUser);
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.RECEIVE_FETCHED_USERS:
+	      UserStore.receiveFetchedUsers(payload.fetchedUsers);
 	      UserStore.__emitChange();
 	      break;
 	  }
@@ -33070,8 +33093,16 @@
 	  return _user;
 	};
 	
+	UserStore.receiveFetchedUsers = function (fetchedUsers) {
+	  _randomUsers = fetchedUsers;
+	};
+	
 	UserStore.retrieveUser = function () {
 	  return _user;
+	};
+	
+	UserStore.randomUsers = function () {
+	  return _randomUsers;
 	};
 	
 	module.exports = UserStore;
@@ -34266,7 +34297,11 @@
 	
 	  componentDidMount: function () {
 	    this.listener = UserStore.addListener(this.handleChange);
-	    UserApiUtil.fetchUser(this.props.id);
+	    if (this.props.id) {
+	      UserApiUtil.fetchUser(this.props.id);
+	    } else {
+	      UserApiUtil.fetchRandomUsers();
+	    }
 	  },
 	
 	  componentWillUnmount: function () {
@@ -34275,59 +34310,96 @@
 	
 	  handleChange: function () {
 	
-	    this.setState({ friends: UserStore.retrieveUser().friends });
+	    if (this.props.id) {
+	      this.setState({ friends: UserStore.retrieveUser().friends });
+	    } else {
+	      this.setState({ friends: UserStore.randomUsers() });
+	    }
 	  },
 	
 	  render: function () {
 	
-	    var friends;
-	    var length = React.createElement('div', null);
+	    if (this.props.id) {
+	      var friends;
+	      var length = React.createElement('div', null);
 	
-	    if (this.state.friends && this.state.friends.length !== 0) {
-	      length = React.createElement(
-	        'div',
-	        null,
-	        this.state.friends.length
-	      );
-	      friends = this.state.friends.map(function (friend) {
-	        var path = "/users/" + friend.id;
-	        return React.createElement(
-	          'li',
-	          { key: friend.id, className: 'friend-picture' },
-	          React.createElement(Link, { to: path, className: 'friend-link' }),
-	          React.createElement('img', { className: 'friend-image', src: friend.profile_pic_url }),
+	      if (this.state.friends && this.state.friends.length !== 0) {
+	        length = React.createElement(
+	          'div',
+	          null,
+	          this.state.friends.length
+	        );
+	        friends = this.state.friends.map(function (friend) {
+	          var path = "/users/" + friend.id;
+	          return React.createElement(
+	            'li',
+	            { key: friend.id, className: 'friend-picture' },
+	            React.createElement(Link, { to: path, className: 'friend-link' }),
+	            React.createElement('img', { className: 'friend-image', src: friend.profile_pic_url }),
+	            React.createElement(
+	              'title',
+	              { className: 'friend-name' },
+	              friend.name
+	            )
+	          );
+	        });
+	      } else {
+	        friends = React.createElement('div', null);
+	      }
+	      return React.createElement(
+	        'ul',
+	        { className: 'friends-container' },
+	        React.createElement(
+	          'header',
+	          { className: 'friends-header group' },
+	          React.createElement('img', { src: window.friendsIcon, className: 'friends-icon' }),
 	          React.createElement(
 	            'title',
-	            { className: 'friend-name' },
-	            friend.name
+	            { className: 'friends-title' },
+	            'Friends'
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'friends-count' },
+	            length
+	          )
+	        ),
+	        friends
+	      );
+	    } else {
+	
+	      randomUsers = this.state.friends.map(function (randomUser) {
+	        var path = "/users/" + randomUser.id;
+	        return React.createElement(
+	          'li',
+	          { key: randomUser.id, className: 'random-user-picture' },
+	          React.createElement(Link, { to: path, className: 'random-user-link' }),
+	          React.createElement('img', { className: 'random-user-image', src: randomUser.profile_pic_url }),
+	          React.createElement(
+	            'title',
+	            { className: 'random-user-name' },
+	            randomUser.name
 	          )
 	        );
 	      });
-	    } else {
-	      friends = React.createElement('div', null);
-	    }
-	    return React.createElement(
-	      'ul',
-	      { className: 'friends-container' },
-	      React.createElement(
-	        'header',
-	        { className: 'friends-header group' },
-	        React.createElement('img', { src: window.friendsIcon, className: 'friends-icon' }),
-	        React.createElement(
-	          'title',
-	          { className: 'friends-title' },
-	          'Friends'
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'friends-count' },
-	          length
-	        )
-	      ),
-	      friends
-	    );
-	  }
 	
+	      return React.createElement(
+	        'ul',
+	        { className: 'random-users-container' },
+	        React.createElement(
+	          'header',
+	          { className: 'random-users-header group' },
+	          React.createElement('img', { src: window.friendsIcon, className: 'friends-icon' }),
+	          React.createElement(
+	            'title',
+	            { className: 'random-users-title' },
+	            'Random Users'
+	          )
+	        ),
+	        randomUsers
+	      );
+	    }
+	  }
 	});
 	
 	module.exports = Friends;
@@ -34699,7 +34771,6 @@
 	      }
 	    });
 	  }
-	
 	};
 	
 	module.exports = FriendApiUtil;
@@ -35379,6 +35450,7 @@
 	var Navbar = __webpack_require__(265);
 	var PostForm = __webpack_require__(282);
 	var PostsIndex = __webpack_require__(286);
+	var Friends = __webpack_require__(273);
 	var SessionStore = __webpack_require__(232);
 	
 	var Feed = React.createClass({
@@ -35394,11 +35466,22 @@
 	      { className: 'feed' },
 	      React.createElement(Navbar, null),
 	      React.createElement(
-	        'div',
-	        { className: 'feed-content' },
-	        React.createElement(PostForm, {
-	          className: 'feed-post-form' }),
-	        React.createElement(PostsIndex, { currentUserId: currentUserId })
+	        'main',
+	        { className: 'feed-content group' },
+	        React.createElement(
+	          'section',
+	          { className: 'feed-posts group' },
+	          React.createElement(PostForm, {
+	            className: 'feed-post-form' }),
+	          React.createElement(PostsIndex, {
+	            className: 'feed-posts-index',
+	            currentUserId: currentUserId })
+	        ),
+	        React.createElement(
+	          'section',
+	          { className: 'right-sidebar' },
+	          React.createElement(Friends, null)
+	        )
 	      )
 	    );
 	  }

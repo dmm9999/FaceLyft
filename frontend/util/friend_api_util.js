@@ -35,8 +35,7 @@ var FriendApiUtil = {
         FriendActions.removeFriendship(friendship);
       }
     });
-  },
-
+  }
 };
 
 module.exports = FriendApiUtil;

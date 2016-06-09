@@ -45,6 +45,13 @@ var UserActions = {
     });
   },
 
+  receiveFetchedUsers: function (fetchedUsers) {
+    AppDispatcher.dispatch({
+      actionType: UserConstants.RECEIVE_FETCHED_USERS,
+      fetchedUsers: fetchedUsers
+    });
+  },
+
   handleError: function (error) {
     AppDispatcher.dispatch({
       actionType: UserConstants.ERROR,

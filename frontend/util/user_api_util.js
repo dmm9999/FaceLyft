@@ -29,7 +29,18 @@ var UserApiUtil = {
         UserActions.receiveFetchedUser(fetchedUser);
       }
     });
-  }
+  },
+
+  fetchRandomUsers: function () {
+    $.ajax({
+      type: 'GET',
+      url: 'api/users/',
+      dataType: 'json',
+      success: function (randomUsers) {
+        UserActions.receiveFetchedUsers(randomUsers);
+      }
+    });
+  },
 };
 
 module.exports = UserApiUtil;
