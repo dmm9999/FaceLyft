@@ -43,6 +43,17 @@ var PostApiUtil = {
     });
   },
 
+  fetchFeedPosts: function () {
+    $.ajax({
+      type: 'GET',
+      url: 'api/user/feed',
+      dataType: 'json',
+      success: function (posts) {
+        PostActions.receivePosts(posts);
+      }
+    });
+  }
+
 };
 
 module.exports = PostApiUtil;

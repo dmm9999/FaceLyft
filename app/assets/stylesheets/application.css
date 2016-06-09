@@ -34,10 +34,9 @@ body {
 
 nav {
   background: #3b5998;
-  height: 82px;
   font-family: helvetica;
   color: #f9fafc;
-  height: 44px;
+  margin-bottom: 12px;
 }
 
 .loginbar {
@@ -206,9 +205,9 @@ input {
 
 .navbar {
   background: #3B5998;
-  height: 44px;
   width: 1050px;
   margin: auto;
+  height: 44px;
 }
 
 .search-bar {
@@ -821,4 +820,56 @@ input {
   height: 25px;
   font-family: helvetica;
   text-align: center;
+}
+
+.feed-content {
+  width: 600px;
+  margin: auto;
+}
+
+.name-form-name {
+  float:left;
+  font-family: helvetica;
+  color: #90949c;
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+.name-form-edit {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.first-name-form-input {
+  border: 1px solid #999999;
+  color: #A9A9AE;
+  width: 80px;
+  margin: 0px 10px 0px 10px;
+}
+
+.last-name-form-input {
+  border: 1px solid #999999;
+  color: #A9A9AE;
+  width: 80px;
+}
+
+.name-form-save {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
 }

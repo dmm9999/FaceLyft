@@ -39,13 +39,26 @@ var SessionApiUtil = {
     });
   },
 
-  updateCurrentUser: function (data) {
+  updateCurrentUserPics: function (updatedCurrentUser) {
     $.ajax({
       url: '/api/user',
       type: 'PATCH',
       processData : false,
       contentType : false,
-      data: data,
+      data: { user : updatedCurrentUser },
+      success: function (updatedCurrentUser) {
+        SessionActions.updateCurrentUser(updatedCurrentUser);
+      },
+      error: function () {
+      }
+    });
+  },
+
+  updateCurrentUser: function (updatedCurrentUser) {
+    $.ajax({
+      url: '/api/user',
+      type: 'PATCH',
+      data: { user : updatedCurrentUser },
       success: function (updatedCurrentUser) {
         SessionActions.updateCurrentUser(updatedCurrentUser);
       },

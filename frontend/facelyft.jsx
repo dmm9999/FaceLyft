@@ -12,6 +12,7 @@ var SessionStore = require('./stores/session_store');
 
 var Login = require('./components/login/login');
 var Profile = require('./components/profile/profile');
+var Feed = require('./components/feed/feed');
 
 var App = React.createClass({
 

@@ -11,4 +11,5 @@ class Post < ActiveRecord::Base
     class_name: "User",
     foreign_key: :profile_id,
     primary_key: :id
+
 end

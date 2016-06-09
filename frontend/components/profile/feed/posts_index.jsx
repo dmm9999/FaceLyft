@@ -7,12 +7,21 @@ var PostApiUtil = require('./../../../util/post_api_util');
 var PostsIndex = React.createClass({
 
   getInitialState: function () {
-    return ( { posts : [] } );
+
+    var isTimeline = !!(this.props.id);
+
+    return ( { isTimeline: isTimeline, posts : [] } );
   },
 
   componentDidMount: function () {
+
     PostStore.addListener(this.handleChange);
-    PostApiUtil.fetchPosts(this.props.id);
+
+    if (this.state.isTimeline) {
+      PostApiUtil.fetchPosts(this.props.id);
+    } else {
+      PostApiUtil.fetchFeedPosts();
+    }
   },
 
   handleChange: function () {

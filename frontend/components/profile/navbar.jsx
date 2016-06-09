@@ -7,6 +7,13 @@ var ProfileButton = require('./profile_button');
 
 var Navbar = React.createClass({
 
+  handleClick: function (e) {
+
+    e.preventDefault();
+
+    window.location = '#/';
+  },
+
   render: function() {
     return (
       <nav>
@@ -17,6 +24,7 @@ var Navbar = React.createClass({
           <ProfileButton/>
           <button
             className="home-button"
+            onClick={this.handleClick}
             >Home</button>
           <input
             type="submit"

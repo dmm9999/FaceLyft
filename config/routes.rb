@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     get '/users/:id/friends', to: 'users#friends'
     post '/users/:id/friends', to: 'users#create_friendship'
     delete '/users/:id/friends', to: 'users#delete_friendship'
+    get 'user/feed', to: 'users#feed'
+
   end
 
 end

@@ -19,6 +19,7 @@ class Api::UsersController < ApplicationController
   end
 
   def update
+
     @user = current_user
 
     if @user.update(user_params)
@@ -45,10 +46,15 @@ class Api::UsersController < ApplicationController
     render json: @friendship
   end
 
+  def feed
+    @posts = current_user.feed
+    render "api/posts/index"
+  end
+
   private
 
   def user_params
-    params.require(:user).permit(:id, :email_address, :password, :description, :hometown, :school, :work, :current_city, :phone_number, :birthday, :profile_pic, :coverpic)
+    params.require(:user).permit(:id, :email_address, :password, :description, :hometown, :school, :work, :current_city, :phone_number, :birthday, :profile_pic, :coverpic, :first_name, :last_name)
   end
 
 end

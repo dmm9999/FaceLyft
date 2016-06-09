@@ -58,6 +58,7 @@
 	
 	var Login = __webpack_require__(260);
 	var Profile = __webpack_require__(264);
+	var Feed = __webpack_require__(289);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -25960,13 +25961,25 @@
 	    });
 	  },
 	
-	  updateCurrentUser: function (data) {
+	  updateCurrentUserPics: function (updatedCurrentUser) {
 	    $.ajax({
 	      url: '/api/user',
 	      type: 'PATCH',
 	      processData: false,
 	      contentType: false,
-	      data: data,
+	      data: { user: updatedCurrentUser },
+	      success: function (updatedCurrentUser) {
+	        SessionActions.updateCurrentUser(updatedCurrentUser);
+	      },
+	      error: function () {}
+	    });
+	  },
+	
+	  updateCurrentUser: function (updatedCurrentUser) {
+	    $.ajax({
+	      url: '/api/user',
+	      type: 'PATCH',
+	      data: { user: updatedCurrentUser },
 	      success: function (updatedCurrentUser) {
 	        SessionActions.updateCurrentUser(updatedCurrentUser);
 	      },
@@ -33642,6 +33655,13 @@
 	  displayName: 'Navbar',
 	
 	
+	  handleClick: function (e) {
+	
+	    e.preventDefault();
+	
+	    window.location = '#/';
+	  },
+	
 	  render: function () {
 	    return React.createElement(
 	      'nav',
@@ -33655,7 +33675,8 @@
 	        React.createElement(
 	          'button',
 	          {
-	            className: 'home-button'
+	            className: 'home-button',
+	            onClick: this.handleClick
 	          },
 	          'Home'
 	        ),
@@ -33762,6 +33783,7 @@
 	var IntroDescription = __webpack_require__(269);
 	var HometownForm = __webpack_require__(270);
 	var SchoolForm = __webpack_require__(271);
+	var NameForm = __webpack_require__(294);
 	
 	var Intro = React.createClass({
 	  displayName: 'Intro',
@@ -33781,6 +33803,7 @@
 	          'Intro'
 	        )
 	      ),
+	      React.createElement(NameForm, { id: this.props.id }),
 	      React.createElement(IntroDescription, { id: this.props.id }),
 	      React.createElement(HometownForm, { id: this.props.id }),
 	      React.createElement(SchoolForm, { id: this.props.id })
@@ -33839,7 +33862,7 @@
 	
 	    e.preventDefault();
 	
-	    SessionApiUtil.updateCurrentUser({ user: description });
+	    SessionApiUtil.updateCurrentUser({ description: this.state.description });
 	  },
 	
 	  render: function () {
@@ -34681,6 +34704,17 @@
 	        PostActions.receivePosts(posts);
 	      }
 	    });
+	  },
+	
+	  fetchFeedPosts: function () {
+	    $.ajax({
+	      type: 'GET',
+	      url: 'api/user/feed',
+	      dataType: 'json',
+	      success: function (posts) {
+	        PostActions.receivePosts(posts);
+	      }
+	    });
 	  }
 	
 	};
@@ -34790,7 +34824,43 @@
 	module.exports = PostStore;
 
 /***/ },
-/* 289 */,
+/* 289 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var Navbar = __webpack_require__(265);
+	var PostForm = __webpack_require__(290);
+	var PostsIndex = __webpack_require__(291);
+	var SessionStore = __webpack_require__(232);
+	
+	var Feed = React.createClass({
+	  displayName: 'Feed',
+	
+	
+	  render: function () {
+	
+	    currentUserId = SessionStore.currentUserId();
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'feed' },
+	      React.createElement(Navbar, null),
+	      React.createElement(
+	        'div',
+	        { className: 'feed-content' },
+	        React.createElement(PostForm, {
+	          className: 'feed-post-form' }),
+	        React.createElement(PostsIndex, { currentUserId: currentUserId })
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = Feed;
+
+/***/ },
 /* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -34947,12 +35017,21 @@
 	
 	
 	  getInitialState: function () {
-	    return { posts: [] };
+	
+	    var isTimeline = !!this.props.id;
+	
+	    return { isTimeline: isTimeline, posts: [] };
 	  },
 	
 	  componentDidMount: function () {
+	
 	    PostStore.addListener(this.handleChange);
-	    PostApiUtil.fetchPosts(this.props.id);
+	
+	    if (this.state.isTimeline) {
+	      PostApiUtil.fetchPosts(this.props.id);
+	    } else {
+	      PostApiUtil.fetchFeedPosts();
+	    }
 	  },
 	
 	  handleChange: function () {
@@ -35110,6 +35189,154 @@
 	});
 	
 	module.exports = LikeButton;
+
+/***/ },
+/* 294 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	var UserStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
+	
+	var NameForm = React.createClass({
+	  displayName: 'NameForm',
+	
+	
+	  getInitialState: function () {
+	
+	    if (SessionStore.currentUserId === this.props.id) {
+	      return { first_name: SessionStore.currentUser().first_name,
+	        last_name: SessionStore.currentUser().last_name,
+	        editing: false };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { first_name: "", last_name: "", editing: false };
+	    }
+	  },
+	
+	  toggleEditing: function (e) {
+	
+	    if (this.state.editing) {
+	      this.setState({ editing: false });
+	    } else {
+	      this.setState({ editing: true });
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ first_name: UserStore.retrieveUser().first_name || "",
+	      last_name: UserStore.retrieveUser().last_name || "" });
+	  },
+	
+	  updateFirstName: function (e) {
+	
+	    e.preventDefault();
+	
+	    this.setState({ first_name: e.target.value });
+	  },
+	
+	  updateLastName: function (e) {
+	
+	    e.preventDefault();
+	
+	    this.setState({ last_name: e.target.value });
+	  },
+	
+	  handleSubmit: function (e) {
+	
+	    e.preventDefault();
+	
+	    var formData = {
+	      first_name: this.state.first_name,
+	      last_name: this.state.last_name
+	    };
+	
+	    SessionApiUtil.updateCurrentUser(formData);
+	
+	    this.toggleEditing();
+	  },
+	
+	  render: function () {
+	
+	    if (this.state.editing) {
+	      return React.createElement(
+	        'form',
+	        { className: 'group',
+	          onSubmit: this.handleSubmit },
+	        React.createElement('input', {
+	          type: 'text',
+	          className: 'first-name-form-input',
+	          value: this.state.first_name,
+	          onChange: this.updateFirstName }),
+	        React.createElement('input', {
+	          type: 'text',
+	          className: 'last-name-form-input',
+	          value: this.state.last_name,
+	          onChange: this.updateLastName }),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'name-form-save',
+	          value: 'Save' })
+	      );
+	    } else {
+	      if (this.state.first_name === "" || this.state.last_name === "") {
+	        return React.createElement(
+	          'div',
+	          { className: 'group' },
+	          React.createElement(
+	            'div',
+	            {
+	              className: 'name-form-name' },
+	            'What\'s your name?'
+	          ),
+	          React.createElement(
+	            'button',
+	            {
+	              className: 'name-form-edit',
+	              onClick: this.toggleEditing },
+	            'Edit'
+	          )
+	        );
+	      } else {
+	
+	        var name = this.state.first_name + " " + this.state.last_name;
+	
+	        return React.createElement(
+	          'div',
+	          { className: 'group' },
+	          React.createElement(
+	            'div',
+	            {
+	              className: 'name-form-name' },
+	            'Name: ',
+	            name
+	          ),
+	          React.createElement(
+	            'button',
+	            {
+	              className: 'name-form-edit',
+	              onClick: this.toggleEditing },
+	            'Edit'
+	          )
+	        );
+	      }
+	    }
+	  }
+	
+	});
+	
+	module.exports = NameForm;
 
 /***/ }
 /******/ ]);

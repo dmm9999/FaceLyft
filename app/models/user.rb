@@ -82,6 +82,16 @@ class User < ActiveRecord::Base
     end
   end
 
+  def feed
+    feed = []
+    self.friends.each do |friend|
+      friend.posts.each do |post|
+        feed << post
+      end
+    end
+    feed
+  end
+
   def self.find_by_credentials(email_address, password)
     user = User.find_by_email_address(email_address)
     user.try(:is_password?, password) ? user : nil

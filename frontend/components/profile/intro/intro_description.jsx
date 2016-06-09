@@ -42,7 +42,7 @@ var IntroDescription = React.createClass({
 
     e.preventDefault();
 
-    SessionApiUtil.updateCurrentUser({ user: description } );
+    SessionApiUtil.updateCurrentUser({ description : this.state.description } );
 
   },
 
