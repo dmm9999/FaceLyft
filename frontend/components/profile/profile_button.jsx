@@ -25,11 +25,11 @@ var ProfileButton = React.createClass({
     var path = '/users/' + this.state.currentUser.id
 
     return (
-      <div className="profile-link group">
+      <div className="profile-link group"
+      onClick={this.handleClick}>
         <img src={picUrl}
         className="profile-button-pic"/>
         <button
-        onClick={this.handleClick}
         className="profile-button">{this.state.currentUser.first_name}</button>
       </div>
     )

@@ -14,6 +14,24 @@ var PostApiUtil = {
     });
   },
 
+  updatePost: function (updatedPost) {
+    $.ajax({
+      type: 'PATCH',
+      url: '/api/posts/' + id,
+    });
+  },
+
+  deletePost: function (id) {
+    $.ajax({
+      type: 'DELETE',
+      url: '/api/posts/' + id,
+      dataType: 'json',
+      success: function (deletedPost) {
+        PostActions.removePost(deletedPost);
+      }
+    });
+  },
+
   fetchPosts: function (id) {
     $.ajax({
       type: 'GET',

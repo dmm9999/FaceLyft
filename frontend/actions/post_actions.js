@@ -17,6 +17,13 @@ var PostActions = {
     });
   },
 
+  removePost: function (post) {
+    AppDispatcher.dispatch({
+      actionType: PostConstants.REMOVE_POST,
+      post: post
+    });
+  }
+
 };
 
 module.exports = PostActions;

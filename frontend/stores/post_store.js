@@ -15,6 +15,10 @@ PostStore.__onDispatch = function (payload) {
       _receivePosts(payload.posts);
       PostStore.__emitChange();
       break;
+    case "REMOVE_POST":
+      _removePost(payload.post);
+      PostStore.__emitChange();
+      break;
   }
 };
 
@@ -34,6 +38,10 @@ _receivePosts = function (posts) {
   posts.forEach(function(post) {
     _posts[post.id] = post;
   });
+};
+
+_removePost = function (post) {
+  delete _posts[post.id];
 };
 
 

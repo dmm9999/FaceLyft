@@ -688,7 +688,7 @@ input {
   width: 510px;
   height: 170px;
   background: #ffffff;
-  margin-bottom: 12px;
+  margin-bottom: 33px;
   border: 1px solid #DFE0E4;
 }
 
@@ -725,27 +725,100 @@ input {
   height: 30px;
 }
 
+.react-like-icon {
+  float: left;
+  margin: 5px 5px 0px 15px;
+}
+
 .react-like-text {
   float: left;
   font-family: helvetica;
   font-size: 14px;
+  font-weight: bold;
   color: #7f7f7f;
+  margin: 5px 35px 0px 0px;
+}
+
+.react-comment-icon {
+  float: left;
+  margin: 7px 5px 0px 0px;
 }
 
 .react-comment-text {
   float: left;
   font-family: helvetica;
   font-size: 14px;
+  font-weight: bold;
   color: #7f7f7f;
+  margin: 5px 35px 0px 0px;
+}
+
+.react-share-icon {
+  float: left;
+  margin: 7px 5px 0px 0px;
 }
 
 .react-share-text {
   float: left;
   font-family: helvetica;
   font-size: 14px;
+  font-weight: bold;
   color: #7f7f7f;
+  margin: 5px 0px 0px 0px;
 }
 
 .reactions-container {
-  background: #898f9c;
+  background: #F6F7F9;
+}
+
+.comment-form {
+  resize: none;
+  outline: none;
+  margin: 8px 15px 0px 0px;
+  width: 430px;
+  height: 22px;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 0px;
+  font-family: helvetica;
+  color: #1d2129;
+  font-size: 12px;
+  border: 1px solid #DFE0E4;
+}
+
+.comment-form-thumb {
+  float: left;
+  display: block;
+  border: 1px solid #DFE0E4;
+  width: 30px;
+  height: 30px;
+  margin: 6px 10px 15px 12px;
+}
+
+.post-edit-button {
+  float: right;
+  margin: 5px 10px 0px 10px;
+  border-radius: 4px;
+  color: white;
+  background: #3B5998;
+  font-size: 12px;
+  border-left: 1px solid #365089;
+  width: 60px;
+  height: 25px;
+  font-family: helvetica;
+  text-align: center;
+}
+
+.post-delete-button {
+  float: right;
+  margin: 5px 10px 0px 10px;
+  border-radius: 4px;
+  color: white;
+  background: #3B5998;
+  font-size: 12px;
+  border-left: 1px solid #365089;
+  width: 60px;
+  height: 25px;
+  font-family: helvetica;
+  text-align: center;
 }

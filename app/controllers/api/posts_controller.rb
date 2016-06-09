@@ -10,4 +10,10 @@ class Api::PostsController < ApplicationController
     render 'api/posts/index'
   end
 
+  def destroy
+    @post = Post.find(params[:id])
+    @post.destroy
+    render json: @post
+  end
+
 end

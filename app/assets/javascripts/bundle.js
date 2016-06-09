@@ -33573,8 +33573,8 @@
 	var CoverPic = __webpack_require__(274);
 	var NameBox = __webpack_require__(275);
 	var FriendRequest = __webpack_require__(276);
-	var PostForm = __webpack_require__(282);
-	var PostsIndex = __webpack_require__(286);
+	var PostForm = __webpack_require__(281);
+	var PostsIndex = __webpack_require__(285);
 	
 	var Profile = React.createClass({
 	  displayName: 'Profile',
@@ -33734,13 +33734,13 @@
 	
 	    return React.createElement(
 	      'div',
-	      { className: 'profile-link group' },
+	      { className: 'profile-link group',
+	        onClick: this.handleClick },
 	      React.createElement('img', { src: picUrl,
 	        className: 'profile-button-pic' }),
 	      React.createElement(
 	        'button',
 	        {
-	          onClick: this.handleClick,
 	          className: 'profile-button' },
 	        this.state.currentUser.first_name
 	      )
@@ -34633,14 +34633,14 @@
 	module.exports = FriendStore;
 
 /***/ },
-/* 281 */,
-/* 282 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
 	var SessionStore = __webpack_require__(232);
-	var PostApiUtil = __webpack_require__(283);
+	var PostApiUtil = __webpack_require__(282);
+	var PostStore = __webpack_require__(232);
 	
 	var PostForm = React.createClass({
 	  displayName: 'PostForm',
@@ -34652,6 +34652,14 @@
 	
 	    return { currentUser: SessionStore.currentUser(),
 	      ownPage: ownPage, post: "" };
+	  },
+	
+	  componentDidMount: function () {
+	    PostStore.addListener(this.handleChange);
+	  },
+	
+	  handleChange: function () {
+	    PostApiUtil.fetchPosts(this.props.id);
 	  },
 	
 	  postUpdate: function (e) {
@@ -34666,6 +34674,8 @@
 	    e.preventDefault();
 	
 	    PostApiUtil.createPost(this.state.post, this.props.id);
+	
+	    this.setState({ post: "" });
 	  },
 	
 	  render: function () {
@@ -34702,6 +34712,7 @@
 	            className: 'post-form-thumb' }),
 	          React.createElement('textarea', {
 	            placeholder: text,
+	            value: this.state.post,
 	            onChange: this.postUpdate })
 	        ),
 	        React.createElement(
@@ -34716,16 +34727,20 @@
 	      );
 	    } else {
 	      return React.createElement(
-	        'div',
-	        { className: 'post-form' },
+	        'form',
+	        {
+	          className: 'post-form',
+	          onSubmit: this.handleSubmit },
 	        React.createElement(
 	          'header',
 	          { className: 'tab-container group' },
+	          React.createElement('img', { src: postIcon, className: 'post-form-post-icon' }),
 	          React.createElement(
 	            'div',
-	            { className: 'post-form-post-tab' },
+	            { className: 'post-form-status-tab' },
 	            'Post'
 	          ),
+	          React.createElement('img', { src: photoIcon, className: 'post-form-photo-icon' }),
 	          React.createElement(
 	            'div',
 	            { className: 'post-form-photo-tab' },
@@ -34738,9 +34753,19 @@
 	          React.createElement('img', {
 	            src: this.state.currentUser.profile_pic_url,
 	            className: 'post-form-thumb' }),
-	          React.createElement('textarea', { placeholder: text })
+	          React.createElement('textarea', {
+	            placeholder: text,
+	            onChange: this.postUpdate })
 	        ),
-	        React.createElement('footer', null)
+	        React.createElement(
+	          'footer',
+	          { className: 'group' },
+	          React.createElement(
+	            'button',
+	            { className: 'post-form-submit-button' },
+	            'Post'
+	          )
+	        )
 	      );
 	    }
 	  }
@@ -34750,10 +34775,10 @@
 	module.exports = PostForm;
 
 /***/ },
-/* 283 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var PostActions = __webpack_require__(284);
+	var PostActions = __webpack_require__(283);
 	
 	var PostApiUtil = {
 	
@@ -34765,6 +34790,24 @@
 	      dataType: 'json',
 	      success: function (post) {
 	        PostActions.receivePost(post);
+	      }
+	    });
+	  },
+	
+	  updatePost: function (updatedPost) {
+	    $.ajax({
+	      type: 'PATCH',
+	      url: '/api/posts/' + id
+	    });
+	  },
+	
+	  deletePost: function (id) {
+	    $.ajax({
+	      type: 'DELETE',
+	      url: '/api/posts/' + id,
+	      dataType: 'json',
+	      success: function (deletedPost) {
+	        PostActions.removePost(deletedPost);
 	      }
 	    });
 	  },
@@ -34785,11 +34828,11 @@
 	module.exports = PostApiUtil;
 
 /***/ },
-/* 284 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(233);
-	var PostConstants = __webpack_require__(285);
+	var PostConstants = __webpack_require__(284);
 	
 	var PostActions = {
 	
@@ -34805,6 +34848,13 @@
 	      actionType: PostConstants.RECEIVE_POSTS,
 	      posts: posts
 	    });
+	  },
+	
+	  removePost: function (post) {
+	    AppDispatcher.dispatch({
+	      actionType: PostConstants.REMOVE_POST,
+	      post: post
+	    });
 	  }
 	
 	};
@@ -34812,26 +34862,27 @@
 	module.exports = PostActions;
 
 /***/ },
-/* 285 */
+/* 284 */
 /***/ function(module, exports) {
 
 	var PostConstants = {
 	
 	  RECEIVE_POST: "RECEIVE_POST",
-	  RECEIVE_POSTS: "RECEIVE_POSTS"
+	  RECEIVE_POSTS: "RECEIVE_POSTS",
+	  REMOVE_POST: "REMOVE_POST"
 	};
 	
 	module.exports = PostConstants;
 
 /***/ },
-/* 286 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
-	var PostsIndexItem = __webpack_require__(287);
-	var PostStore = __webpack_require__(288);
-	var PostApiUtil = __webpack_require__(283);
+	var PostsIndexItem = __webpack_require__(286);
+	var PostStore = __webpack_require__(287);
+	var PostApiUtil = __webpack_require__(282);
 	
 	var PostsIndex = React.createClass({
 	  displayName: 'PostsIndex',
@@ -34878,59 +34929,93 @@
 	module.exports = PostsIndex;
 
 /***/ },
-/* 287 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
-	var PostsIndexItem = React.createClass({
-	  displayName: "PostsIndexItem",
+	var PostApiUtil = __webpack_require__(282);
+	var LikeButton = __webpack_require__(288);
 	
+	var PostsIndexItem = React.createClass({
+	  displayName: 'PostsIndexItem',
+	
+	
+	  handleEdit: function () {
+	    PostApiUtil.updatedPost();
+	  },
+	
+	  handleDelete: function () {
+	    PostApiUtil.deletePost(this.props.post.id);
+	  },
 	
 	  render: function () {
 	
 	    return React.createElement(
-	      "div",
-	      { className: "posts-index-item" },
+	      'div',
+	      { className: 'posts-index-item' },
 	      React.createElement(
-	        "div",
-	        { className: "posts-index-item-info group" },
-	        React.createElement("img", { src: this.props.post.author_profile_pic_url,
-	          className: "posts-index-item-thumb" }),
+	        'div',
+	        { className: 'posts-index-item-info group' },
+	        React.createElement('img', { src: this.props.post.author_profile_pic_url,
+	          className: 'posts-index-item-thumb' }),
 	        React.createElement(
-	          "div",
-	          { className: "posts-index-item-author-name" },
+	          'div',
+	          { className: 'posts-index-item-author-name' },
 	          this.props.post.author_name
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'post-delete-button',
+	            onClick: this.handleDelete },
+	          'Delete'
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'post-edit-button',
+	            onClick: this.handleEdit },
+	          'Edit'
 	        )
 	      ),
 	      React.createElement(
-	        "div",
-	        { className: "posts-index-item-body" },
+	        'div',
+	        { className: 'posts-index-item-body' },
 	        this.props.post.body
 	      ),
 	      React.createElement(
-	        "div",
-	        { className: "react-container group" },
+	        'div',
+	        { className: 'react-container group' },
+	        React.createElement(LikeButton, null),
 	        React.createElement(
-	          "div",
-	          { className: "react-like-text" },
-	          "Like"
+	          'div',
+	          { className: 'react-like-text' },
+	          'Like'
 	        ),
+	        React.createElement('img', { src: commentIcon,
+	          className: 'react-comment-icon' }),
 	        React.createElement(
-	          "div",
-	          { className: "react-comment-text" },
-	          "Comment"
+	          'div',
+	          { className: 'react-comment-text' },
+	          'Comment'
 	        ),
+	        React.createElement('img', { src: shareIcon,
+	          className: 'react-share-icon' }),
 	        React.createElement(
-	          "div",
-	          { className: "react-share-text" },
-	          "Share"
+	          'div',
+	          { className: 'react-share-text' },
+	          'Share'
 	        )
 	      ),
 	      React.createElement(
-	        "div",
-	        { className: "reactions-container group" },
-	        React.createElement("textarea", null)
+	        'div',
+	        { className: 'reactions-container group' },
+	        React.createElement('img', { src: this.props.post.author_profile_pic_url,
+	          className: 'comment-form-thumb' }),
+	        React.createElement('textarea', {
+	          className: 'comment-form',
+	          placeholder: 'Write a comment...' })
 	      )
 	    );
 	  }
@@ -34940,7 +35025,7 @@
 	module.exports = PostsIndexItem;
 
 /***/ },
-/* 288 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(237).Store;
@@ -34958,6 +35043,10 @@
 	      break;
 	    case "RECEIVE_POSTS":
 	      _receivePosts(payload.posts);
+	      PostStore.__emitChange();
+	      break;
+	    case "REMOVE_POST":
+	      _removePost(payload.post);
 	      PostStore.__emitChange();
 	      break;
 	  }
@@ -34981,7 +35070,40 @@
 	  });
 	};
 	
+	_removePost = function (post) {
+	  delete _posts[post.id];
+	};
+	
 	module.exports = PostStore;
+
+/***/ },
+/* 288 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var LikeButton = React.createClass({
+	  displayName: "LikeButton",
+	
+	
+	  getInitialState: function () {
+	    return { liked: false };
+	  },
+	
+	  render: function () {
+	
+	    if (this.state.liked) {
+	      return React.createElement("img", { src: likedIcon,
+	        className: "react-liked-icon" });
+	    } else {
+	      return React.createElement("img", { src: likeIcon,
+	        className: "react-like-icon" });
+	    }
+	  }
+	
+	});
+	
+	module.exports = LikeButton;
 
 /***/ }
 /******/ ]);
