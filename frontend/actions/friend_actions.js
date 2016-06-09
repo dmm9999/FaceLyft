@@ -15,6 +15,13 @@ var FriendActions = {
       actionType: FriendConstants.REMOVE_FRIENDSHIP,
       friendship: friendship
     });
+  },
+
+  receiveFriendRequests: function (friendRequests) {
+    AppDispatcher.dispatch({
+      actionType: FriendConstants.RECEIVE_FRIEND_REQUESTS,
+      friendRequests : friendRequests
+    });
   }
 
 };

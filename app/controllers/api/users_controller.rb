@@ -56,6 +56,11 @@ class Api::UsersController < ApplicationController
     render "api/posts/index"
   end
 
+  def friend_requests
+    @friend_requests = Friendship.where(friended_id: current_user.id).where(accepted: false)
+    render json: @friend_requests
+  end
+
   private
 
   def user_params

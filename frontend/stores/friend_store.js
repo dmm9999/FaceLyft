@@ -18,6 +18,10 @@ FriendStore.__onDispatch = function (payload) {
       _removeFriendship();
       FriendStore.__emitChange();
       break;
+    case "RECEIVE_FRIEND_REQUESTS":
+      _receiveFriendRequests(payload.friendRequests);
+      FriendStore.__emitChange();
+      break;
   }
 };
 
@@ -30,6 +34,14 @@ _setPendingFriendship = function (pendingFriendship) {
 _removeFriendship = function () {
   _friends = {};
   _pendingFriends = {};
+};
+
+_receiveFriendRequests = function (friendRequests) {
+  _pendingFriends = {};
+  _friends = {};
+  friendRequests.forEach(function(friendRequest) {
+    _pendingFriends[friendRequest.id] = friendRequest;
+  });
 };
 
 FriendStore.friendStatus = function (id) {
@@ -55,6 +67,20 @@ FriendStore.friendStatus = function (id) {
   }
 
   return status;
+};
+
+FriendStore.friendRequests = function (id) {
+
+  var requests = [];
+
+  for (var requestId in _pendingFriends) {
+    if (parseInt(_pendingFriends[requestId].friended_id) === id) {
+      requests.push(_pendingFriends.id);
+    }
+  }
+
+  return requests;
+
 };
 
 module.exports = FriendStore;

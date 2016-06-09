@@ -41,6 +41,7 @@ var Friends = React.createClass({
 
   render: function () {
 
+<<<<<<< HEAD
     if (this.props.id) {
       var friends;
       var length = <div/>;
@@ -76,6 +77,19 @@ var Friends = React.createClass({
                   <Link to={path} className="random-user-link"/>
                   <img className="random-user-image" src={randomUser.profile_pic_url} />
                   <title className="random-user-name">{randomUser.name}</title>
+=======
+    var friends;
+    var length = <div/>;
+
+    if (this.state.friends && this.state.friends.length !== 0) {
+      length = <div>{this.state.friends.length}</div>;
+      friends = this.state.friends.map(function(friend) {
+        var path = "/users/" + friend.id;
+        return <li key={friend.id} className="friend-picture">
+                  <Link to={path} className="friend-link"/>
+                  <img className="friend-image" src={friend.profile_pic_url} />
+                  <title className="friend-name">{friend.name}</title>
+>>>>>>> friendrequest
               </li>;
       });
 

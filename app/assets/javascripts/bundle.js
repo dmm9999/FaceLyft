@@ -33613,7 +33613,7 @@
 	var React = __webpack_require__(1);
 	var Navbar = __webpack_require__(265);
 	var Intro = __webpack_require__(268);
-	var Friends = __webpack_require__(273);
+	var Friends = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./friends/friends\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 	var ProfilePic = __webpack_require__(274);
 	var CoverPic = __webpack_require__(275);
 	var NameBox = __webpack_require__(276);
@@ -33681,6 +33681,7 @@
 	
 	var SearchBar = __webpack_require__(266);
 	var ProfileButton = __webpack_require__(267);
+	var FriendRequestNotifier = __webpack_require__(291);
 	
 	var Navbar = React.createClass({
 	  displayName: 'Navbar',
@@ -33711,6 +33712,7 @@
 	          },
 	          'Home'
 	        ),
+	        React.createElement(FriendRequestNotifier, null),
 	        React.createElement('input', {
 	          type: 'submit',
 	          className: 'logout-button',
@@ -34271,140 +34273,7 @@
 	module.exports = NameForm;
 
 /***/ },
-/* 273 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var Router = __webpack_require__(168);
-	var Link = Router.Link;
-	
-	var SessionStore = __webpack_require__(232);
-	var UserStore = __webpack_require__(259);
-	var UserApiUtil = __webpack_require__(256);
-	
-	var Friends = React.createClass({
-	  displayName: 'Friends',
-	
-	
-	  getInitialState: function () {
-	
-	    if (SessionStore.currentUserId() === this.props.id) {
-	      return { friends: SessionStore.currentUser().friends };
-	    } else {
-	      return { friends: [] };
-	    }
-	  },
-	
-	  componentDidMount: function () {
-	    this.listener = UserStore.addListener(this.handleChange);
-	    if (this.props.id) {
-	      UserApiUtil.fetchUser(this.props.id);
-	    } else {
-	      UserApiUtil.fetchRandomUsers();
-	    }
-	  },
-	
-	  componentWillUnmount: function () {
-	    this.listener.remove();
-	  },
-	
-	  handleChange: function () {
-	
-	    if (this.props.id) {
-	      this.setState({ friends: UserStore.retrieveUser().friends });
-	    } else {
-	      this.setState({ friends: UserStore.randomUsers() });
-	    }
-	  },
-	
-	  render: function () {
-	
-	    if (this.props.id) {
-	      var friends;
-	      var length = React.createElement('div', null);
-	
-	      if (this.state.friends && this.state.friends.length !== 0) {
-	        length = React.createElement(
-	          'div',
-	          null,
-	          this.state.friends.length
-	        );
-	        friends = this.state.friends.map(function (friend) {
-	          var path = "/users/" + friend.id;
-	          return React.createElement(
-	            'li',
-	            { key: friend.id, className: 'friend-picture' },
-	            React.createElement(Link, { to: path, className: 'friend-link' }),
-	            React.createElement('img', { className: 'friend-image', src: friend.profile_pic_url }),
-	            React.createElement(
-	              'title',
-	              { className: 'friend-name' },
-	              friend.name
-	            )
-	          );
-	        });
-	      } else {
-	        friends = React.createElement('div', null);
-	      }
-	      return React.createElement(
-	        'ul',
-	        { className: 'friends-container' },
-	        React.createElement(
-	          'header',
-	          { className: 'friends-header group' },
-	          React.createElement('img', { src: window.friendsIcon, className: 'friends-icon' }),
-	          React.createElement(
-	            'title',
-	            { className: 'friends-title' },
-	            'Friends'
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'friends-count' },
-	            length
-	          )
-	        ),
-	        friends
-	      );
-	    } else {
-	
-	      randomUsers = this.state.friends.map(function (randomUser) {
-	        var path = "/users/" + randomUser.id;
-	        return React.createElement(
-	          'li',
-	          { key: randomUser.id, className: 'random-user-picture' },
-	          React.createElement(Link, { to: path, className: 'random-user-link' }),
-	          React.createElement('img', { className: 'random-user-image', src: randomUser.profile_pic_url }),
-	          React.createElement(
-	            'title',
-	            { className: 'random-user-name' },
-	            randomUser.name
-	          )
-	        );
-	      });
-	
-	      return React.createElement(
-	        'ul',
-	        { className: 'random-users-container' },
-	        React.createElement(
-	          'header',
-	          { className: 'random-users-header group' },
-	          React.createElement('img', { src: window.friendsIcon, className: 'friends-icon' }),
-	          React.createElement(
-	            'title',
-	            { className: 'random-users-title' },
-	            'Random Users'
-	          )
-	        ),
-	        randomUsers
-	      );
-	    }
-	  }
-	});
-	
-	module.exports = Friends;
-
-/***/ },
+/* 273 */,
 /* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -34748,6 +34617,17 @@
 	    });
 	  },
 	
+	  fetchFriendRequests: function () {
+	    $.ajax({
+	      type: 'GET',
+	      url: 'api/user/friend_requests',
+	      dataType: 'json',
+	      success: function (friendRequests) {
+	        FriendActions.receiveFriendRequests(friendRequests);
+	      }
+	    });
+	  },
+	
 	  createPendingFriendship: function (friender_id, friended_id) {
 	    $.ajax({
 	      type: 'POST',
@@ -34796,6 +34676,13 @@
 	      actionType: FriendConstants.REMOVE_FRIENDSHIP,
 	      friendship: friendship
 	    });
+	  },
+	
+	  receiveFriendRequests: function (friendRequests) {
+	    AppDispatcher.dispatch({
+	      actionType: FriendConstants.RECEIVE_FRIEND_REQUESTS,
+	      friendRequests: friendRequests
+	    });
 	  }
 	
 	};
@@ -34808,7 +34695,8 @@
 
 	var FriendConstants = {
 	  RECEIVE_PENDING_FRIENDSHIP: "RECEIVE_PENDING_FRIENDSHIP",
-	  REMOVE_FRIENDSHIP: "REMOVE_FRIENDSHIP"
+	  REMOVE_FRIENDSHIP: "REMOVE_FRIENDSHIP",
+	  RECEIVE_FRIEND_REQUESTS: "RECEIVE_FRIEND_REQUESTS"
 	};
 	
 	module.exports = FriendConstants;
@@ -34836,6 +34724,10 @@
 	      _removeFriendship();
 	      FriendStore.__emitChange();
 	      break;
+	    case "RECEIVE_FRIEND_REQUESTS":
+	      _receiveFriendRequests(payload.friendRequests);
+	      FriendStore.__emitChange();
+	      break;
 	  }
 	};
 	
@@ -34848,6 +34740,14 @@
 	_removeFriendship = function () {
 	  _friends = {};
 	  _pendingFriends = {};
+	};
+	
+	_receiveFriendRequests = function (friendRequests) {
+	  _pendingFriends = {};
+	  _friends = {};
+	  friendRequests.forEach(function (friendRequest) {
+	    _pendingFriends[friendRequest.id] = friendRequest;
+	  });
 	};
 	
 	FriendStore.friendStatus = function (id) {
@@ -34871,6 +34771,19 @@
 	  }
 	
 	  return status;
+	};
+	
+	FriendStore.friendRequests = function (id) {
+	
+	  var requests = [];
+	
+	  for (var requestId in _pendingFriends) {
+	    if (parseInt(_pendingFriends[requestId].friended_id) === id) {
+	      requests.push(_pendingFriends.id);
+	    }
+	  }
+	
+	  return requests;
 	};
 	
 	module.exports = FriendStore;
@@ -35450,7 +35363,7 @@
 	var Navbar = __webpack_require__(265);
 	var PostForm = __webpack_require__(282);
 	var PostsIndex = __webpack_require__(286);
-	var Friends = __webpack_require__(273);
+	var Friends = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./../profile/friends/friends\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 	var SessionStore = __webpack_require__(232);
 	
 	var Feed = React.createClass({
@@ -35489,6 +35402,93 @@
 	});
 	
 	module.exports = Feed;
+
+/***/ },
+/* 291 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var FriendStore = __webpack_require__(281);
+	var FriendApiUtil = __webpack_require__(278);
+	var SessionStore = __webpack_require__(232);
+	
+	var FriendRequestNotifier = React.createClass({
+	  displayName: 'FriendRequestNotifier',
+	
+	
+	  getInitialState: function () {
+	
+	    return { friendRequests: [] };
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = FriendStore.addListener(this.handleChange);
+	    FriendApiUtil.fetchFriendRequests();
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ friendRequests: FriendStore.friendRequests(SessionStore.currentUserId()) });
+	  },
+	
+	  render: function () {
+	
+	    if (this.state.friendRequests.length) {
+	
+	      var friendRequests = this.state.friendRequests.map(function (friendRequest) {
+	        return React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'div',
+	            { className: 'friend-request-text' },
+	            friendRequest.friender_user,
+	            ' wants to be your friend!'
+	          ),
+	          React.createElement(
+	            'button',
+	            { className: 'friend-request-accept' },
+	            'Accept'
+	          ),
+	          React.createElement(
+	            'button',
+	            { className: 'friend-request-deny' },
+	            'Deny'
+	          )
+	        );
+	      });
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'friend-requests' },
+	        React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' }),
+	        React.createElement(
+	          'div',
+	          { className: 'friend-request-counter' },
+	          this.state.friendRequests.length
+	        ),
+	        React.createElement(
+	          'ul',
+	          { className: 'friend-request-list' },
+	          friendRequests
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { className: 'friend-requests' },
+	        React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' })
+	      );
+	    }
+	  }
+	
+	});
+	
+	module.exports = FriendRequestNotifier;
 
 /***/ }
 /******/ ]);
