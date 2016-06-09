@@ -83,10 +83,15 @@ class User < ActiveRecord::Base
   end
 
   def feed
-    feed = []
+    if self.posts
+      feed = self.posts
+    else
+      feed = []
+    end
+
     self.friends.each do |friend|
       friend.posts.each do |post|
-        feed << post
+        feed += [post]
       end
     end
     feed

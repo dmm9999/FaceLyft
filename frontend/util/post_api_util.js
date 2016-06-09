@@ -2,11 +2,11 @@ var PostActions = require('./../actions/post_actions');
 
 var PostApiUtil = {
 
-  createPost: function (body, profileId) {
+  createPost: function (post) {
     $.ajax({
       type: 'POST',
       url: '/api/posts',
-      data: { body: body, profileId : profileId },
+      data: { user : post },
       dataType: 'json',
       success: function (post) {
         PostActions.receivePost(post);

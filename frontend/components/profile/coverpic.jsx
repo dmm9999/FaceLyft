@@ -53,7 +53,7 @@ var CoverPic = React.createClass({
     var formData = new FormData();
     formData.append("user[coverpic]", this.state.imageFile);
 
-    SessionApiUtil.updateCurrentUser(formData);
+    SessionApiUtil.updateCurrentUserPic(formData);
   },
 
   render: function () {

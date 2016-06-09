@@ -35,6 +35,7 @@ _receivePost = function (post) {
 };
 
 _receivePosts = function (posts) {
+  _posts = {};
   posts.forEach(function(post) {
     _posts[post.id] = post;
   });

@@ -53,7 +53,7 @@ var ProfilePic = React.createClass({
     var formData = new FormData();
     formData.append("user[profile_pic]", this.state.imageFile);
 
-    SessionApiUtil.updateCurrentUser(formData);
+    SessionApiUtil.updateCurrentUserPic(formData);
   },
 
   render: function () {

@@ -39,13 +39,13 @@ var SessionApiUtil = {
     });
   },
 
-  updateCurrentUserPics: function (updatedCurrentUser) {
+  updateCurrentUserPic: function (updatedCurrentUser) {
     $.ajax({
       url: '/api/user',
       type: 'PATCH',
       processData : false,
       contentType : false,
-      data: { user : updatedCurrentUser },
+      data: updatedCurrentUser,
       success: function (updatedCurrentUser) {
         SessionActions.updateCurrentUser(updatedCurrentUser);
       },

@@ -58,7 +58,7 @@
 	
 	var Login = __webpack_require__(260);
 	var Profile = __webpack_require__(264);
-	var Feed = __webpack_require__(289);
+	var Feed = __webpack_require__(290);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -25961,13 +25961,13 @@
 	    });
 	  },
 	
-	  updateCurrentUserPics: function (updatedCurrentUser) {
+	  updateCurrentUserPic: function (updatedCurrentUser) {
 	    $.ajax({
 	      url: '/api/user',
 	      type: 'PATCH',
 	      processData: false,
 	      contentType: false,
-	      data: { user: updatedCurrentUser },
+	      data: updatedCurrentUser,
 	      success: function (updatedCurrentUser) {
 	        SessionActions.updateCurrentUser(updatedCurrentUser);
 	      },
@@ -33582,13 +33582,13 @@
 	var React = __webpack_require__(1);
 	var Navbar = __webpack_require__(265);
 	var Intro = __webpack_require__(268);
-	var Friends = __webpack_require__(272);
-	var ProfilePic = __webpack_require__(273);
-	var CoverPic = __webpack_require__(274);
-	var NameBox = __webpack_require__(275);
-	var FriendRequest = __webpack_require__(276);
-	var PostForm = __webpack_require__(290);
-	var PostsIndex = __webpack_require__(291);
+	var Friends = __webpack_require__(273);
+	var ProfilePic = __webpack_require__(274);
+	var CoverPic = __webpack_require__(275);
+	var NameBox = __webpack_require__(276);
+	var FriendRequest = __webpack_require__(277);
+	var PostForm = __webpack_require__(282);
+	var PostsIndex = __webpack_require__(286);
 	
 	var Profile = React.createClass({
 	  displayName: 'Profile',
@@ -33783,7 +33783,7 @@
 	var IntroDescription = __webpack_require__(269);
 	var HometownForm = __webpack_require__(270);
 	var SchoolForm = __webpack_require__(271);
-	var NameForm = __webpack_require__(294);
+	var NameForm = __webpack_require__(272);
 	
 	var Intro = React.createClass({
 	  displayName: 'Intro',
@@ -34096,1105 +34096,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var Router = __webpack_require__(168);
-	var Link = Router.Link;
-	
-	var SessionStore = __webpack_require__(232);
-	var UserStore = __webpack_require__(259);
-	var UserApiUtil = __webpack_require__(256);
-	
-	var Friends = React.createClass({
-	  displayName: 'Friends',
-	
-	
-	  getInitialState: function () {
-	
-	    if (SessionStore.currentUserId() === this.props.id) {
-	      return { friends: SessionStore.currentUser().friends };
-	    } else {
-	      return { friends: [] };
-	    }
-	  },
-	
-	  componentDidMount: function () {
-	    this.listener = UserStore.addListener(this.handleChange);
-	    UserApiUtil.fetchUser(this.props.id);
-	  },
-	
-	  componentWillUnmount: function () {
-	    this.listener.remove();
-	  },
-	
-	  handleChange: function () {
-	
-	    this.setState({ friends: UserStore.retrieveUser().friends });
-	  },
-	
-	  render: function () {
-	
-	    var friends;
-	    var length = React.createElement('div', null);
-	
-	    if (this.state.friends && this.state.friends.length !== 0) {
-	      length = React.createElement(
-	        'div',
-	        null,
-	        this.state.friends.length
-	      );
-	      friends = this.state.friends.map(function (friend) {
-	        var path = "/users/" + friend.id;
-	        return React.createElement(
-	          'li',
-	          { key: friend.id, className: 'friend-picture' },
-	          React.createElement(Link, { to: path, className: 'friend-link' }),
-	          React.createElement('img', { className: 'friend-image', src: friend.profile_pic_url }),
-	          React.createElement(
-	            'title',
-	            { className: 'friend-name' },
-	            friend.name
-	          )
-	        );
-	      });
-	    } else {
-	      friends = React.createElement('div', null);
-	    }
-	    return React.createElement(
-	      'ul',
-	      { className: 'friends-container' },
-	      React.createElement(
-	        'header',
-	        { className: 'friends-header group' },
-	        React.createElement('img', { src: window.friendsIcon, className: 'friends-icon' }),
-	        React.createElement(
-	          'title',
-	          { className: 'friends-title' },
-	          'Friends'
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'friends-count' },
-	          length
-	        )
-	      ),
-	      friends
-	    );
-	  }
-	
-	});
-	
-	module.exports = Friends;
-
-/***/ },
-/* 273 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var SessionStore = __webpack_require__(232);
-	var SessionApiUtil = __webpack_require__(229);
-	var UserApiUtil = __webpack_require__(256);
-	var UserStore = __webpack_require__(259);
-	
-	var ProfilePic = React.createClass({
-	  displayName: 'ProfilePic',
-	
-	
-	  getInitialState: function () {
-	
-	    if (SessionStore.currentUserId() === this.props.id) {
-	      return { imageUrl: SessionStore.currentUser().profile_pic_url };
-	    } else {
-	      UserApiUtil.fetchUser(this.props.id);
-	      return { imageUrl: "" };
-	    }
-	  },
-	
-	  componentDidMount: function () {
-	    this.listener = UserStore.addListener(this.handleChange);
-	  },
-	
-	  componentWillUnmount: function () {
-	    this.listener.remove();
-	  },
-	
-	  handleChange: function () {
-	    this.setState({ imageUrl: UserStore.retrieveUser().profile_pic_url });
-	  },
-	
-	  updateFile: function (e) {
-	
-	    e.preventDefault();
-	
-	    var reader = new FileReader();
-	    var file = e.currentTarget.files[0];
-	    reader.onloadend = function () {
-	      this.setState({ imageUrl: reader.result, imageFile: file });
-	    }.bind(this);
-	
-	    if (file) {
-	      reader.readAsDataURL(file);
-	    } else {
-	      this.setState({ imageFile: null });
-	    }
-	  },
-	
-	  savePic: function (e) {
-	
-	    e.preventDefault();
-	
-	    var formData = new FormData();
-	    formData.append("user[profile_pic]", this.state.imageFile);
-	
-	    SessionApiUtil.updateCurrentUser(formData);
-	  },
-	
-	  render: function () {
-	
-	    if (SessionStore.currentUserId() === this.props.id) {
-	      return React.createElement(
-	        'div',
-	        { className: 'profile-pic' },
-	        React.createElement('img', { src: this.state.imageUrl }),
-	        React.createElement('input', { type: 'file', onChange: this.updateFile, className: 'profile-pic-select' }),
-	        React.createElement('input', { type: 'submit', value: 'Save Profile Pic', onClick: this.savePic, className: 'profile-pic-save' }),
-	        this.props.children
-	      );
-	    } else {
-	      return React.createElement(
-	        'div',
-	        { className: 'profile-pic' },
-	        React.createElement('img', { src: this.state.imageUrl }),
-	        this.props.children
-	      );
-	    }
-	  }
-	
-	});
-	
-	module.exports = ProfilePic;
-
-/***/ },
-/* 274 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var SessionStore = __webpack_require__(232);
-	var SessionApiUtil = __webpack_require__(229);
-	var UserApiUtil = __webpack_require__(256);
-	var UserStore = __webpack_require__(259);
-	
-	var CoverPic = React.createClass({
-	  displayName: 'CoverPic',
-	
-	
-	  getInitialState: function () {
-	
-	    if (SessionStore.currentUserId() === this.props.id) {
-	      return { imageUrl: SessionStore.currentUser().coverpic_url };
-	    } else {
-	      UserApiUtil.fetchUser(this.props.id);
-	      return { imageUrl: "" };
-	    }
-	  },
-	
-	  componentDidMount: function () {
-	    this.listener = UserStore.addListener(this.handleChange);
-	  },
-	
-	  componentWillUnmount: function () {
-	    this.listener.remove();
-	  },
-	
-	  handleChange: function () {
-	    this.setState({ imageUrl: UserStore.retrieveUser().coverpic_url });
-	  },
-	
-	  updateFile: function (e) {
-	
-	    e.preventDefault();
-	
-	    var reader = new FileReader();
-	    var file = e.currentTarget.files[0];
-	    reader.onloadend = function () {
-	      this.setState({ imageUrl: reader.result, imageFile: file });
-	    }.bind(this);
-	
-	    if (file) {
-	      reader.readAsDataURL(file);
-	    } else {
-	      this.setState({ imageFile: null });
-	    }
-	  },
-	
-	  savePic: function (e) {
-	
-	    e.preventDefault();
-	
-	    var formData = new FormData();
-	    formData.append("user[coverpic]", this.state.imageFile);
-	
-	    SessionApiUtil.updateCurrentUser(formData);
-	  },
-	
-	  render: function () {
-	
-	    if (SessionStore.currentUserId() === this.props.id) {
-	      return React.createElement(
-	        'div',
-	        { className: 'cover-pic' },
-	        React.createElement('img', { src: this.state.imageUrl }),
-	        React.createElement('input', { type: 'file', onChange: this.updateFile, className: 'cover-pic-select' }),
-	        React.createElement('input', { type: 'submit', value: 'Save Cover Pic', onClick: this.savePic, className: 'cover-pic-save' }),
-	        this.props.children
-	      );
-	    } else {
-	      return React.createElement(
-	        'div',
-	        { className: 'cover-pic' },
-	        React.createElement('img', { src: this.state.imageUrl }),
-	        this.props.children
-	      );
-	    };
-	  }
-	});
-	
-	module.exports = CoverPic;
-
-/***/ },
-/* 275 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var SessionStore = __webpack_require__(232);
-	var UserStore = __webpack_require__(259);
-	var UserApiUtil = __webpack_require__(256);
-	
-	var NameBox = React.createClass({
-	  displayName: 'NameBox',
-	
-	
-	  getInitialState: function () {
-	
-	    if (SessionStore.currentUserId() === this.props.id) {
-	      return { name: SessionStore.currentUser().name };
-	    } else {
-	      UserApiUtil.fetchUser(this.props.id);
-	      return { name: "" };
-	    }
-	  },
-	
-	  componentDidMount: function () {
-	    this.listener = UserStore.addListener(this.handleChange);
-	  },
-	
-	  componentWillUnmount: function () {
-	    this.listener.remove();
-	  },
-	
-	  handleChange: function () {
-	    this.setState({ name: UserStore.retrieveUser().name });
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'title',
-	      { className: 'name-box' },
-	      this.state.name
-	    );
-	  }
-	
-	});
-	
-	module.exports = NameBox;
-
-/***/ },
-/* 276 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var FriendApiUtil = __webpack_require__(277);
-	var FriendStore = __webpack_require__(280);
-	var SessionStore = __webpack_require__(232);
-	
-	var FriendRequest = React.createClass({
-	  displayName: 'FriendRequest',
-	
-	
-	  getInitialState: function () {
-	
-	    return { status: FriendStore.friendStatus(this.props.id) };
-	  },
-	
-	  componentDidMount: function () {
-	    FriendStore.addListener(this.handleChange);
-	  },
-	
-	  handleChange: function () {
-	    this.setState({ status: FriendStore.friendStatus(this.props.id) });
-	  },
-	
-	  handleRequest: function (e) {
-	
-	    e.preventDefault();
-	
-	    FriendApiUtil.createPendingFriendship(SessionStore.currentUserId(), this.props.id);
-	  },
-	
-	  handleCancel: function (e) {
-	
-	    e.preventDefault();
-	
-	    FriendApiUtil.deleteFriendship(SessionStore.currentUserId(), this.props.id);
-	  },
-	
-	  handleUnfriend: function (e) {
-	
-	    e.preventDefault();
-	
-	    FriendApiUtil.deleteFriendship(SessionStore.currentUserId(), this.props.id);
-	  },
-	
-	  render: function () {
-	
-	    if (this.state.status === "self") {
-	      return React.createElement('div', null);
-	    } else if (this.state.status === null) {
-	      return React.createElement(
-	        'div',
-	        { className: 'friend-request group', onClick: this.handleRequest },
-	        React.createElement(
-	          'div',
-	          { className: 'friend-request-title' },
-	          'Add Friend'
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'friend-request-icon-container' },
-	          React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' })
-	        )
-	      );
-	    } else if (this.state.status === "pending") {
-	      return React.createElement(
-	        'div',
-	        { className: 'friend-request-pending group' },
-	        React.createElement(
-	          'div',
-	          { className: 'friend-request-sent' },
-	          'Friend Request Sent'
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'friend-request-cancel',
-	            onClick: this.handleCancel },
-	          'Cancel Friend Request'
-	        )
-	      );
-	    } else {
-	      return React.createElement(
-	        'div',
-	        { className: 'unfriend group', onClick: this.handleUnfriend },
-	        React.createElement(
-	          'div',
-	          { className: 'unfriend-title' },
-	          'Unfriend'
-	        )
-	      );
-	    }
-	  }
-	
-	});
-	
-	module.exports = FriendRequest;
-
-/***/ },
-/* 277 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var FriendActions = __webpack_require__(278);
-	
-	var FriendApiUtil = {
-	
-	  fetchFriends: function (id) {
-	    $.ajax({
-	      type: 'GET',
-	      url: 'api/users/' + id + '/friends',
-	      dataType: 'json',
-	      success: function (friends) {
-	        FriendActions.receiveFriends(friends);
-	      }
-	    });
-	  },
-	
-	  createPendingFriendship: function (friender_id, friended_id) {
-	    $.ajax({
-	      type: 'POST',
-	      url: 'api/users/' + friender_id + '/friends',
-	      dataType: 'json',
-	      data: { friended_id: friended_id },
-	      success: function (pendingFriendship) {
-	        FriendActions.receivePendingFriendship(pendingFriendship);
-	      }
-	    });
-	  },
-	
-	  deleteFriendship: function (currentUserId, userProfileId) {
-	    $.ajax({
-	      type: 'DELETE',
-	      url: 'api/users/' + currentUserId + '/friends',
-	      dataType: 'json',
-	      data: { userProfileId: userProfileId },
-	      success: function (friendship) {
-	        FriendActions.removeFriendship(friendship);
-	      }
-	    });
-	  }
-	
-	};
-	
-	module.exports = FriendApiUtil;
-
-/***/ },
-/* 278 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(233);
-	var FriendConstants = __webpack_require__(279);
-	
-	var FriendActions = {
-	
-	  receivePendingFriendship: function (pendingFriendship) {
-	    AppDispatcher.dispatch({
-	      actionType: FriendConstants.RECEIVE_PENDING_FRIENDSHIP,
-	      pendingFriendship: pendingFriendship
-	    });
-	  },
-	
-	  removeFriendship: function (friendship) {
-	    AppDispatcher.dispatch({
-	      actionType: FriendConstants.REMOVE_FRIENDSHIP,
-	      friendship: friendship
-	    });
-	  }
-	
-	};
-	
-	module.exports = FriendActions;
-
-/***/ },
-/* 279 */
-/***/ function(module, exports) {
-
-	var FriendConstants = {
-	  RECEIVE_PENDING_FRIENDSHIP: "RECEIVE_PENDING_FRIENDSHIP",
-	  REMOVE_FRIENDSHIP: "REMOVE_FRIENDSHIP"
-	};
-	
-	module.exports = FriendConstants;
-
-/***/ },
-/* 280 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(237).Store;
-	var AppDispatcher = __webpack_require__(233);
-	var SessionStore = __webpack_require__(232);
-	
-	var FriendStore = new Store(AppDispatcher);
-	
-	var _friends = {};
-	var _pendingFriends = {};
-	
-	FriendStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case "RECEIVE_PENDING_FRIENDSHIP":
-	      _setPendingFriendship(payload.pendingFriendship);
-	      FriendStore.__emitChange();
-	      break;
-	    case "REMOVE_FRIENDSHIP":
-	      _removeFriendship();
-	      FriendStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	_setPendingFriendship = function (pendingFriendship) {
-	  _pendingFriends = {};
-	  _friends = {};
-	  _pendingFriends[pendingFriendship.id] = pendingFriendship;
-	};
-	
-	_removeFriendship = function () {
-	  _friends = {};
-	  _pendingFriends = {};
-	};
-	
-	FriendStore.friendStatus = function (id) {
-	
-	  var status = null;
-	
-	  if (SessionStore.currentUserId() === id) {
-	    status = "self";
-	  }
-	
-	  for (var requestId in _friends) {
-	    if (parseInt(_friends[requestId].friender_id) === id || parseInt(_friends[requestId].friended_id) === id) {
-	      status = "friends";
-	    }
-	  }
-	
-	  for (var pendingRequestId in _pendingFriends) {
-	    if (parseInt(_pendingFriends[pendingRequestId].friender_id) === id || parseInt(_pendingFriends[pendingRequestId].friended_id) === id) {
-	      status = "pending";
-	    }
-	  }
-	
-	  return status;
-	};
-	
-	module.exports = FriendStore;
-
-/***/ },
-/* 281 */,
-/* 282 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var PostActions = __webpack_require__(283);
-	
-	var PostApiUtil = {
-	
-	  createPost: function (body, profileId) {
-	    $.ajax({
-	      type: 'POST',
-	      url: '/api/posts',
-	      data: { body: body, profileId: profileId },
-	      dataType: 'json',
-	      success: function (post) {
-	        PostActions.receivePost(post);
-	      }
-	    });
-	  },
-	
-	  updatePost: function (updatedPost) {
-	    $.ajax({
-	      type: 'PATCH',
-	      url: '/api/posts/' + id
-	    });
-	  },
-	
-	  deletePost: function (id) {
-	    $.ajax({
-	      type: 'DELETE',
-	      url: '/api/posts/' + id,
-	      dataType: 'json',
-	      success: function (deletedPost) {
-	        PostActions.removePost(deletedPost);
-	      }
-	    });
-	  },
-	
-	  fetchPosts: function (id) {
-	    $.ajax({
-	      type: 'GET',
-	      url: '/api/users/' + id + '/posts',
-	      dataType: 'json',
-	      success: function (posts) {
-	        PostActions.receivePosts(posts);
-	      }
-	    });
-	  },
-	
-	  fetchFeedPosts: function () {
-	    $.ajax({
-	      type: 'GET',
-	      url: 'api/user/feed',
-	      dataType: 'json',
-	      success: function (posts) {
-	        PostActions.receivePosts(posts);
-	      }
-	    });
-	  }
-	
-	};
-	
-	module.exports = PostApiUtil;
-
-/***/ },
-/* 283 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(233);
-	var PostConstants = __webpack_require__(284);
-	
-	var PostActions = {
-	
-	  receivePost: function (post) {
-	    AppDispatcher.dispatch({
-	      actionType: PostConstants.RECEIVE_POST,
-	      post: post
-	    });
-	  },
-	
-	  receivePosts: function (posts) {
-	    AppDispatcher.dispatch({
-	      actionType: PostConstants.RECEIVE_POSTS,
-	      posts: posts
-	    });
-	  },
-	
-	  removePost: function (post) {
-	    AppDispatcher.dispatch({
-	      actionType: PostConstants.REMOVE_POST,
-	      post: post
-	    });
-	  }
-	
-	};
-	
-	module.exports = PostActions;
-
-/***/ },
-/* 284 */
-/***/ function(module, exports) {
-
-	var PostConstants = {
-	
-	  RECEIVE_POST: "RECEIVE_POST",
-	  RECEIVE_POSTS: "RECEIVE_POSTS",
-	  REMOVE_POST: "REMOVE_POST"
-	};
-	
-	module.exports = PostConstants;
-
-/***/ },
-/* 285 */,
-/* 286 */,
-/* 287 */,
-/* 288 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(237).Store;
-	var AppDispatcher = __webpack_require__(233);
-	
-	var PostStore = new Store(AppDispatcher);
-	
-	var _posts = {};
-	
-	PostStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case "RECEIVE_POST":
-	      _receivePost(payload.post);
-	      PostStore.__emitChange();
-	      break;
-	    case "RECEIVE_POSTS":
-	      _receivePosts(payload.posts);
-	      PostStore.__emitChange();
-	      break;
-	    case "REMOVE_POST":
-	      _removePost(payload.post);
-	      PostStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	PostStore.all = function () {
-	  var results = [];
-	  for (var postId in _posts) {
-	    results.push(_posts[postId]);
-	  }
-	  return results;
-	};
-	
-	_receivePost = function (post) {
-	  _posts[post.id] = post;
-	};
-	
-	_receivePosts = function (posts) {
-	  posts.forEach(function (post) {
-	    _posts[post.id] = post;
-	  });
-	};
-	
-	_removePost = function (post) {
-	  delete _posts[post.id];
-	};
-	
-	module.exports = PostStore;
-
-/***/ },
-/* 289 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var Navbar = __webpack_require__(265);
-	var PostForm = __webpack_require__(290);
-	var PostsIndex = __webpack_require__(291);
-	var SessionStore = __webpack_require__(232);
-	
-	var Feed = React.createClass({
-	  displayName: 'Feed',
-	
-	
-	  render: function () {
-	
-	    currentUserId = SessionStore.currentUserId();
-	
-	    return React.createElement(
-	      'div',
-	      { className: 'feed' },
-	      React.createElement(Navbar, null),
-	      React.createElement(
-	        'div',
-	        { className: 'feed-content' },
-	        React.createElement(PostForm, {
-	          className: 'feed-post-form' }),
-	        React.createElement(PostsIndex, { currentUserId: currentUserId })
-	      )
-	    );
-	  }
-	
-	});
-	
-	module.exports = Feed;
-
-/***/ },
-/* 290 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var SessionStore = __webpack_require__(232);
-	var PostApiUtil = __webpack_require__(282);
-	var PostStore = __webpack_require__(232);
-	
-	var PostForm = React.createClass({
-	  displayName: 'PostForm',
-	
-	
-	  getInitialState: function () {
-	
-	    var ownPage = SessionStore.currentUserId() === this.props.id;
-	
-	    return { currentUser: SessionStore.currentUser(),
-	      ownPage: ownPage, post: "" };
-	  },
-	
-	  componentDidMount: function () {
-	    PostStore.addListener(this.handleChange);
-	  },
-	
-	  handleChange: function () {
-	    PostApiUtil.fetchPosts(this.props.id);
-	  },
-	
-	  postUpdate: function (e) {
-	
-	    e.preventDefault();
-	
-	    this.setState({ post: e.target.value });
-	  },
-	
-	  handleSubmit: function (e) {
-	
-	    e.preventDefault();
-	
-	    PostApiUtil.createPost(this.state.post, this.props.id);
-	
-	    this.setState({ post: "" });
-	  },
-	
-	  render: function () {
-	
-	    var text = "What's on your mind?";
-	
-	    if (this.state.ownPage) {
-	      return React.createElement(
-	        'form',
-	        {
-	          className: 'post-form',
-	          onSubmit: this.handleSubmit },
-	        React.createElement(
-	          'header',
-	          { className: 'tab-container group' },
-	          React.createElement('img', { src: postIcon, className: 'post-form-post-icon' }),
-	          React.createElement(
-	            'div',
-	            { className: 'post-form-status-tab' },
-	            'Status'
-	          ),
-	          React.createElement('img', { src: photoIcon, className: 'post-form-photo-icon' }),
-	          React.createElement(
-	            'div',
-	            { className: 'post-form-photo-tab' },
-	            'Photo'
-	          )
-	        ),
-	        React.createElement(
-	          'main',
-	          null,
-	          React.createElement('img', {
-	            src: this.state.currentUser.profile_pic_url,
-	            className: 'post-form-thumb' }),
-	          React.createElement('textarea', {
-	            placeholder: text,
-	            value: this.state.post,
-	            onChange: this.postUpdate })
-	        ),
-	        React.createElement(
-	          'footer',
-	          { className: 'group' },
-	          React.createElement(
-	            'button',
-	            { className: 'post-form-submit-button' },
-	            'Post'
-	          )
-	        )
-	      );
-	    } else {
-	      return React.createElement(
-	        'form',
-	        {
-	          className: 'post-form',
-	          onSubmit: this.handleSubmit },
-	        React.createElement(
-	          'header',
-	          { className: 'tab-container group' },
-	          React.createElement('img', { src: postIcon, className: 'post-form-post-icon' }),
-	          React.createElement(
-	            'div',
-	            { className: 'post-form-status-tab' },
-	            'Post'
-	          ),
-	          React.createElement('img', { src: photoIcon, className: 'post-form-photo-icon' }),
-	          React.createElement(
-	            'div',
-	            { className: 'post-form-photo-tab' },
-	            'Photo'
-	          )
-	        ),
-	        React.createElement(
-	          'main',
-	          null,
-	          React.createElement('img', {
-	            src: this.state.currentUser.profile_pic_url,
-	            className: 'post-form-thumb' }),
-	          React.createElement('textarea', {
-	            placeholder: text,
-	            onChange: this.postUpdate })
-	        ),
-	        React.createElement(
-	          'footer',
-	          { className: 'group' },
-	          React.createElement(
-	            'button',
-	            { className: 'post-form-submit-button' },
-	            'Post'
-	          )
-	        )
-	      );
-	    }
-	  }
-	
-	});
-	
-	module.exports = PostForm;
-
-/***/ },
-/* 291 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var PostsIndexItem = __webpack_require__(292);
-	var PostStore = __webpack_require__(288);
-	var PostApiUtil = __webpack_require__(282);
-	
-	var PostsIndex = React.createClass({
-	  displayName: 'PostsIndex',
-	
-	
-	  getInitialState: function () {
-	
-	    var isTimeline = !!this.props.id;
-	
-	    return { isTimeline: isTimeline, posts: [] };
-	  },
-	
-	  componentDidMount: function () {
-	
-	    PostStore.addListener(this.handleChange);
-	
-	    if (this.state.isTimeline) {
-	      PostApiUtil.fetchPosts(this.props.id);
-	    } else {
-	      PostApiUtil.fetchFeedPosts();
-	    }
-	  },
-	
-	  handleChange: function () {
-	    this.setState({ posts: PostStore.all() });
-	  },
-	
-	  render: function () {
-	
-	    var posts = React.createElement('div', null);
-	
-	    if (this.state.posts.length > 0) {
-	      posts = this.state.posts.reverse().map(function (post) {
-	        return React.createElement(
-	          'li',
-	          { key: post.id },
-	          React.createElement(PostsIndexItem, {
-	            post: post
-	          })
-	        );
-	      });
-	    }
-	
-	    return React.createElement(
-	      'ul',
-	      { className: 'posts-index' },
-	      posts
-	    );
-	  }
-	
-	});
-	
-	module.exports = PostsIndex;
-
-/***/ },
-/* 292 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var PostApiUtil = __webpack_require__(282);
-	var LikeButton = __webpack_require__(293);
-	
-	var PostsIndexItem = React.createClass({
-	  displayName: 'PostsIndexItem',
-	
-	
-	  handleEdit: function () {
-	    PostApiUtil.updatedPost();
-	  },
-	
-	  handleDelete: function () {
-	    PostApiUtil.deletePost(this.props.post.id);
-	  },
-	
-	  render: function () {
-	
-	    return React.createElement(
-	      'div',
-	      { className: 'posts-index-item' },
-	      React.createElement(
-	        'div',
-	        { className: 'posts-index-item-info group' },
-	        React.createElement('img', { src: this.props.post.author_profile_pic_url,
-	          className: 'posts-index-item-thumb' }),
-	        React.createElement(
-	          'div',
-	          { className: 'posts-index-item-author-name' },
-	          this.props.post.author_name
-	        ),
-	        React.createElement(
-	          'button',
-	          {
-	            className: 'post-delete-button',
-	            onClick: this.handleDelete },
-	          'Delete'
-	        ),
-	        React.createElement(
-	          'button',
-	          {
-	            className: 'post-edit-button',
-	            onClick: this.handleEdit },
-	          'Edit'
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'posts-index-item-body' },
-	        this.props.post.body
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'react-container group' },
-	        React.createElement(LikeButton, null),
-	        React.createElement(
-	          'div',
-	          { className: 'react-like-text' },
-	          'Like'
-	        ),
-	        React.createElement('img', { src: commentIcon,
-	          className: 'react-comment-icon' }),
-	        React.createElement(
-	          'div',
-	          { className: 'react-comment-text' },
-	          'Comment'
-	        ),
-	        React.createElement('img', { src: shareIcon,
-	          className: 'react-share-icon' }),
-	        React.createElement(
-	          'div',
-	          { className: 'react-share-text' },
-	          'Share'
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'reactions-container group' },
-	        React.createElement('img', { src: this.props.post.author_profile_pic_url,
-	          className: 'comment-form-thumb' }),
-	        React.createElement('textarea', {
-	          className: 'comment-form',
-	          placeholder: 'Write a comment...' })
-	      )
-	    );
-	  }
-	
-	});
-	
-	module.exports = PostsIndexItem;
-
-/***/ },
-/* 293 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var LikeButton = React.createClass({
-	  displayName: "LikeButton",
-	
-	
-	  getInitialState: function () {
-	    return { liked: false };
-	  },
-	
-	  render: function () {
-	
-	    if (this.state.liked) {
-	      return React.createElement("img", { src: likedIcon,
-	        className: "react-liked-icon" });
-	    } else {
-	      return React.createElement("img", { src: likeIcon,
-	        className: "react-like-icon" });
-	    }
-	  }
-	
-	});
-	
-	module.exports = LikeButton;
-
-/***/ },
-/* 294 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
 	
 	var SessionStore = __webpack_require__(232);
 	var SessionApiUtil = __webpack_require__(229);
@@ -35337,6 +34238,1174 @@
 	});
 	
 	module.exports = NameForm;
+
+/***/ },
+/* 273 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Router = __webpack_require__(168);
+	var Link = Router.Link;
+	
+	var SessionStore = __webpack_require__(232);
+	var UserStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
+	
+	var Friends = React.createClass({
+	  displayName: 'Friends',
+	
+	
+	  getInitialState: function () {
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { friends: SessionStore.currentUser().friends };
+	    } else {
+	      return { friends: [] };
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	    UserApiUtil.fetchUser(this.props.id);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	
+	    this.setState({ friends: UserStore.retrieveUser().friends });
+	  },
+	
+	  render: function () {
+	
+	    var friends;
+	    var length = React.createElement('div', null);
+	
+	    if (this.state.friends && this.state.friends.length !== 0) {
+	      length = React.createElement(
+	        'div',
+	        null,
+	        this.state.friends.length
+	      );
+	      friends = this.state.friends.map(function (friend) {
+	        var path = "/users/" + friend.id;
+	        return React.createElement(
+	          'li',
+	          { key: friend.id, className: 'friend-picture' },
+	          React.createElement(Link, { to: path, className: 'friend-link' }),
+	          React.createElement('img', { className: 'friend-image', src: friend.profile_pic_url }),
+	          React.createElement(
+	            'title',
+	            { className: 'friend-name' },
+	            friend.name
+	          )
+	        );
+	      });
+	    } else {
+	      friends = React.createElement('div', null);
+	    }
+	    return React.createElement(
+	      'ul',
+	      { className: 'friends-container' },
+	      React.createElement(
+	        'header',
+	        { className: 'friends-header group' },
+	        React.createElement('img', { src: window.friendsIcon, className: 'friends-icon' }),
+	        React.createElement(
+	          'title',
+	          { className: 'friends-title' },
+	          'Friends'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'friends-count' },
+	          length
+	        )
+	      ),
+	      friends
+	    );
+	  }
+	
+	});
+	
+	module.exports = Friends;
+
+/***/ },
+/* 274 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	var UserApiUtil = __webpack_require__(256);
+	var UserStore = __webpack_require__(259);
+	
+	var ProfilePic = React.createClass({
+	  displayName: 'ProfilePic',
+	
+	
+	  getInitialState: function () {
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { imageUrl: SessionStore.currentUser().profile_pic_url };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { imageUrl: "" };
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ imageUrl: UserStore.retrieveUser().profile_pic_url });
+	  },
+	
+	  updateFile: function (e) {
+	
+	    e.preventDefault();
+	
+	    var reader = new FileReader();
+	    var file = e.currentTarget.files[0];
+	    reader.onloadend = function () {
+	      this.setState({ imageUrl: reader.result, imageFile: file });
+	    }.bind(this);
+	
+	    if (file) {
+	      reader.readAsDataURL(file);
+	    } else {
+	      this.setState({ imageFile: null });
+	    }
+	  },
+	
+	  savePic: function (e) {
+	
+	    e.preventDefault();
+	
+	    var formData = new FormData();
+	    formData.append("user[profile_pic]", this.state.imageFile);
+	
+	    SessionApiUtil.updateCurrentUserPic(formData);
+	  },
+	
+	  render: function () {
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return React.createElement(
+	        'div',
+	        { className: 'profile-pic' },
+	        React.createElement('img', { src: this.state.imageUrl }),
+	        React.createElement('input', { type: 'file', onChange: this.updateFile, className: 'profile-pic-select' }),
+	        React.createElement('input', { type: 'submit', value: 'Save Profile Pic', onClick: this.savePic, className: 'profile-pic-save' }),
+	        this.props.children
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { className: 'profile-pic' },
+	        React.createElement('img', { src: this.state.imageUrl }),
+	        this.props.children
+	      );
+	    }
+	  }
+	
+	});
+	
+	module.exports = ProfilePic;
+
+/***/ },
+/* 275 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	var UserApiUtil = __webpack_require__(256);
+	var UserStore = __webpack_require__(259);
+	
+	var CoverPic = React.createClass({
+	  displayName: 'CoverPic',
+	
+	
+	  getInitialState: function () {
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { imageUrl: SessionStore.currentUser().coverpic_url };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { imageUrl: "" };
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ imageUrl: UserStore.retrieveUser().coverpic_url });
+	  },
+	
+	  updateFile: function (e) {
+	
+	    e.preventDefault();
+	
+	    var reader = new FileReader();
+	    var file = e.currentTarget.files[0];
+	    reader.onloadend = function () {
+	      this.setState({ imageUrl: reader.result, imageFile: file });
+	    }.bind(this);
+	
+	    if (file) {
+	      reader.readAsDataURL(file);
+	    } else {
+	      this.setState({ imageFile: null });
+	    }
+	  },
+	
+	  savePic: function (e) {
+	
+	    e.preventDefault();
+	
+	    var formData = new FormData();
+	    formData.append("user[coverpic]", this.state.imageFile);
+	
+	    SessionApiUtil.updateCurrentUserPic(formData);
+	  },
+	
+	  render: function () {
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return React.createElement(
+	        'div',
+	        { className: 'cover-pic' },
+	        React.createElement('img', { src: this.state.imageUrl }),
+	        React.createElement('input', { type: 'file', onChange: this.updateFile, className: 'cover-pic-select' }),
+	        React.createElement('input', { type: 'submit', value: 'Save Cover Pic', onClick: this.savePic, className: 'cover-pic-save' }),
+	        this.props.children
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { className: 'cover-pic' },
+	        React.createElement('img', { src: this.state.imageUrl }),
+	        this.props.children
+	      );
+	    };
+	  }
+	});
+	
+	module.exports = CoverPic;
+
+/***/ },
+/* 276 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(232);
+	var UserStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
+	
+	var NameBox = React.createClass({
+	  displayName: 'NameBox',
+	
+	
+	  getInitialState: function () {
+	
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { name: SessionStore.currentUser().name };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { name: "" };
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ name: UserStore.retrieveUser().name });
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'title',
+	      { className: 'name-box' },
+	      this.state.name
+	    );
+	  }
+	
+	});
+	
+	module.exports = NameBox;
+
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var FriendApiUtil = __webpack_require__(278);
+	var FriendStore = __webpack_require__(281);
+	var SessionStore = __webpack_require__(232);
+	
+	var FriendRequest = React.createClass({
+	  displayName: 'FriendRequest',
+	
+	
+	  getInitialState: function () {
+	
+	    return { status: FriendStore.friendStatus(this.props.id) };
+	  },
+	
+	  componentDidMount: function () {
+	    FriendStore.addListener(this.handleChange);
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ status: FriendStore.friendStatus(this.props.id) });
+	  },
+	
+	  handleRequest: function (e) {
+	
+	    e.preventDefault();
+	
+	    FriendApiUtil.createPendingFriendship(SessionStore.currentUserId(), this.props.id);
+	  },
+	
+	  handleCancel: function (e) {
+	
+	    e.preventDefault();
+	
+	    FriendApiUtil.deleteFriendship(SessionStore.currentUserId(), this.props.id);
+	  },
+	
+	  handleUnfriend: function (e) {
+	
+	    e.preventDefault();
+	
+	    FriendApiUtil.deleteFriendship(SessionStore.currentUserId(), this.props.id);
+	  },
+	
+	  render: function () {
+	
+	    if (this.state.status === "self") {
+	      return React.createElement('div', null);
+	    } else if (this.state.status === null) {
+	      return React.createElement(
+	        'div',
+	        { className: 'friend-request group', onClick: this.handleRequest },
+	        React.createElement(
+	          'div',
+	          { className: 'friend-request-title' },
+	          'Add Friend'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'friend-request-icon-container' },
+	          React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' })
+	        )
+	      );
+	    } else if (this.state.status === "pending") {
+	      return React.createElement(
+	        'div',
+	        { className: 'friend-request-pending group' },
+	        React.createElement(
+	          'div',
+	          { className: 'friend-request-sent' },
+	          'Friend Request Sent'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'friend-request-cancel',
+	            onClick: this.handleCancel },
+	          'Cancel Friend Request'
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { className: 'unfriend group', onClick: this.handleUnfriend },
+	        React.createElement(
+	          'div',
+	          { className: 'unfriend-title' },
+	          'Unfriend'
+	        )
+	      );
+	    }
+	  }
+	
+	});
+	
+	module.exports = FriendRequest;
+
+/***/ },
+/* 278 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var FriendActions = __webpack_require__(279);
+	
+	var FriendApiUtil = {
+	
+	  fetchFriends: function (id) {
+	    $.ajax({
+	      type: 'GET',
+	      url: 'api/users/' + id + '/friends',
+	      dataType: 'json',
+	      success: function (friends) {
+	        FriendActions.receiveFriends(friends);
+	      }
+	    });
+	  },
+	
+	  createPendingFriendship: function (friender_id, friended_id) {
+	    $.ajax({
+	      type: 'POST',
+	      url: 'api/users/' + friender_id + '/friends',
+	      dataType: 'json',
+	      data: { friended_id: friended_id },
+	      success: function (pendingFriendship) {
+	        FriendActions.receivePendingFriendship(pendingFriendship);
+	      }
+	    });
+	  },
+	
+	  deleteFriendship: function (currentUserId, userProfileId) {
+	    $.ajax({
+	      type: 'DELETE',
+	      url: 'api/users/' + currentUserId + '/friends',
+	      dataType: 'json',
+	      data: { userProfileId: userProfileId },
+	      success: function (friendship) {
+	        FriendActions.removeFriendship(friendship);
+	      }
+	    });
+	  }
+	
+	};
+	
+	module.exports = FriendApiUtil;
+
+/***/ },
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(233);
+	var FriendConstants = __webpack_require__(280);
+	
+	var FriendActions = {
+	
+	  receivePendingFriendship: function (pendingFriendship) {
+	    AppDispatcher.dispatch({
+	      actionType: FriendConstants.RECEIVE_PENDING_FRIENDSHIP,
+	      pendingFriendship: pendingFriendship
+	    });
+	  },
+	
+	  removeFriendship: function (friendship) {
+	    AppDispatcher.dispatch({
+	      actionType: FriendConstants.REMOVE_FRIENDSHIP,
+	      friendship: friendship
+	    });
+	  }
+	
+	};
+	
+	module.exports = FriendActions;
+
+/***/ },
+/* 280 */
+/***/ function(module, exports) {
+
+	var FriendConstants = {
+	  RECEIVE_PENDING_FRIENDSHIP: "RECEIVE_PENDING_FRIENDSHIP",
+	  REMOVE_FRIENDSHIP: "REMOVE_FRIENDSHIP"
+	};
+	
+	module.exports = FriendConstants;
+
+/***/ },
+/* 281 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(237).Store;
+	var AppDispatcher = __webpack_require__(233);
+	var SessionStore = __webpack_require__(232);
+	
+	var FriendStore = new Store(AppDispatcher);
+	
+	var _friends = {};
+	var _pendingFriends = {};
+	
+	FriendStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "RECEIVE_PENDING_FRIENDSHIP":
+	      _setPendingFriendship(payload.pendingFriendship);
+	      FriendStore.__emitChange();
+	      break;
+	    case "REMOVE_FRIENDSHIP":
+	      _removeFriendship();
+	      FriendStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	_setPendingFriendship = function (pendingFriendship) {
+	  _pendingFriends = {};
+	  _friends = {};
+	  _pendingFriends[pendingFriendship.id] = pendingFriendship;
+	};
+	
+	_removeFriendship = function () {
+	  _friends = {};
+	  _pendingFriends = {};
+	};
+	
+	FriendStore.friendStatus = function (id) {
+	
+	  var status = null;
+	
+	  if (SessionStore.currentUserId() === id) {
+	    status = "self";
+	  }
+	
+	  for (var requestId in _friends) {
+	    if (parseInt(_friends[requestId].friender_id) === id || parseInt(_friends[requestId].friended_id) === id) {
+	      status = "friends";
+	    }
+	  }
+	
+	  for (var pendingRequestId in _pendingFriends) {
+	    if (parseInt(_pendingFriends[pendingRequestId].friender_id) === id || parseInt(_pendingFriends[pendingRequestId].friended_id) === id) {
+	      status = "pending";
+	    }
+	  }
+	
+	  return status;
+	};
+	
+	module.exports = FriendStore;
+
+/***/ },
+/* 282 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(232);
+	var PostApiUtil = __webpack_require__(283);
+	var PostStore = __webpack_require__(232);
+	
+	var PostForm = React.createClass({
+	  displayName: 'PostForm',
+	
+	
+	  getInitialState: function () {
+	
+	    var isOwnPage = SessionStore.currentUserId() === this.props.id;
+	    var isTimeline = !!this.props.id;
+	
+	    return { currentUser: SessionStore.currentUser(),
+	      isOwnPage: isOwnPage, isTimeline: isTimeline, post: "" };
+	  },
+	
+	  componentDidMount: function () {
+	    PostStore.addListener(this.handleChange);
+	  },
+	
+	  handleChange: function () {
+	
+	    if (this.state.isTimeline) {
+	      PostApiUtil.fetchPosts(this.props.id);
+	    } else {
+	      PostApiUtil.fetchFeedPosts(this.state.currentUser.id);
+	    }
+	  },
+	
+	  postUpdate: function (e) {
+	
+	    e.preventDefault();
+	
+	    this.setState({ post: e.target.value });
+	  },
+	
+	  handleSubmit: function (e) {
+	
+	    e.preventDefault();
+	
+	    if (this.state.isTimeline) {
+	      PostApiUtil.createPost({ body: this.state.post, profile_id: this.props.id });
+	    } else {
+	      PostApiUtil.createPost({ body: this.state.post, profile_id: this.state.currentUser.id });
+	    }
+	
+	    this.setState({ post: "" });
+	  },
+	
+	  render: function () {
+	
+	    var text = "What's on your mind?";
+	
+	    if (this.state.ownPage) {
+	      return React.createElement(
+	        'form',
+	        {
+	          className: 'post-form',
+	          onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'header',
+	          { className: 'tab-container group' },
+	          React.createElement('img', { src: postIcon, className: 'post-form-post-icon' }),
+	          React.createElement(
+	            'div',
+	            { className: 'post-form-status-tab' },
+	            'Status'
+	          ),
+	          React.createElement('img', { src: photoIcon, className: 'post-form-photo-icon' }),
+	          React.createElement(
+	            'div',
+	            { className: 'post-form-photo-tab' },
+	            'Photo'
+	          )
+	        ),
+	        React.createElement(
+	          'main',
+	          null,
+	          React.createElement('img', {
+	            src: this.state.currentUser.profile_pic_url,
+	            className: 'post-form-thumb' }),
+	          React.createElement('textarea', {
+	            placeholder: text,
+	            value: this.state.post,
+	            onChange: this.postUpdate })
+	        ),
+	        React.createElement(
+	          'footer',
+	          { className: 'group' },
+	          React.createElement(
+	            'button',
+	            { className: 'post-form-submit-button' },
+	            'Post'
+	          )
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'form',
+	        {
+	          className: 'post-form',
+	          onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'header',
+	          { className: 'tab-container group' },
+	          React.createElement('img', { src: postIcon, className: 'post-form-post-icon' }),
+	          React.createElement(
+	            'div',
+	            { className: 'post-form-status-tab' },
+	            'Post'
+	          ),
+	          React.createElement('img', { src: photoIcon, className: 'post-form-photo-icon' }),
+	          React.createElement(
+	            'div',
+	            { className: 'post-form-photo-tab' },
+	            'Photo'
+	          )
+	        ),
+	        React.createElement(
+	          'main',
+	          null,
+	          React.createElement('img', {
+	            src: this.state.currentUser.profile_pic_url,
+	            className: 'post-form-thumb' }),
+	          React.createElement('textarea', {
+	            placeholder: text,
+	            onChange: this.postUpdate })
+	        ),
+	        React.createElement(
+	          'footer',
+	          { className: 'group' },
+	          React.createElement(
+	            'button',
+	            { className: 'post-form-submit-button' },
+	            'Post'
+	          )
+	        )
+	      );
+	    }
+	  }
+	
+	});
+	
+	module.exports = PostForm;
+
+/***/ },
+/* 283 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var PostActions = __webpack_require__(284);
+	
+	var PostApiUtil = {
+	
+	  createPost: function (post) {
+	    $.ajax({
+	      type: 'POST',
+	      url: '/api/posts',
+	      data: { user: post },
+	      dataType: 'json',
+	      success: function (post) {
+	        PostActions.receivePost(post);
+	      }
+	    });
+	  },
+	
+	  updatePost: function (updatedPost) {
+	    $.ajax({
+	      type: 'PATCH',
+	      url: '/api/posts/' + id
+	    });
+	  },
+	
+	  deletePost: function (id) {
+	    $.ajax({
+	      type: 'DELETE',
+	      url: '/api/posts/' + id,
+	      dataType: 'json',
+	      success: function (deletedPost) {
+	        PostActions.removePost(deletedPost);
+	      }
+	    });
+	  },
+	
+	  fetchPosts: function (id) {
+	    $.ajax({
+	      type: 'GET',
+	      url: '/api/users/' + id + '/posts',
+	      dataType: 'json',
+	      success: function (posts) {
+	        PostActions.receivePosts(posts);
+	      }
+	    });
+	  },
+	
+	  fetchFeedPosts: function () {
+	    $.ajax({
+	      type: 'GET',
+	      url: 'api/user/feed',
+	      dataType: 'json',
+	      success: function (posts) {
+	        PostActions.receivePosts(posts);
+	      }
+	    });
+	  }
+	
+	};
+	
+	module.exports = PostApiUtil;
+
+/***/ },
+/* 284 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(233);
+	var PostConstants = __webpack_require__(285);
+	
+	var PostActions = {
+	
+	  receivePost: function (post) {
+	    AppDispatcher.dispatch({
+	      actionType: PostConstants.RECEIVE_POST,
+	      post: post
+	    });
+	  },
+	
+	  receivePosts: function (posts) {
+	    AppDispatcher.dispatch({
+	      actionType: PostConstants.RECEIVE_POSTS,
+	      posts: posts
+	    });
+	  },
+	
+	  removePost: function (post) {
+	    AppDispatcher.dispatch({
+	      actionType: PostConstants.REMOVE_POST,
+	      post: post
+	    });
+	  }
+	
+	};
+	
+	module.exports = PostActions;
+
+/***/ },
+/* 285 */
+/***/ function(module, exports) {
+
+	var PostConstants = {
+	
+	  RECEIVE_POST: "RECEIVE_POST",
+	  RECEIVE_POSTS: "RECEIVE_POSTS",
+	  REMOVE_POST: "REMOVE_POST"
+	};
+	
+	module.exports = PostConstants;
+
+/***/ },
+/* 286 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var PostsIndexItem = __webpack_require__(287);
+	var PostStore = __webpack_require__(289);
+	var PostApiUtil = __webpack_require__(283);
+	
+	var PostsIndex = React.createClass({
+	  displayName: 'PostsIndex',
+	
+	
+	  getInitialState: function () {
+	
+	    var isTimeline = !!this.props.id;
+	
+	    return { isTimeline: isTimeline, posts: [] };
+	  },
+	
+	  componentDidMount: function () {
+	
+	    this.listener = PostStore.addListener(this.handleChange);
+	
+	    if (this.state.isTimeline) {
+	      PostApiUtil.fetchPosts(this.props.id);
+	    } else {
+	      PostApiUtil.fetchFeedPosts();
+	    }
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ posts: PostStore.all() });
+	  },
+	
+	  render: function () {
+	
+	    var posts = React.createElement('div', null);
+	
+	    if (this.state.posts.length > 0) {
+	      posts = this.state.posts.reverse().map(function (post) {
+	        return React.createElement(
+	          'li',
+	          { key: post.id },
+	          React.createElement(PostsIndexItem, {
+	            post: post
+	          })
+	        );
+	      });
+	    }
+	
+	    return React.createElement(
+	      'ul',
+	      { className: 'posts-index' },
+	      posts
+	    );
+	  }
+	
+	});
+	
+	module.exports = PostsIndex;
+
+/***/ },
+/* 287 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var PostApiUtil = __webpack_require__(283);
+	var SessionStore = __webpack_require__(232);
+	var LikeButton = __webpack_require__(288);
+	
+	var PostsIndexItem = React.createClass({
+	  displayName: 'PostsIndexItem',
+	
+	
+	  handleEdit: function () {
+	    PostApiUtil.updatedPost();
+	  },
+	
+	  handleDelete: function () {
+	    PostApiUtil.deletePost(this.props.post.id);
+	  },
+	
+	  render: function () {
+	
+	    var isYourPost = this.props.post.author_id === SessionStore.currentUserId();
+	
+	    if (isYourPost) {
+	      return React.createElement(
+	        'div',
+	        { className: 'posts-index-item' },
+	        React.createElement(
+	          'div',
+	          { className: 'posts-index-item-info group' },
+	          React.createElement('img', { src: this.props.post.author_profile_pic_url,
+	            className: 'posts-index-item-thumb' }),
+	          React.createElement(
+	            'div',
+	            { className: 'posts-index-item-author-name' },
+	            this.props.post.author_name
+	          ),
+	          React.createElement(
+	            'button',
+	            {
+	              className: 'post-delete-button',
+	              onClick: this.handleDelete },
+	            'Delete'
+	          ),
+	          React.createElement(
+	            'button',
+	            {
+	              className: 'post-edit-button',
+	              onClick: this.handleEdit },
+	            'Edit'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'posts-index-item-body' },
+	          this.props.post.body
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'react-container group' },
+	          React.createElement(LikeButton, null),
+	          React.createElement(
+	            'div',
+	            { className: 'react-like-text' },
+	            'Like'
+	          ),
+	          React.createElement('img', { src: commentIcon,
+	            className: 'react-comment-icon' }),
+	          React.createElement(
+	            'div',
+	            { className: 'react-comment-text' },
+	            'Comment'
+	          ),
+	          React.createElement('img', { src: shareIcon,
+	            className: 'react-share-icon' }),
+	          React.createElement(
+	            'div',
+	            { className: 'react-share-text' },
+	            'Share'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'reactions-container group' },
+	          React.createElement('img', { src: this.props.post.author_profile_pic_url,
+	            className: 'comment-form-thumb' }),
+	          React.createElement('textarea', {
+	            className: 'comment-form',
+	            placeholder: 'Write a comment...' })
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { className: 'posts-index-item' },
+	        React.createElement(
+	          'div',
+	          { className: 'posts-index-item-info group' },
+	          React.createElement('img', { src: this.props.post.author_profile_pic_url,
+	            className: 'posts-index-item-thumb' }),
+	          React.createElement(
+	            'div',
+	            { className: 'posts-index-item-author-name' },
+	            this.props.post.author_name
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'posts-index-item-body' },
+	          this.props.post.body
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'react-container group' },
+	          React.createElement(LikeButton, null),
+	          React.createElement(
+	            'div',
+	            { className: 'react-like-text' },
+	            'Like'
+	          ),
+	          React.createElement('img', { src: commentIcon,
+	            className: 'react-comment-icon' }),
+	          React.createElement(
+	            'div',
+	            { className: 'react-comment-text' },
+	            'Comment'
+	          ),
+	          React.createElement('img', { src: shareIcon,
+	            className: 'react-share-icon' }),
+	          React.createElement(
+	            'div',
+	            { className: 'react-share-text' },
+	            'Share'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'reactions-container group' },
+	          React.createElement('img', { src: this.props.post.author_profile_pic_url,
+	            className: 'comment-form-thumb' }),
+	          React.createElement('textarea', {
+	            className: 'comment-form',
+	            placeholder: 'Write a comment...' })
+	        )
+	      );
+	    }
+	  }
+	});
+	
+	module.exports = PostsIndexItem;
+
+/***/ },
+/* 288 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var LikeButton = React.createClass({
+	  displayName: "LikeButton",
+	
+	
+	  getInitialState: function () {
+	    return { liked: false };
+	  },
+	
+	  render: function () {
+	
+	    if (this.state.liked) {
+	      return React.createElement("img", { src: likedIcon,
+	        className: "react-liked-icon" });
+	    } else {
+	      return React.createElement("img", { src: likeIcon,
+	        className: "react-like-icon" });
+	    }
+	  }
+	
+	});
+	
+	module.exports = LikeButton;
+
+/***/ },
+/* 289 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(237).Store;
+	var AppDispatcher = __webpack_require__(233);
+	
+	var PostStore = new Store(AppDispatcher);
+	
+	var _posts = {};
+	
+	PostStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "RECEIVE_POST":
+	      _receivePost(payload.post);
+	      PostStore.__emitChange();
+	      break;
+	    case "RECEIVE_POSTS":
+	      _receivePosts(payload.posts);
+	      PostStore.__emitChange();
+	      break;
+	    case "REMOVE_POST":
+	      _removePost(payload.post);
+	      PostStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	PostStore.all = function () {
+	  var results = [];
+	  for (var postId in _posts) {
+	    results.push(_posts[postId]);
+	  }
+	  return results;
+	};
+	
+	_receivePost = function (post) {
+	  _posts[post.id] = post;
+	};
+	
+	_receivePosts = function (posts) {
+	  _posts = {};
+	  posts.forEach(function (post) {
+	    _posts[post.id] = post;
+	  });
+	};
+	
+	_removePost = function (post) {
+	  delete _posts[post.id];
+	};
+	
+	module.exports = PostStore;
+
+/***/ },
+/* 290 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var Navbar = __webpack_require__(265);
+	var PostForm = __webpack_require__(282);
+	var PostsIndex = __webpack_require__(286);
+	var SessionStore = __webpack_require__(232);
+	
+	var Feed = React.createClass({
+	  displayName: 'Feed',
+	
+	
+	  render: function () {
+	
+	    currentUserId = SessionStore.currentUserId();
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'feed' },
+	      React.createElement(Navbar, null),
+	      React.createElement(
+	        'div',
+	        { className: 'feed-content' },
+	        React.createElement(PostForm, {
+	          className: 'feed-post-form' }),
+	        React.createElement(PostsIndex, { currentUserId: currentUserId })
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = Feed;
 
 /***/ }
 /******/ ]);

@@ -15,13 +15,17 @@ var PostsIndex = React.createClass({
 
   componentDidMount: function () {
 
-    PostStore.addListener(this.handleChange);
+    this.listener = PostStore.addListener(this.handleChange);
 
     if (this.state.isTimeline) {
       PostApiUtil.fetchPosts(this.props.id);
     } else {
       PostApiUtil.fetchFeedPosts();
     }
+  },
+
+  componentWillUnmount: function () {
+    this.listener.remove();
   },
 
   handleChange: function () {

@@ -8,10 +8,11 @@ var PostForm = React.createClass({
 
   getInitialState: function () {
 
-    var ownPage = SessionStore.currentUserId() === this.props.id;
+    var isOwnPage = SessionStore.currentUserId() === this.props.id;
+    var isTimeline = !!(this.props.id);
 
     return ( { currentUser : SessionStore.currentUser(),
-              ownPage : ownPage, post: "" } );
+              isOwnPage : isOwnPage, isTimeline : isTimeline, post: "" } );
 
   },
 
@@ -20,7 +21,12 @@ var PostForm = React.createClass({
   },
 
   handleChange: function () {
-    PostApiUtil.fetchPosts(this.props.id);
+
+    if (this.state.isTimeline) {
+      PostApiUtil.fetchPosts(this.props.id);
+    } else {
+      PostApiUtil.fetchFeedPosts(this.state.currentUser.id);
+    }
   },
 
   postUpdate: function (e) {
@@ -35,7 +41,11 @@ var PostForm = React.createClass({
 
     e.preventDefault();
 
-    PostApiUtil.createPost(this.state.post, this.props.id);
+    if (this.state.isTimeline) {
+      PostApiUtil.createPost({ body : this.state.post, profile_id : this.props.id });
+    } else {
+      PostApiUtil.createPost({ body : this.state.post, profile_id : this.state.currentUser.id });
+    }
 
     this.setState( { post : "" } );
 

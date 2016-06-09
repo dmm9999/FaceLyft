@@ -1,8 +1,8 @@
-class Api::PostsController < ApplicationController
+  class Api::PostsController < ApplicationController
 
   def create
-    @post = Post.create(author_id: current_user.id, profile_id: params[:profileId], body: params[:body])
-    render json: @post
+    @post = Post.create(body: create_post_params[:body], profile_id: create_post_params[:profile_id], author_id: current_user.id)
+    render 'api/posts/show'
   end
 
   def index
@@ -14,6 +14,16 @@ class Api::PostsController < ApplicationController
     @post = Post.find(params[:id])
     @post.destroy
     render json: @post
+  end
+
+  private
+
+  def create_post_params
+    params.require(:user).permit(:profile_id, :body)
+  end
+
+  def update_post_params
+    params.require(:user).permit(:body)
   end
 
 end
