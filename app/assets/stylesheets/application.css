@@ -946,3 +946,14 @@ input {
   left: 0px;
   font-size: 12px;
   font-weight: bold;
+}
+
+.friend-request-list {
+  display: none;
+}
+
+.friend-requests:hover .friend-request-list {
+  display: block;
+  position: absolute;
+  background: #ffffff;
+}
