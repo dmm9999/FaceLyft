@@ -97,6 +97,7 @@
 	  React.createElement(
 	    Route,
 	    { path: '/', onEnter: _ensureLoggedIn, component: App },
+	    React.createElement(IndexRoute, { component: Feed }),
 	    React.createElement(Route, { path: '/users/:id', component: Profile })
 	  )
 	);
@@ -33573,8 +33574,8 @@
 	var CoverPic = __webpack_require__(274);
 	var NameBox = __webpack_require__(275);
 	var FriendRequest = __webpack_require__(276);
-	var PostForm = __webpack_require__(281);
-	var PostsIndex = __webpack_require__(285);
+	var PostForm = __webpack_require__(290);
+	var PostsIndex = __webpack_require__(291);
 	
 	var Profile = React.createClass({
 	  displayName: 'Profile',
@@ -34633,7 +34634,164 @@
 	module.exports = FriendStore;
 
 /***/ },
-/* 281 */
+/* 281 */,
+/* 282 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var PostActions = __webpack_require__(283);
+	
+	var PostApiUtil = {
+	
+	  createPost: function (body, profileId) {
+	    $.ajax({
+	      type: 'POST',
+	      url: '/api/posts',
+	      data: { body: body, profileId: profileId },
+	      dataType: 'json',
+	      success: function (post) {
+	        PostActions.receivePost(post);
+	      }
+	    });
+	  },
+	
+	  updatePost: function (updatedPost) {
+	    $.ajax({
+	      type: 'PATCH',
+	      url: '/api/posts/' + id
+	    });
+	  },
+	
+	  deletePost: function (id) {
+	    $.ajax({
+	      type: 'DELETE',
+	      url: '/api/posts/' + id,
+	      dataType: 'json',
+	      success: function (deletedPost) {
+	        PostActions.removePost(deletedPost);
+	      }
+	    });
+	  },
+	
+	  fetchPosts: function (id) {
+	    $.ajax({
+	      type: 'GET',
+	      url: '/api/users/' + id + '/posts',
+	      dataType: 'json',
+	      success: function (posts) {
+	        PostActions.receivePosts(posts);
+	      }
+	    });
+	  }
+	
+	};
+	
+	module.exports = PostApiUtil;
+
+/***/ },
+/* 283 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(233);
+	var PostConstants = __webpack_require__(284);
+	
+	var PostActions = {
+	
+	  receivePost: function (post) {
+	    AppDispatcher.dispatch({
+	      actionType: PostConstants.RECEIVE_POST,
+	      post: post
+	    });
+	  },
+	
+	  receivePosts: function (posts) {
+	    AppDispatcher.dispatch({
+	      actionType: PostConstants.RECEIVE_POSTS,
+	      posts: posts
+	    });
+	  },
+	
+	  removePost: function (post) {
+	    AppDispatcher.dispatch({
+	      actionType: PostConstants.REMOVE_POST,
+	      post: post
+	    });
+	  }
+	
+	};
+	
+	module.exports = PostActions;
+
+/***/ },
+/* 284 */
+/***/ function(module, exports) {
+
+	var PostConstants = {
+	
+	  RECEIVE_POST: "RECEIVE_POST",
+	  RECEIVE_POSTS: "RECEIVE_POSTS",
+	  REMOVE_POST: "REMOVE_POST"
+	};
+	
+	module.exports = PostConstants;
+
+/***/ },
+/* 285 */,
+/* 286 */,
+/* 287 */,
+/* 288 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(237).Store;
+	var AppDispatcher = __webpack_require__(233);
+	
+	var PostStore = new Store(AppDispatcher);
+	
+	var _posts = {};
+	
+	PostStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "RECEIVE_POST":
+	      _receivePost(payload.post);
+	      PostStore.__emitChange();
+	      break;
+	    case "RECEIVE_POSTS":
+	      _receivePosts(payload.posts);
+	      PostStore.__emitChange();
+	      break;
+	    case "REMOVE_POST":
+	      _removePost(payload.post);
+	      PostStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	PostStore.all = function () {
+	  var results = [];
+	  for (var postId in _posts) {
+	    results.push(_posts[postId]);
+	  }
+	  return results;
+	};
+	
+	_receivePost = function (post) {
+	  _posts[post.id] = post;
+	};
+	
+	_receivePosts = function (posts) {
+	  posts.forEach(function (post) {
+	    _posts[post.id] = post;
+	  });
+	};
+	
+	_removePost = function (post) {
+	  delete _posts[post.id];
+	};
+	
+	module.exports = PostStore;
+
+/***/ },
+/* 289 */,
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -34775,113 +34933,13 @@
 	module.exports = PostForm;
 
 /***/ },
-/* 282 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var PostActions = __webpack_require__(283);
-	
-	var PostApiUtil = {
-	
-	  createPost: function (body, profileId) {
-	    $.ajax({
-	      type: 'POST',
-	      url: '/api/posts',
-	      data: { body: body, profileId: profileId },
-	      dataType: 'json',
-	      success: function (post) {
-	        PostActions.receivePost(post);
-	      }
-	    });
-	  },
-	
-	  updatePost: function (updatedPost) {
-	    $.ajax({
-	      type: 'PATCH',
-	      url: '/api/posts/' + id
-	    });
-	  },
-	
-	  deletePost: function (id) {
-	    $.ajax({
-	      type: 'DELETE',
-	      url: '/api/posts/' + id,
-	      dataType: 'json',
-	      success: function (deletedPost) {
-	        PostActions.removePost(deletedPost);
-	      }
-	    });
-	  },
-	
-	  fetchPosts: function (id) {
-	    $.ajax({
-	      type: 'GET',
-	      url: '/api/users/' + id + '/posts',
-	      dataType: 'json',
-	      success: function (posts) {
-	        PostActions.receivePosts(posts);
-	      }
-	    });
-	  }
-	
-	};
-	
-	module.exports = PostApiUtil;
-
-/***/ },
-/* 283 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(233);
-	var PostConstants = __webpack_require__(284);
-	
-	var PostActions = {
-	
-	  receivePost: function (post) {
-	    AppDispatcher.dispatch({
-	      actionType: PostConstants.RECEIVE_POST,
-	      post: post
-	    });
-	  },
-	
-	  receivePosts: function (posts) {
-	    AppDispatcher.dispatch({
-	      actionType: PostConstants.RECEIVE_POSTS,
-	      posts: posts
-	    });
-	  },
-	
-	  removePost: function (post) {
-	    AppDispatcher.dispatch({
-	      actionType: PostConstants.REMOVE_POST,
-	      post: post
-	    });
-	  }
-	
-	};
-	
-	module.exports = PostActions;
-
-/***/ },
-/* 284 */
-/***/ function(module, exports) {
-
-	var PostConstants = {
-	
-	  RECEIVE_POST: "RECEIVE_POST",
-	  RECEIVE_POSTS: "RECEIVE_POSTS",
-	  REMOVE_POST: "REMOVE_POST"
-	};
-	
-	module.exports = PostConstants;
-
-/***/ },
-/* 285 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
-	var PostsIndexItem = __webpack_require__(286);
-	var PostStore = __webpack_require__(287);
+	var PostsIndexItem = __webpack_require__(292);
+	var PostStore = __webpack_require__(288);
 	var PostApiUtil = __webpack_require__(282);
 	
 	var PostsIndex = React.createClass({
@@ -34929,13 +34987,13 @@
 	module.exports = PostsIndex;
 
 /***/ },
-/* 286 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
 	var PostApiUtil = __webpack_require__(282);
-	var LikeButton = __webpack_require__(288);
+	var LikeButton = __webpack_require__(293);
 	
 	var PostsIndexItem = React.createClass({
 	  displayName: 'PostsIndexItem',
@@ -35025,59 +35083,7 @@
 	module.exports = PostsIndexItem;
 
 /***/ },
-/* 287 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(237).Store;
-	var AppDispatcher = __webpack_require__(233);
-	
-	var PostStore = new Store(AppDispatcher);
-	
-	var _posts = {};
-	
-	PostStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case "RECEIVE_POST":
-	      _receivePost(payload.post);
-	      PostStore.__emitChange();
-	      break;
-	    case "RECEIVE_POSTS":
-	      _receivePosts(payload.posts);
-	      PostStore.__emitChange();
-	      break;
-	    case "REMOVE_POST":
-	      _removePost(payload.post);
-	      PostStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	PostStore.all = function () {
-	  var results = [];
-	  for (var postId in _posts) {
-	    results.push(_posts[postId]);
-	  }
-	  return results;
-	};
-	
-	_receivePost = function (post) {
-	  _posts[post.id] = post;
-	};
-	
-	_receivePosts = function (posts) {
-	  posts.forEach(function (post) {
-	    _posts[post.id] = post;
-	  });
-	};
-	
-	_removePost = function (post) {
-	  delete _posts[post.id];
-	};
-	
-	module.exports = PostStore;
-
-/***/ },
-/* 288 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
