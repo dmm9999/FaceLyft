@@ -13,6 +13,17 @@ var FriendApiUtil = {
     });
   },
 
+  fetchFriendRequests: function () {
+    $.ajax({
+      type: 'GET',
+      url: 'api/user/friend_requests',
+      dataType: 'json',
+      success: function (friendRequests) {
+        FriendActions.receiveFriendRequests(friendRequests);
+      }
+    });
+  },
+
   createPendingFriendship: function (friender_id, friended_id) {
     $.ajax({
       type: 'POST',

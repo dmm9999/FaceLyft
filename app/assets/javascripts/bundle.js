@@ -33650,6 +33650,7 @@
 	
 	var SearchBar = __webpack_require__(266);
 	var ProfileButton = __webpack_require__(267);
+	var FriendRequestNotifier = __webpack_require__(291);
 	
 	var Navbar = React.createClass({
 	  displayName: 'Navbar',
@@ -33680,6 +33681,7 @@
 	          },
 	          'Home'
 	        ),
+	        React.createElement(FriendRequestNotifier, null),
 	        React.createElement('input', {
 	          type: 'submit',
 	          className: 'logout-button',
@@ -34676,6 +34678,17 @@
 	    });
 	  },
 	
+	  fetchFriendRequests: function () {
+	    $.ajax({
+	      type: 'GET',
+	      url: 'api/user/friend_requests',
+	      dataType: 'json',
+	      success: function (friendRequests) {
+	        FriendActions.receiveFriendRequests(friendRequests);
+	      }
+	    });
+	  },
+	
 	  createPendingFriendship: function (friender_id, friended_id) {
 	    $.ajax({
 	      type: 'POST',
@@ -34725,6 +34738,13 @@
 	      actionType: FriendConstants.REMOVE_FRIENDSHIP,
 	      friendship: friendship
 	    });
+	  },
+	
+	  receiveFriendRequests: function (friendRequests) {
+	    AppDispatcher.dispatch({
+	      actionType: FriendConstants.RECEIVE_FRIEND_REQUESTS,
+	      friendRequests: friendRequests
+	    });
 	  }
 	
 	};
@@ -34737,7 +34757,8 @@
 
 	var FriendConstants = {
 	  RECEIVE_PENDING_FRIENDSHIP: "RECEIVE_PENDING_FRIENDSHIP",
-	  REMOVE_FRIENDSHIP: "REMOVE_FRIENDSHIP"
+	  REMOVE_FRIENDSHIP: "REMOVE_FRIENDSHIP",
+	  RECEIVE_FRIEND_REQUESTS: "RECEIVE_FRIEND_REQUESTS"
 	};
 	
 	module.exports = FriendConstants;
@@ -34765,6 +34786,10 @@
 	      _removeFriendship();
 	      FriendStore.__emitChange();
 	      break;
+	    case "RECEIVE_FRIEND_REQUESTS":
+	      _receiveFriendRequests(payload.friendRequests);
+	      FriendStore.__emitChange();
+	      break;
 	  }
 	};
 	
@@ -34777,6 +34802,14 @@
 	_removeFriendship = function () {
 	  _friends = {};
 	  _pendingFriends = {};
+	};
+	
+	_receiveFriendRequests = function (friendRequests) {
+	  _pendingFriends = {};
+	  _friends = {};
+	  friendRequests.forEach(function (friendRequest) {
+	    _pendingFriends[friendRequest.id] = friendRequest;
+	  });
 	};
 	
 	FriendStore.friendStatus = function (id) {
@@ -34800,6 +34833,19 @@
 	  }
 	
 	  return status;
+	};
+	
+	FriendStore.friendRequests = function (id) {
+	
+	  var requests = [];
+	
+	  for (var requestId in _pendingFriends) {
+	    if (parseInt(_pendingFriends[requestId].friended_id) === id) {
+	      requests.push(_pendingFriends.id);
+	    }
+	  }
+	
+	  return requests;
 	};
 	
 	module.exports = FriendStore;
@@ -35406,6 +35452,93 @@
 	});
 	
 	module.exports = Feed;
+
+/***/ },
+/* 291 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var FriendStore = __webpack_require__(281);
+	var FriendApiUtil = __webpack_require__(278);
+	var SessionStore = __webpack_require__(232);
+	
+	var FriendRequestNotifier = React.createClass({
+	  displayName: 'FriendRequestNotifier',
+	
+	
+	  getInitialState: function () {
+	
+	    return { friendRequests: [] };
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = FriendStore.addListener(this.handleChange);
+	    FriendApiUtil.fetchFriendRequests();
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ friendRequests: FriendStore.friendRequests(SessionStore.currentUserId()) });
+	  },
+	
+	  render: function () {
+	
+	    if (this.state.friendRequests.length) {
+	
+	      var friendRequests = this.state.friendRequests.map(function (friendRequest) {
+	        return React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'div',
+	            { className: 'friend-request-text' },
+	            friendRequest.friender_user,
+	            ' wants to be your friend!'
+	          ),
+	          React.createElement(
+	            'button',
+	            { className: 'friend-request-accept' },
+	            'Accept'
+	          ),
+	          React.createElement(
+	            'button',
+	            { className: 'friend-request-deny' },
+	            'Deny'
+	          )
+	        );
+	      });
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'friend-requests' },
+	        React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' }),
+	        React.createElement(
+	          'div',
+	          { className: 'friend-request-counter' },
+	          this.state.friendRequests.length
+	        ),
+	        React.createElement(
+	          'ul',
+	          { className: 'friend-request-list' },
+	          friendRequests
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { className: 'friend-requests' },
+	        React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' })
+	      );
+	    }
+	  }
+	
+	});
+	
+	module.exports = FriendRequestNotifier;
 
 /***/ }
 /******/ ]);

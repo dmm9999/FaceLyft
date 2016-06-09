@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     post '/users/:id/friends', to: 'users#create_friendship'
     delete '/users/:id/friends', to: 'users#delete_friendship'
     get 'user/feed', to: 'users#feed'
+    get 'user/friend_requests', to: 'users#friend_requests'
 
   end
 

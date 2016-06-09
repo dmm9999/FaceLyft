@@ -33,11 +33,8 @@ var Friends = React.createClass({
 
   render: function () {
 
-
     var friends;
     var length = <div/>;
-
-
 
     if (this.state.friends && this.state.friends.length !== 0) {
       length = <div>{this.state.friends.length}</div>;

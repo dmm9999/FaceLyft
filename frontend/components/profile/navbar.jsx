@@ -4,6 +4,7 @@ var SessionApiUtil = require('../../util/session_api_util');
 
 var SearchBar = require('./search_bar');
 var ProfileButton = require('./profile_button');
+var FriendRequestNotifier = require('./friend_request_notifier');
 
 var Navbar = React.createClass({
 
@@ -26,6 +27,7 @@ var Navbar = React.createClass({
             className="home-button"
             onClick={this.handleClick}
             >Home</button>
+          <FriendRequestNotifier/>
           <input
             type="submit"
             className="logout-button"
