@@ -10,12 +10,14 @@ var PostForm = require('./feed/post_form');
 var PostsIndex = require('./feed/posts_index');
 var UserStore = require('./../../stores/user_store');
 var UserApiUtil = require('./../../util/user_api_util');
+var PostApiUtil = require('./../../util/post_api_util');
 
 var Profile = React.createClass({
 
   componentDidMount: function () {
     this.listener = UserStore.addListener(this.handleChange);
     UserApiUtil.fetchUser(parseInt(this.props.params.id));
+    PostApiUtil.fetchPosts(parseInt(this.props.params.id));
   },
 
   componentWillUnmount: function () {
@@ -24,6 +26,7 @@ var Profile = React.createClass({
 
   componentWillReceiveProps: function (newProps) {
     UserApiUtil.fetchUser(parseInt(newProps.params.id));
+    PostApiUtil.fetchPosts(parseInt(newProps.params.id));
   },
 
   handleChange: function () {

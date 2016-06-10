@@ -33652,6 +33652,7 @@
 	var PostsIndex = __webpack_require__(291);
 	var UserStore = __webpack_require__(259);
 	var UserApiUtil = __webpack_require__(256);
+	var PostApiUtil = __webpack_require__(288);
 	
 	var Profile = React.createClass({
 	  displayName: 'Profile',
@@ -33660,6 +33661,7 @@
 	  componentDidMount: function () {
 	    this.listener = UserStore.addListener(this.handleChange);
 	    UserApiUtil.fetchUser(parseInt(this.props.params.id));
+	    PostApiUtil.fetchPosts(parseInt(this.props.params.id));
 	  },
 	
 	  componentWillUnmount: function () {
@@ -33668,6 +33670,7 @@
 	
 	  componentWillReceiveProps: function (newProps) {
 	    UserApiUtil.fetchUser(parseInt(newProps.params.id));
+	    PostApiUtil.fetchPosts(parseInt(newProps.params.id));
 	  },
 	
 	  handleChange: function () {},
@@ -35782,7 +35785,7 @@
 	
 	  getInitialState: function () {
 	
-	    return { status: FriendStore.friendStatus(this.props.id) };
+	    return { status: "" };
 	  },
 	
 	  componentDidMount: function () {
@@ -36168,6 +36171,14 @@
 	
 	  componentWillUnmount: function () {
 	    this.listener.remove();
+	  },
+	
+	  componentWillReceiveProps: function (newProps) {
+	    if (this.state.isTimeline) {
+	      PostApiUtil.fetchPosts(newProps.id);
+	    } else {
+	      PostApiUtil.fetchFeedPosts(newProps.id);
+	    }
 	  },
 	
 	  handleChange: function () {

@@ -8,7 +8,7 @@ var FriendRequest = React.createClass({
 
   getInitialState: function () {
 
-    return ( { status : FriendStore.friendStatus(this.props.id) } );
+    return ( { status : "" } );
 
   },
 
@@ -45,7 +45,7 @@ var FriendRequest = React.createClass({
   },
 
   render: function () {
-    
+
     if (this.state.status === "self") {
       return(
         <div/>

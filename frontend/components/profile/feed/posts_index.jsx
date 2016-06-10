@@ -28,6 +28,14 @@ var PostsIndex = React.createClass({
     this.listener.remove();
   },
 
+  componentWillReceiveProps: function (newProps) {
+    if (this.state.isTimeline) {
+      PostApiUtil.fetchPosts(newProps.id);
+    } else {
+      PostApiUtil.fetchFeedPosts(newProps.id);
+    }
+  },
+
   handleChange: function () {
     this.setState( { posts : PostStore.all() } );
   },
