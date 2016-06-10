@@ -67,7 +67,7 @@ var CurrentCityForm = React.createClass({
       return (
         <div className="group">
           <div
-          className="current-city-form-work">Current City: {this.state.currentCity}</div>
+          className="current-city-form-value">Current City: {this.state.currentCity}</div>
         </div>
       )
     } else if (this.state.editing) {

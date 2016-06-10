@@ -46,8 +46,8 @@ class Api::UsersController < ApplicationController
   end
 
   def delete_friendship
-    @friendship = Friendship.find_by_ids(current_user.id, params[:userProfileId].to_i)
-    @friendship.destroy
+    @friendship = Friendship.find_by_ids(current_user.id, params[:profileId].to_i)
+    @friendship.delete
     render json: @friendship
   end
 

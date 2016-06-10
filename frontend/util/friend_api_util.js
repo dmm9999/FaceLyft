@@ -36,12 +36,12 @@ var FriendApiUtil = {
     });
   },
 
-  deleteFriendship: function (id) {
+  deleteFriendship: function (currentUserId, profileId) {
     $.ajax({
       type: 'DELETE',
-      url: 'api/friendships/' + id,
+      url: 'api/users/' + currentUserId + '/friends',
       dataType: 'json',
-      data: {id : id},
+      data: { currentUserId : currentUserId, profileId : profileId },
       success: function (friendship) {
         FriendActions.removeFriendship(friendship);
       }

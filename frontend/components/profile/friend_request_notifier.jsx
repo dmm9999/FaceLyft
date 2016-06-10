@@ -27,9 +27,11 @@ var FriendRequestNotifier = React.createClass({
 
   handleDelete: function (e) {
 
+    debugger
+
     e.preventDefault();
 
-    FriendApiUtil.deleteFriendship(e.target.value);
+    FriendApiUtil.deleteFriendshipById(e.target.value, SessionStore.currentUserId());
 
   },
 
@@ -66,7 +68,7 @@ var FriendRequestNotifier = React.createClass({
       return (
         <div className="friend-requests">
           <div className="friend-request-counter-container">
-            <img src={friendRequestIcon} className="friend-request-icon"/>
+            <img src={friendRequestIcon} className="friend-request-notifier-icon"/>
             <div className="friend-request-counter">{this.state.friendRequests.length}</div>
           </div>
           <ul className="friend-request-list">
@@ -77,7 +79,7 @@ var FriendRequestNotifier = React.createClass({
     } else {
       return (
         <div className="friend-requests">
-          <img src={friendRequestIcon} className="friend-request-icon"/>
+          <img src={friendRequestIcon} className="friend-request-notifier-icon"/>
         </div>
       );
     }

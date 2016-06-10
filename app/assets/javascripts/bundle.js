@@ -33870,9 +33870,11 @@
 	
 	  handleDelete: function (e) {
 	
+	    debugger;
+	
 	    e.preventDefault();
 	
-	    FriendApiUtil.deleteFriendship(e.target.value);
+	    FriendApiUtil.deleteFriendshipById(e.target.value, SessionStore.currentUserId());
 	  },
 	
 	  handleConfirm: function (e) {
@@ -33922,7 +33924,7 @@
 	        React.createElement(
 	          'div',
 	          { className: 'friend-request-counter-container' },
-	          React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' }),
+	          React.createElement('img', { src: friendRequestIcon, className: 'friend-request-notifier-icon' }),
 	          React.createElement(
 	            'div',
 	            { className: 'friend-request-counter' },
@@ -33939,7 +33941,7 @@
 	      return React.createElement(
 	        'div',
 	        { className: 'friend-requests' },
-	        React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' })
+	        React.createElement('img', { src: friendRequestIcon, className: 'friend-request-notifier-icon' })
 	      );
 	    }
 	  }
@@ -34077,12 +34079,12 @@
 	    });
 	  },
 	
-	  deleteFriendship: function (id) {
+	  deleteFriendship: function (currentUserId, profileId) {
 	    $.ajax({
 	      type: 'DELETE',
-	      url: 'api/friendships/' + id,
+	      url: 'api/users/' + currentUserId + '/friends',
 	      dataType: 'json',
-	      data: { id: id },
+	      data: { currentUserId: currentUserId, profileId: profileId },
 	      success: function (friendship) {
 	        FriendActions.removeFriendship(friendship);
 	      }
@@ -34988,7 +34990,7 @@
 	        React.createElement(
 	          'div',
 	          {
-	            className: 'current-city-form-work' },
+	            className: 'current-city-form-value' },
 	          'Current City: ',
 	          this.state.currentCity
 	        )
