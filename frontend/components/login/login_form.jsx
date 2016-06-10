@@ -61,11 +61,22 @@ var LoginForm = React.createClass({
     this.setState( { password: newPassword } );
   },
 
-  guestLogin: function (e) {
+  homerLogin: function (e) {
     e.preventDefault();
 
     var formData = {
-      email_address: "guest@gmail.com",
+      email_address: "homer@simpson.com",
+      password: "password"
+    };
+
+    SessionApiUtil.login(formData);
+  },
+
+  lisaLogin: function (e) {
+    e.preventDefault();
+
+    var formData = {
+      email_address: "lisa@simpson.com",
       password: "password"
     };
 
@@ -102,8 +113,16 @@ var LoginForm = React.createClass({
                 <input
                   type="submit"
                   className="guest-login-button"
-                  onClick={this.guestLogin}
-                  value="Login as Guest"/>
+                  onClick={this.homerLogin}
+                  value="Login as Homer"/>
+              </li>
+
+              <li>
+                <input
+                  type="submit"
+                  className="guest-login-button"
+                  onClick={this.lisaLogin}
+                  value="Login as Lisa"/>
               </li>
 
             </ul>

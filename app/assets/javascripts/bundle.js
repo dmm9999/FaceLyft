@@ -33279,11 +33279,22 @@
 	    this.setState({ password: newPassword });
 	  },
 	
-	  guestLogin: function (e) {
+	  homerLogin: function (e) {
 	    e.preventDefault();
 	
 	    var formData = {
-	      email_address: "guest@gmail.com",
+	      email_address: "homer@simpson.com",
+	      password: "password"
+	    };
+	
+	    SessionApiUtil.login(formData);
+	  },
+	
+	  lisaLogin: function (e) {
+	    e.preventDefault();
+	
+	    var formData = {
+	      email_address: "lisa@simpson.com",
 	      password: "password"
 	    };
 	
@@ -33326,8 +33337,17 @@
 	              React.createElement('input', {
 	                type: 'submit',
 	                className: 'guest-login-button',
-	                onClick: this.guestLogin,
-	                value: 'Login as Guest' })
+	                onClick: this.homerLogin,
+	                value: 'Login as Homer' })
+	            ),
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement('input', {
+	                type: 'submit',
+	                className: 'guest-login-button',
+	                onClick: this.lisaLogin,
+	                value: 'Login as Lisa' })
 	            )
 	          ),
 	          React.createElement(
@@ -35895,7 +35915,19 @@
 	  },
 	
 	  componentDidMount: function () {
-	    PostStore.addListener(this.handleChange);
+	    this.listener = PostStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  componentWillReceiveProps: function (newProps) {
+	    if (this.state.isTimeline) {
+	      PostApiUtil.fetchPosts(newProps.id);
+	    } else {
+	      PostApiUtil.fetchFeedPosts(this.state.currentUser.id);
+	    }
 	  },
 	
 	  handleChange: function () {

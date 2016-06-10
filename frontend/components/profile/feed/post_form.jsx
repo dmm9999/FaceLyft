@@ -18,7 +18,19 @@ var PostForm = React.createClass({
   },
 
   componentDidMount: function () {
-    PostStore.addListener(this.handleChange);
+    this.listener = PostStore.addListener(this.handleChange);
+  },
+
+  componentWillUnmount: function () {
+    this.listener.remove();
+  },
+
+  componentWillReceiveProps: function (newProps) {
+    if (this.state.isTimeline) {
+      PostApiUtil.fetchPosts(newProps.id);
+    } else {
+      PostApiUtil.fetchFeedPosts(this.state.currentUser.id);
+    }
   },
 
   handleChange: function () {
@@ -53,7 +65,7 @@ var PostForm = React.createClass({
   },
 
   render: function () {
-
+    
     var text = "What's on your mind?";
 
     if (!this.state.isTimeline || this.state.isOwnPage) {
