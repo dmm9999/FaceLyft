@@ -48,8 +48,27 @@ var FriendApiUtil = {
     });
   },
 
-  acceptFriendship: function () {
+  deleteFriendshipById: function (id) {
+    $.ajax({
+      type: 'DELETE',
+      url: 'api/friendships/' + id,
+      dataType: 'json',
+      data: { id : id },
+      success: function (friendship) {
+        FriendActions.removeFriendship(friendship);
+      }
+    });
+  },
 
+  acceptFriendship: function (id) {
+    $.ajax({
+      type: 'PATCH',
+      url: 'api/friendships/' + id,
+      data: { id : id },
+      success: function (acceptedFriendship) {
+        FriendActions.receiveAcceptedFriendship(acceptedFriendship);
+      }
+    });
   }
 };
 

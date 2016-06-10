@@ -26,10 +26,10 @@ var FriendRequestNotifier = React.createClass({
   },
 
   handleDelete: function (e) {
-    
+
     e.preventDefault();
 
-    FriendApiUtil.deleteFriendshipById(e.target.value, SessionStore.currentUserId());
+    FriendApiUtil.deleteFriendshipById(e.target.value);
 
   },
 
@@ -37,7 +37,7 @@ var FriendRequestNotifier = React.createClass({
 
     e.preventDefault();
 
-    FriendApiUtil.acceptFriendship(e.target.value);
+    FriendApiUtil.acceptFriendship(parseInt(e.target.value));
 
   },
 

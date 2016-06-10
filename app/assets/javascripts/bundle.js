@@ -33650,10 +33650,27 @@
 	var FriendRequest = __webpack_require__(286);
 	var PostForm = __webpack_require__(287);
 	var PostsIndex = __webpack_require__(291);
+	var UserStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
 	
 	var Profile = React.createClass({
 	  displayName: 'Profile',
 	
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	    UserApiUtil.fetchUser(parseInt(this.props.params.id));
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  componentWillReceiveProps: function (newProps) {
+	    UserApiUtil.fetchUser(parseInt(newProps.params.id));
+	  },
+	
+	  handleChange: function () {},
 	
 	  render: function () {
 	
@@ -33872,14 +33889,14 @@
 	
 	    e.preventDefault();
 	
-	    FriendApiUtil.deleteFriendshipById(e.target.value, SessionStore.currentUserId());
+	    FriendApiUtil.deleteFriendshipById(e.target.value);
 	  },
 	
 	  handleConfirm: function (e) {
 	
 	    e.preventDefault();
 	
-	    FriendApiUtil.acceptFriendship(e.target.value);
+	    FriendApiUtil.acceptFriendship(parseInt(e.target.value));
 	  },
 	
 	  render: function () {
@@ -33975,6 +33992,14 @@
 	      _receiveFriendRequests(payload.friendRequests);
 	      FriendStore.__emitChange();
 	      break;
+	    case "RECEIVE_FRIENDS":
+	      _receiveFriends(payload.friends);
+	      FriendStore.__emitChange();
+	      break;
+	    case "RECEIVE_ACCEPTED_FRIENDSHIP":
+	      _setAcceptedFriendship(payload.acceptedFriendship);
+	      FriendStore.__emitChange();
+	      break;
 	  }
 	};
 	
@@ -33984,6 +34009,12 @@
 	  _pendingFriends[pendingFriendship.id] = pendingFriendship;
 	};
 	
+	_setAcceptedFriendship = function (acceptFriendship) {
+	  _pendingFriends = {};
+	  _friends = {};
+	  _friends[acceptFriendship.id] = acceptFriendship;
+	};
+	
 	_removeFriendship = function () {
 	  _friends = {};
 	  _pendingFriends = {};
@@ -33991,9 +34022,16 @@
 	
 	_receiveFriendRequests = function (friendRequests) {
 	  _pendingFriends = {};
-	  _friends = {};
 	  friendRequests.forEach(function (friendRequest) {
 	    _pendingFriends[friendRequest.id] = friendRequest;
+	  });
+	};
+	
+	_receiveFriends = function (friends) {
+	
+	  _friends = {};
+	  friends.forEach(function (friend) {
+	    _friends[friend.id] = friend;
 	  });
 	};
 	
@@ -34006,13 +34044,13 @@
 	  }
 	
 	  for (var requestId in _friends) {
-	    if (parseInt(_friends[requestId].friender_id) === id || parseInt(_friends[requestId].friended_id) === id) {
+	    if (parseInt(_friends[parseInt(requestId)].id) === id || parseInt(_friends[parseInt(requestId)].id) === id) {
 	      status = "friends";
 	    }
 	  }
 	
 	  for (var pendingRequestId in _pendingFriends) {
-	    if (parseInt(_pendingFriends[pendingRequestId].friender_id) === id || parseInt(_pendingFriends[pendingRequestId].friended_id) === id) {
+	    if (parseInt(_pendingFriends[parseInt(pendingRequestId)].friender_id) === id || parseInt(_pendingFriends[parseInt(pendingRequestId)].friended_id) === id) {
 	      status = "pending";
 	    }
 	  }
@@ -34089,7 +34127,28 @@
 	    });
 	  },
 	
-	  acceptFriendship: function () {}
+	  deleteFriendshipById: function (id) {
+	    $.ajax({
+	      type: 'DELETE',
+	      url: 'api/friendships/' + id,
+	      dataType: 'json',
+	      data: { id: id },
+	      success: function (friendship) {
+	        FriendActions.removeFriendship(friendship);
+	      }
+	    });
+	  },
+	
+	  acceptFriendship: function (id) {
+	    $.ajax({
+	      type: 'PATCH',
+	      url: 'api/friendships/' + id,
+	      data: { id: id },
+	      success: function (acceptedFriendship) {
+	        FriendActions.receiveAcceptedFriendship(acceptedFriendship);
+	      }
+	    });
+	  }
 	};
 	
 	module.exports = FriendApiUtil;
@@ -34110,6 +34169,13 @@
 	    });
 	  },
 	
+	  receiveAcceptedFriendship: function (acceptedFriendship) {
+	    AppDispatcher.dispatch({
+	      actionType: FriendConstants.RECEIVE_ACCEPTED_FRIENDSHIP,
+	      acceptedFriendship: acceptedFriendship
+	    });
+	  },
+	
 	  removeFriendship: function (friendship) {
 	    AppDispatcher.dispatch({
 	      actionType: FriendConstants.REMOVE_FRIENDSHIP,
@@ -34121,6 +34187,13 @@
 	    AppDispatcher.dispatch({
 	      actionType: FriendConstants.RECEIVE_FRIEND_REQUESTS,
 	      friendRequests: friendRequests
+	    });
+	  },
+	
+	  receiveFriends: function (friends) {
+	    AppDispatcher.dispatch({
+	      actionType: FriendConstants.RECEIVE_FRIENDS,
+	      friends: friends
 	    });
 	  }
 	
@@ -34134,8 +34207,10 @@
 
 	var FriendConstants = {
 	  RECEIVE_PENDING_FRIENDSHIP: "RECEIVE_PENDING_FRIENDSHIP",
+	  RECEIVE_ACCEPTED_FRIENDSHIP: "RECEIVE_ACCEPTED_FRIENDSHIP",
 	  REMOVE_FRIENDSHIP: "REMOVE_FRIENDSHIP",
-	  RECEIVE_FRIEND_REQUESTS: "RECEIVE_FRIEND_REQUESTS"
+	  RECEIVE_FRIEND_REQUESTS: "RECEIVE_FRIEND_REQUESTS",
+	  RECEIVE_FRIENDS: "RECEIVE_FRIENDS"
 	};
 	
 	module.exports = FriendConstants;
@@ -35712,6 +35787,7 @@
 	
 	  componentDidMount: function () {
 	    FriendStore.addListener(this.handleChange);
+	    FriendApiUtil.fetchFriends(SessionStore.currentUserId());
 	  },
 	
 	  handleChange: function () {
@@ -35849,8 +35925,6 @@
 	  },
 	
 	  render: function () {
-	
-	    debugger;
 	
 	    var text = "What's on your mind?";
 	

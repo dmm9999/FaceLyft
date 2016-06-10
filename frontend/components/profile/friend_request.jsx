@@ -14,6 +14,7 @@ var FriendRequest = React.createClass({
 
   componentDidMount: function () {
     FriendStore.addListener(this.handleChange);
+    FriendApiUtil.fetchFriends(SessionStore.currentUserId());
   },
 
   handleChange: function () {
@@ -44,7 +45,7 @@ var FriendRequest = React.createClass({
   },
 
   render: function () {
-
+    
     if (this.state.status === "self") {
       return(
         <div/>

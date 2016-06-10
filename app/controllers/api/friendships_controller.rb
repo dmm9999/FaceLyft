@@ -5,6 +5,13 @@ class Api::FriendshipsController < ApplicationController
     render 'api/friendships/index'
   end
 
+  def update
+    @friend_request = Friendship.find(params[:id])
+    @friend_request.accepted = true
+    @friend_request.save
+    render json: @friend_request
+  end
+
   def destroy
     @friendship = Friendship.find(params[:id])
     @friendship.destroy

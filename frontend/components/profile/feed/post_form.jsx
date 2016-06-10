@@ -54,8 +54,6 @@ var PostForm = React.createClass({
 
   render: function () {
 
-    debugger
-
     var text = "What's on your mind?";
 
     if (!this.state.isTimeline || this.state.isOwnPage) {

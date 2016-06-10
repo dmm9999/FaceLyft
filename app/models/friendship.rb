@@ -13,7 +13,7 @@ class Friendship < ActiveRecord::Base
     primary_key: :id
 
     def self.find_by_ids(id1, id2)
-      @friendship = (Friendship.where(friender_id: id1).where(friended_id: id2) ||
-      Friendship.where(friended_id: id1).where(friender_id: id2)).first
+      @friendship = Friendship.where(friender_id: id1).where(friended_id: id2)
+      .concat(Friendship.where(friended_id: id1).where(friender_id: id2)).first
     end
 end

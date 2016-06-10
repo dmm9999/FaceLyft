@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     end
     resource :session, only: [:create, :destroy, :show]
     resources :posts, only: [:create, :destroy, :update, :show]
-    resources :friendships, only: [:delete]
+    resources :friendships, only: [:update, :destroy]
 
 
     get '/users/:id/friends', to: 'users#friends'
