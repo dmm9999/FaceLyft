@@ -6,6 +6,6 @@ json.array!(@posts) do |post|
   json.profile_id post.profile_id
   json.created_at post.created_at
   json.author_name post.author.name
-  json.author_profile_pic_url post.author.profile_pic.url
+  json.author_profile_pic_url asset_path(post.author.profile_pic.url)
 
 end

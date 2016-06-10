@@ -8,10 +8,10 @@ class User < ActiveRecord::Base
   validates :password, length: {minimum: 6, allow_nil: true}
   validates :session_token, uniqueness: true
 
-  has_attached_file :profile_pic, default_url: ActionController::Base.helpers.asset_path("maxresdefault.jpg")
+  has_attached_file :profile_pic, default_url: 'blank-profile-picture.png'
   validates_attachment_content_type :profile_pic, content_type: /\Aimage\/.*\Z/
 
-  has_attached_file :coverpic, default_url: ActionController::Base.helpers.asset_path("maxresdefault.jpg")
+  has_attached_file :coverpic, default_url: 'coverimages.jpeg'
   validates_attachment_content_type :coverpic, content_type: /\Aimage\/.*\Z/
 
   has_many :friender_friendships,
