@@ -860,6 +860,7 @@ input {
   color: #90949c;
   margin-left: 10px;
   font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .name-form-edit {
@@ -873,19 +874,23 @@ input {
   font-family: helvetica;
   color: #ffffff;
   font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
 }
 
 .first-name-form-input {
   border: 1px solid #999999;
   color: #A9A9AE;
   width: 80px;
-  margin: 0px 10px 0px 10px;
+  margin: 0px 10px 10px 10px;
 }
 
 .last-name-form-input {
   border: 1px solid #999999;
   color: #A9A9AE;
   width: 80px;
+  margin-bottom: 10px;
 }
 
 .name-form-save {
@@ -899,6 +904,7 @@ input {
   font-family: helvetica;
   color: #ffffff;
   font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .right-sidebar {
@@ -973,4 +979,292 @@ input {
   display: block;
   position: absolute;
   background: #ffffff;
+}
+
+.work-form-work {
+  float:left;
+  font-family: helvetica;
+  color: #90949c;
+  margin-left: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.work-form-edit {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.work-form-input {
+  border: 1px solid #999999;
+  color: #A9A9AE;
+  width: 180px;
+  margin: 0px 10px 10px 10px;
+}
+
+.work-form-save {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.current-city-form-value {
+  float:left;
+  font-family: helvetica;
+  color: #90949c;
+  margin-left: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.current-city-form-edit {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;padding: 4px;
+  margin-bottom: 10px;
+}
+
+.current-city-form-input {
+  border: 1px solid #999999;
+  color: #A9A9AE;
+  width: 180px;
+  margin: 0px 10px 10px 10px;
+}
+
+.current-city-form-save {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.birthday-form-value {
+  float:left;
+  font-family: helvetica;
+  color: #90949c;
+  margin-left: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.birthday-form-edit {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.birthday-form-input {
+  border: 1px solid #999999;
+  color: #A9A9AE;
+  width: 180px;
+  margin: 0px 10px 10px 10px;
+  margin-bottom: 10px;
+}
+
+.birthday-form-save {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.phone-number-form-value {
+  float:left;
+  font-family: helvetica;
+  color: #90949c;
+  margin-left: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.phone-number-form-edit {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.phone-number-form-input {
+  border: 1px solid #999999;
+  color: #A9A9AE;
+  width: 180px;
+  margin: 0px 10px 10px 10px;
+}
+
+.phone-number-form-save {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.hometown-form-value {
+  float:left;
+  font-family: helvetica;
+  color: #90949c;
+  margin-left: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.hometown-form-edit {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.hometown-form-input {
+  border: 1px solid #999999;
+  color: #A9A9AE;
+  width: 180px;
+  margin: 0px 10px 10px 10px;
+}
+
+.hometown-form-save {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.school-form-value {
+  float:left;
+  font-family: helvetica;
+  color: #90949c;
+  margin-left: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.school-form-edit {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.school-form-input {
+  border: 1px solid #999999;
+  color: #A9A9AE;
+  width: 180px;
+  margin: 0px 10px 10px 10px;
+}
+
+.school-form-save {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
 }

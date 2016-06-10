@@ -2,19 +2,18 @@ var React = require('react');
 
 var SessionStore = require('./../../../stores/session_store');
 var SessionApiUtil = require('./../../../util/session_api_util');
-var UserApiUtil = require('./../../../util/user_api_util');
 var UserStore = require('./../../../stores/user_store');
+var UserApiUtil = require('./../../../util/user_api_util');
 
-var HometownForm = React.createClass({
+var BirthdayForm = React.createClass({
 
   getInitialState: function () {
-
     if (SessionStore.currentUserId() === this.props.id) {
-      return( { hometown : SessionStore.currentUser().hometown,
-                editing : false } ) ;
+      return( { birthday: SessionStore.currentUser().birthday,
+                editing: false } );
     } else {
       UserApiUtil.fetchUser(this.props.id);
-      return( { hometown : "", editing : false } );
+      return ( { birthday : "", editing: false } );
     }
   },
 
@@ -36,23 +35,29 @@ var HometownForm = React.createClass({
   },
 
   handleChange: function () {
-    this.setState( { hometown : UserStore.retrieveUser().hometown || "" } );
+    this.setState( { birthday : UserStore.retrieveUser().birthday || ""} );
   },
 
-  updateHometown: function (e) {
+  updateBirthday: function (e) {
 
     e.preventDefault();
 
-    this.setState( { hometown: e.target.value } );
+    this.setState( { birthday : e.target.value } );
+
   },
 
   handleSubmit: function (e) {
 
     e.preventDefault();
 
-    SessionApiUtil.updateCurrentUser( { hometown : this.state.hometown });
+    var formData = {
+      birthday : this.state.birthday
+    };
+
+    SessionApiUtil.updateCurrentUser(formData);
 
     this.toggleEditing();
+
   },
 
   render: function () {
@@ -62,7 +67,7 @@ var HometownForm = React.createClass({
       return (
         <div className="group">
           <div
-          className="hometown-form-value">Hometown: {this.state.hometown}</div>
+          className="birthday-form-value">Birthday: {this.state.birthday}</div>
         </div>
       )
     } else if (this.state.editing) {
@@ -70,23 +75,23 @@ var HometownForm = React.createClass({
         <form className="group"
           onSubmit={this.handleSubmit}>
           <input
-          type="text"
-          className="hometown-form-input"
-          value={this.state.hometown}
-          onChange={this.updateHometown}/>
+          type="date"
+          className="birthday-form-input"
+          value={this.state.birthday}
+          onChange={this.updateBirthday}/>
           <input
           type="submit"
-          className="hometown-form-save"
+          className="birthday-form-save"
           value="Save"/>
         </form>
       )
-    } else if (this.state.hometown === "") {
+    } else if (this.state.birthday === "") {
             return (
               <div className="group">
                 <div
-                className="hometown-form-value">What's your hometown?</div>
+                className="birthday-form-value">What's your birthday?</div>
                 <button
-                className="hometown-form-edit"
+                className="birthday-form-edit"
                 onClick={this.toggleEditing}>Edit</button>
               </div>
             )
@@ -95,14 +100,14 @@ var HometownForm = React.createClass({
         return (
           <div className="group">
             <div
-            className="hometown-form-value">Hometown: {this.state.hometown}</div>
+            className="birthday-form-value">Birthday: {this.state.birthday}</div>
             <button
-            className="hometown-form-edit"
+            className="birthday-form-edit"
             onClick={this.toggleEditing}>Edit</button>
           </div>
         )
       }
     }
-});
+  });
 
-module.exports = HometownForm;
+module.exports = BirthdayForm;

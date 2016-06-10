@@ -2,19 +2,18 @@ var React = require('react');
 
 var SessionStore = require('./../../../stores/session_store');
 var SessionApiUtil = require('./../../../util/session_api_util');
-var UserApiUtil = require('./../../../util/user_api_util');
 var UserStore = require('./../../../stores/user_store');
+var UserApiUtil = require('./../../../util/user_api_util');
 
-var HometownForm = React.createClass({
+var CurrentCityForm = React.createClass({
 
   getInitialState: function () {
-
     if (SessionStore.currentUserId() === this.props.id) {
-      return( { hometown : SessionStore.currentUser().hometown,
-                editing : false } ) ;
+      return( { currentCity: SessionStore.currentUser().current_city,
+                editing: false } );
     } else {
       UserApiUtil.fetchUser(this.props.id);
-      return( { hometown : "", editing : false } );
+      return ( { currentCity : "", editing: false } );
     }
   },
 
@@ -36,23 +35,29 @@ var HometownForm = React.createClass({
   },
 
   handleChange: function () {
-    this.setState( { hometown : UserStore.retrieveUser().hometown || "" } );
+    this.setState( { currentCity : UserStore.retrieveUser().current_city || ""} );
   },
 
-  updateHometown: function (e) {
+  updateCurrentCity: function (e) {
 
     e.preventDefault();
 
-    this.setState( { hometown: e.target.value } );
+    this.setState( { currentCity : e.target.value } );
+
   },
 
   handleSubmit: function (e) {
 
     e.preventDefault();
 
-    SessionApiUtil.updateCurrentUser( { hometown : this.state.hometown });
+    var formData = {
+      current_city : this.state.currentCity
+    };
+
+    SessionApiUtil.updateCurrentUser(formData);
 
     this.toggleEditing();
+
   },
 
   render: function () {
@@ -62,7 +67,7 @@ var HometownForm = React.createClass({
       return (
         <div className="group">
           <div
-          className="hometown-form-value">Hometown: {this.state.hometown}</div>
+          className="current-city-form-work">Current City: {this.state.currentCity}</div>
         </div>
       )
     } else if (this.state.editing) {
@@ -71,22 +76,22 @@ var HometownForm = React.createClass({
           onSubmit={this.handleSubmit}>
           <input
           type="text"
-          className="hometown-form-input"
-          value={this.state.hometown}
-          onChange={this.updateHometown}/>
+          className="current-city-form-input"
+          value={this.state.current_city}
+          onChange={this.updateCurrentCity}/>
           <input
           type="submit"
-          className="hometown-form-save"
+          className="current-city-form-save"
           value="Save"/>
         </form>
       )
-    } else if (this.state.hometown === "") {
+    } else if (this.state.currentCity === "") {
             return (
               <div className="group">
                 <div
-                className="hometown-form-value">What's your hometown?</div>
+                className="current-city-form-value">Where do you currently live?</div>
                 <button
-                className="hometown-form-edit"
+                className="current-city-form-edit"
                 onClick={this.toggleEditing}>Edit</button>
               </div>
             )
@@ -95,14 +100,14 @@ var HometownForm = React.createClass({
         return (
           <div className="group">
             <div
-            className="hometown-form-value">Hometown: {this.state.hometown}</div>
+            className="current-city-form-value">Current City: {this.state.currentCity}</div>
             <button
-            className="hometown-form-edit"
+            className="current-city-form-edit"
             onClick={this.toggleEditing}>Edit</button>
           </div>
         )
       }
     }
-});
+  });
 
-module.exports = HometownForm;
+module.exports = CurrentCityForm;

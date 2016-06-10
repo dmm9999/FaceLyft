@@ -9,7 +9,7 @@ var NameForm = React.createClass({
 
   getInitialState: function () {
 
-    if (SessionStore.currentUserId === this.props.id) {
+    if (SessionStore.currentUserId() === this.props.id) {
       return( { first_name : SessionStore.currentUser().first_name,
                 last_name : SessionStore.currentUser().last_name,
                 editing: false } );
@@ -74,7 +74,17 @@ var NameForm = React.createClass({
 
   render: function () {
 
-    if (this.state.editing) {
+    if (SessionStore.currentUserId() !== this.props.id) {
+
+      var name = this.state.first_name + " " + this.state.last_name;
+
+      return (
+        <div className="group">
+          <div
+          className="name-form-name">Name: {name}</div>
+        </div>
+      )
+    } else if (this.state.editing) {
       return (
         <form className="group"
           onSubmit={this.handleSubmit}>
@@ -94,10 +104,9 @@ var NameForm = React.createClass({
           value="Save"/>
         </form>
       )
-    } else {
-      if (this.state.first_name === "" ||
-          this.state.last_name === "") {
-            return(
+    } else if (this.state.first_name === "" ||
+        this.state.last_name === "") {
+            return (
               <div className="group">
                 <div
                 className="name-form-name">What's your name?</div>
@@ -121,12 +130,7 @@ var NameForm = React.createClass({
         )
       }
     }
-
-
-
   }
-
-
-});
+);
 
 module.exports = NameForm;

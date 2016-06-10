@@ -16,6 +16,15 @@ var SchoolForm = React.createClass({
     }
   },
 
+  toggleEditing: function (e) {
+
+    if (this.state.editing) {
+      this.setState( { editing: false } );
+    } else {
+    this.setState( { editing: true } );
+    }
+  },
+
   componentDidMount: function () {
     this.listener = UserStore.addListener(this.handleChange);
   },
@@ -39,42 +48,59 @@ var SchoolForm = React.createClass({
 
     e.preventDefault();
 
-    SessionApiUtil.updateCurrentUser({ user : school });
+    SessionApiUtil.updateCurrentUser({ school : this.state.school });
+
+    this.toggleEditing();
   },
 
-  render: function() {
+  render: function () {
 
-    if (SessionStore.currentUserId() === this.props.id) {
+    if (SessionStore.currentUserId() !== this.props.id) {
+
       return (
-        <div>
-          <form
-            onSubmit={this.handleSubmit}>
-            <input
-              type="text"
-              value={this.state.school}
-              onChange={this.updateSchool}
-              placeholder="Where did you go to school?"
-              />
-            <input
-              type="submit"
-              value="Save"
-              />
-          </form>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-        <input
-        type="text"
-        value={this.state.school}
-        placeholder="Where did you go to school?"
-        />
+        <div className="group">
+          <div
+          className="school-form-value">Hometown: {this.state.school}</div>
         </div>
       )
-    }
-  }
+    } else if (this.state.editing) {
+      return (
+        <form className="group"
+          onSubmit={this.handleSubmit}>
+          <input
+          type="text"
+          className="school-form-input"
+          value={this.state.school}
+          onChange={this.updateSchool}/>
+          <input
+          type="submit"
+          className="school-form-save"
+          value="Save"/>
+        </form>
+      )
+    } else if (this.state.school === "") {
+            return (
+              <div className="group">
+                <div
+                className="school-form-value">What school did you attend?</div>
+                <button
+                className="school-form-edit"
+                onClick={this.toggleEditing}>Edit</button>
+              </div>
+            )
+      } else {
 
+        return (
+          <div className="group">
+            <div
+            className="school-form-value">School: {this.state.school}</div>
+            <button
+            className="school-form-edit"
+            onClick={this.toggleEditing}>Edit</button>
+          </div>
+        )
+      }
+    }
 });
 
 module.exports = SchoolForm;

@@ -58,7 +58,7 @@
 	
 	var Login = __webpack_require__(260);
 	var Profile = __webpack_require__(264);
-	var Feed = __webpack_require__(291);
+	var Feed = __webpack_require__(295);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -33643,13 +33643,13 @@
 	var React = __webpack_require__(1);
 	var Navbar = __webpack_require__(265);
 	var Intro = __webpack_require__(273);
-	var Friends = __webpack_require__(278);
-	var ProfilePic = __webpack_require__(279);
-	var CoverPic = __webpack_require__(280);
-	var NameBox = __webpack_require__(281);
-	var FriendRequest = __webpack_require__(282);
-	var PostForm = __webpack_require__(283);
-	var PostsIndex = __webpack_require__(287);
+	var Friends = __webpack_require__(282);
+	var ProfilePic = __webpack_require__(283);
+	var CoverPic = __webpack_require__(284);
+	var NameBox = __webpack_require__(285);
+	var FriendRequest = __webpack_require__(286);
+	var PostForm = __webpack_require__(287);
+	var PostsIndex = __webpack_require__(291);
 	
 	var Profile = React.createClass({
 	  displayName: 'Profile',
@@ -34124,6 +34124,10 @@
 	var HometownForm = __webpack_require__(275);
 	var SchoolForm = __webpack_require__(276);
 	var NameForm = __webpack_require__(277);
+	var WorkForm = __webpack_require__(278);
+	var CurrentCityForm = __webpack_require__(279);
+	var BirthdayForm = __webpack_require__(280);
+	var PhoneNumberForm = __webpack_require__(281);
 	
 	var Intro = React.createClass({
 	  displayName: 'Intro',
@@ -34143,10 +34147,14 @@
 	          'Intro'
 	        )
 	      ),
-	      React.createElement(NameForm, { id: this.props.id }),
 	      React.createElement(IntroDescription, { id: this.props.id }),
+	      React.createElement(NameForm, { id: this.props.id }),
+	      React.createElement(BirthdayForm, { id: this.props.id }),
+	      React.createElement(WorkForm, { id: this.props.id }),
+	      React.createElement(SchoolForm, { id: this.props.id }),
+	      React.createElement(CurrentCityForm, { id: this.props.id }),
 	      React.createElement(HometownForm, { id: this.props.id }),
-	      React.createElement(SchoolForm, { id: this.props.id })
+	      React.createElement(PhoneNumberForm, { id: this.props.id })
 	    );
 	  }
 	
@@ -34172,10 +34180,20 @@
 	  getInitialState: function () {
 	
 	    if (SessionStore.currentUserId() === this.props.id && SessionStore.currentUser().description !== null) {
-	      return { description: SessionStore.currentUser().description };
+	      return { description: SessionStore.currentUser().description,
+	        editing: false };
 	    } else {
 	      UserApiUtil.fetchUser(this.props.id);
-	      return { description: "" };
+	      return { description: "", editing: false };
+	    }
+	  },
+	
+	  toggleEditing: function (e) {
+	
+	    if (this.state.editing) {
+	      this.setState({ editing: false });
+	    } else {
+	      this.setState({ editing: true });
 	    }
 	  },
 	
@@ -34203,11 +34221,37 @@
 	    e.preventDefault();
 	
 	    SessionApiUtil.updateCurrentUser({ description: this.state.description });
+	
+	    this.toggleEditing();
 	  },
 	
 	  render: function () {
 	
-	    if (SessionStore.currentUserId() === this.props.id) {
+	    if (SessionStore.currentUserId() !== this.props.id) {
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement('textarea', {
+	          className: 'intro-description-form-text',
+	          readonly: 'true',
+	          value: this.state.description })
+	      );
+	    } else if (this.state.editing) {
+	      return React.createElement(
+	        'form',
+	        { className: 'group',
+	          onSubmit: this.handleSubmit },
+	        React.createElement('input', {
+	          type: 'date',
+	          className: 'birthday-form-input',
+	          value: this.state.birthday,
+	          onChange: this.updateBirthday }),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'birthday-form-save',
+	          value: 'Save' })
+	      );
+	    } else if (this.state.description === "") {
 	      return React.createElement(
 	        'div',
 	        null,
@@ -34225,14 +34269,13 @@
 	            'div',
 	            {
 	              className: 'intro-description-form-button-container' },
-	            React.createElement('input', {
-	              type: 'submit',
-	              className: 'intro-description-form-save-button',
-	              value: 'Save' }),
-	            React.createElement('input', {
-	              type: 'submit',
-	              className: 'intro-description-form-cancel-button',
-	              value: 'Cancel' })
+	            React.createElement(
+	              'button',
+	              {
+	                className: 'birthday-form-edit',
+	                onClick: this.toggleEditing },
+	              'Edit'
+	            )
 	          )
 	        )
 	      );
@@ -34240,14 +34283,32 @@
 	      return React.createElement(
 	        'div',
 	        null,
-	        React.createElement('textarea', {
-	          className: 'intro-description-form-text',
-	          placeholder: 'Describe who you are',
-	          value: this.state.description })
+	        React.createElement(
+	          'form',
+	          {
+	            onSubmit: this.handleSubmit,
+	            className: 'intro-description-form group' },
+	          React.createElement('textarea', {
+	            onChange: this.updateDescription,
+	            className: 'intro-description-form-text',
+	            placeholder: this.state.description,
+	            value: this.state.description }),
+	          React.createElement(
+	            'div',
+	            {
+	              className: 'intro-description-form-button-container' },
+	            React.createElement(
+	              'button',
+	              {
+	                className: 'birthday-form-edit',
+	                onClick: this.toggleEditing },
+	              'Edit'
+	            )
+	          )
+	        )
 	      );
 	    }
 	  }
-	
 	});
 	
 	module.exports = IntroDescription;
@@ -34257,6 +34318,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	
 	var SessionStore = __webpack_require__(232);
 	var SessionApiUtil = __webpack_require__(229);
 	var UserApiUtil = __webpack_require__(256);
@@ -34269,10 +34331,20 @@
 	  getInitialState: function () {
 	
 	    if (SessionStore.currentUserId() === this.props.id) {
-	      return { hometown: SessionStore.currentUser().hometown };
+	      return { hometown: SessionStore.currentUser().hometown,
+	        editing: false };
 	    } else {
 	      UserApiUtil.fetchUser(this.props.id);
-	      return { hometown: "" };
+	      return { hometown: "", editing: false };
+	    }
+	  },
+	
+	  toggleEditing: function (e) {
+	
+	    if (this.state.editing) {
+	      this.setState({ editing: false });
+	    } else {
+	      this.setState({ editing: true });
 	    }
 	  },
 	
@@ -34299,45 +34371,81 @@
 	
 	    e.preventDefault();
 	
-	    SessionApiUtil.updateCurrentUser({ user: hometown });
+	    SessionApiUtil.updateCurrentUser({ hometown: this.state.hometown });
+	
+	    this.toggleEditing();
 	  },
 	
 	  render: function () {
 	
-	    if (SessionStore.currentUserId() === this.props.id) {
+	    if (SessionStore.currentUserId() !== this.props.id) {
+	
 	      return React.createElement(
 	        'div',
-	        null,
+	        { className: 'group' },
 	        React.createElement(
-	          'form',
+	          'div',
 	          {
-	            onSubmit: this.handleSubmit },
-	          React.createElement('input', {
-	            type: 'text',
-	            value: this.state.hometown,
-	            onChange: this.updateHometown,
-	            placeholder: 'What\'s your hometown?'
-	          }),
-	          React.createElement('input', {
-	            type: 'submit',
-	            value: 'Save'
-	          })
+	            className: 'hometown-form-value' },
+	          'Hometown: ',
+	          this.state.hometown
+	        )
+	      );
+	    } else if (this.state.editing) {
+	      return React.createElement(
+	        'form',
+	        { className: 'group',
+	          onSubmit: this.handleSubmit },
+	        React.createElement('input', {
+	          type: 'text',
+	          className: 'hometown-form-input',
+	          value: this.state.hometown,
+	          onChange: this.updateHometown }),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'hometown-form-save',
+	          value: 'Save' })
+	      );
+	    } else if (this.state.hometown === "") {
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'hometown-form-value' },
+	          'What\'s your hometown?'
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'hometown-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
 	        )
 	      );
 	    } else {
+	
 	      return React.createElement(
 	        'div',
-	        null,
-	        React.createElement('input', {
-	          type: 'text',
-	          value: this.state.hometown,
-	          onChange: this.updateHometown,
-	          placeholder: 'What\'s your hometown?'
-	        })
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'hometown-form-value' },
+	          'Hometown: ',
+	          this.state.hometown
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'hometown-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
 	      );
 	    }
 	  }
-	
 	});
 	
 	module.exports = HometownForm;
@@ -34366,6 +34474,15 @@
 	    }
 	  },
 	
+	  toggleEditing: function (e) {
+	
+	    if (this.state.editing) {
+	      this.setState({ editing: false });
+	    } else {
+	      this.setState({ editing: true });
+	    }
+	  },
+	
 	  componentDidMount: function () {
 	    this.listener = UserStore.addListener(this.handleChange);
 	  },
@@ -34389,44 +34506,81 @@
 	
 	    e.preventDefault();
 	
-	    SessionApiUtil.updateCurrentUser({ user: school });
+	    SessionApiUtil.updateCurrentUser({ school: this.state.school });
+	
+	    this.toggleEditing();
 	  },
 	
 	  render: function () {
 	
-	    if (SessionStore.currentUserId() === this.props.id) {
+	    if (SessionStore.currentUserId() !== this.props.id) {
+	
 	      return React.createElement(
 	        'div',
-	        null,
+	        { className: 'group' },
 	        React.createElement(
-	          'form',
+	          'div',
 	          {
-	            onSubmit: this.handleSubmit },
-	          React.createElement('input', {
-	            type: 'text',
-	            value: this.state.school,
-	            onChange: this.updateSchool,
-	            placeholder: 'Where did you go to school?'
-	          }),
-	          React.createElement('input', {
-	            type: 'submit',
-	            value: 'Save'
-	          })
+	            className: 'school-form-value' },
+	          'Hometown: ',
+	          this.state.school
+	        )
+	      );
+	    } else if (this.state.editing) {
+	      return React.createElement(
+	        'form',
+	        { className: 'group',
+	          onSubmit: this.handleSubmit },
+	        React.createElement('input', {
+	          type: 'text',
+	          className: 'school-form-input',
+	          value: this.state.school,
+	          onChange: this.updateSchool }),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'school-form-save',
+	          value: 'Save' })
+	      );
+	    } else if (this.state.school === "") {
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'school-form-value' },
+	          'What school did you attend?'
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'school-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
 	        )
 	      );
 	    } else {
+	
 	      return React.createElement(
 	        'div',
-	        null,
-	        React.createElement('input', {
-	          type: 'text',
-	          value: this.state.school,
-	          placeholder: 'Where did you go to school?'
-	        })
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'school-form-value' },
+	          'School: ',
+	          this.state.school
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'school-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
 	      );
 	    }
 	  }
-	
 	});
 	
 	module.exports = SchoolForm;
@@ -34448,7 +34602,7 @@
 	
 	  getInitialState: function () {
 	
-	    if (SessionStore.currentUserId === this.props.id) {
+	    if (SessionStore.currentUserId() === this.props.id) {
 	      return { first_name: SessionStore.currentUser().first_name,
 	        last_name: SessionStore.currentUser().last_name,
 	        editing: false };
@@ -34510,7 +34664,22 @@
 	
 	  render: function () {
 	
-	    if (this.state.editing) {
+	    if (SessionStore.currentUserId() !== this.props.id) {
+	
+	      var name = this.state.first_name + " " + this.state.last_name;
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'name-form-name' },
+	          'Name: ',
+	          name
+	        )
+	      );
+	    } else if (this.state.editing) {
 	      return React.createElement(
 	        'form',
 	        { className: 'group',
@@ -34530,57 +34699,614 @@
 	          className: 'name-form-save',
 	          value: 'Save' })
 	      );
+	    } else if (this.state.first_name === "" || this.state.last_name === "") {
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'name-form-name' },
+	          'What\'s your name?'
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'name-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
+	      );
 	    } else {
-	      if (this.state.first_name === "" || this.state.last_name === "") {
-	        return React.createElement(
-	          'div',
-	          { className: 'group' },
-	          React.createElement(
-	            'div',
-	            {
-	              className: 'name-form-name' },
-	            'What\'s your name?'
-	          ),
-	          React.createElement(
-	            'button',
-	            {
-	              className: 'name-form-edit',
-	              onClick: this.toggleEditing },
-	            'Edit'
-	          )
-	        );
-	      } else {
 	
-	        var name = this.state.first_name + " " + this.state.last_name;
+	      var name = this.state.first_name + " " + this.state.last_name;
 	
-	        return React.createElement(
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
 	          'div',
-	          { className: 'group' },
-	          React.createElement(
-	            'div',
-	            {
-	              className: 'name-form-name' },
-	            'Name: ',
-	            name
-	          ),
-	          React.createElement(
-	            'button',
-	            {
-	              className: 'name-form-edit',
-	              onClick: this.toggleEditing },
-	            'Edit'
-	          )
-	        );
-	      }
+	          {
+	            className: 'name-form-name' },
+	          'Name: ',
+	          name
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'name-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
+	      );
 	    }
 	  }
-	
 	});
 	
 	module.exports = NameForm;
 
 /***/ },
 /* 278 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	var UserStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
+	
+	var WorkForm = React.createClass({
+	  displayName: 'WorkForm',
+	
+	
+	  getInitialState: function () {
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { work: SessionStore.currentUser().work,
+	        editing: false };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { work: "", editing: false };
+	    }
+	  },
+	
+	  toggleEditing: function (e) {
+	
+	    if (this.state.editing) {
+	      this.setState({ editing: false });
+	    } else {
+	      this.setState({ editing: true });
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ work: UserStore.retrieveUser().work || "" });
+	  },
+	
+	  updateWork: function (e) {
+	
+	    e.preventDefault();
+	
+	    this.setState({ work: e.target.value });
+	  },
+	
+	  handleSubmit: function (e) {
+	
+	    e.preventDefault();
+	
+	    var formData = {
+	      work: this.state.work
+	    };
+	
+	    SessionApiUtil.updateCurrentUser(formData);
+	
+	    this.toggleEditing();
+	  },
+	
+	  render: function () {
+	
+	    if (SessionStore.currentUserId() !== this.props.id) {
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'work-form-work' },
+	          'Work: ',
+	          this.state.work
+	        )
+	      );
+	    } else if (this.state.editing) {
+	      return React.createElement(
+	        'form',
+	        { className: 'group',
+	          onSubmit: this.handleSubmit },
+	        React.createElement('input', {
+	          type: 'text',
+	          className: 'work-form-input',
+	          value: this.state.work,
+	          onChange: this.updateWork }),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'name-form-save',
+	          value: 'Save' })
+	      );
+	    } else if (this.state.work === "") {
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'work-form-work' },
+	          'Where do you work?'
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'work-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
+	      );
+	    } else {
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'work-form-work' },
+	          'Work: ',
+	          this.state.work
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'work-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
+	      );
+	    }
+	  }
+	});
+	
+	module.exports = WorkForm;
+
+/***/ },
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	var UserStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
+	
+	var CurrentCityForm = React.createClass({
+	  displayName: 'CurrentCityForm',
+	
+	
+	  getInitialState: function () {
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { currentCity: SessionStore.currentUser().current_city,
+	        editing: false };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { currentCity: "", editing: false };
+	    }
+	  },
+	
+	  toggleEditing: function (e) {
+	
+	    if (this.state.editing) {
+	      this.setState({ editing: false });
+	    } else {
+	      this.setState({ editing: true });
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ currentCity: UserStore.retrieveUser().current_city || "" });
+	  },
+	
+	  updateCurrentCity: function (e) {
+	
+	    e.preventDefault();
+	
+	    this.setState({ currentCity: e.target.value });
+	  },
+	
+	  handleSubmit: function (e) {
+	
+	    e.preventDefault();
+	
+	    var formData = {
+	      current_city: this.state.currentCity
+	    };
+	
+	    SessionApiUtil.updateCurrentUser(formData);
+	
+	    this.toggleEditing();
+	  },
+	
+	  render: function () {
+	
+	    if (SessionStore.currentUserId() !== this.props.id) {
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'current-city-form-work' },
+	          'Current City: ',
+	          this.state.currentCity
+	        )
+	      );
+	    } else if (this.state.editing) {
+	      return React.createElement(
+	        'form',
+	        { className: 'group',
+	          onSubmit: this.handleSubmit },
+	        React.createElement('input', {
+	          type: 'text',
+	          className: 'current-city-form-input',
+	          value: this.state.current_city,
+	          onChange: this.updateCurrentCity }),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'current-city-form-save',
+	          value: 'Save' })
+	      );
+	    } else if (this.state.currentCity === "") {
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'current-city-form-value' },
+	          'Where do you currently live?'
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'current-city-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
+	      );
+	    } else {
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'current-city-form-value' },
+	          'Current City: ',
+	          this.state.currentCity
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'current-city-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
+	      );
+	    }
+	  }
+	});
+	
+	module.exports = CurrentCityForm;
+
+/***/ },
+/* 280 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	var UserStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
+	
+	var BirthdayForm = React.createClass({
+	  displayName: 'BirthdayForm',
+	
+	
+	  getInitialState: function () {
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { birthday: SessionStore.currentUser().birthday,
+	        editing: false };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { birthday: "", editing: false };
+	    }
+	  },
+	
+	  toggleEditing: function (e) {
+	
+	    if (this.state.editing) {
+	      this.setState({ editing: false });
+	    } else {
+	      this.setState({ editing: true });
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ birthday: UserStore.retrieveUser().birthday || "" });
+	  },
+	
+	  updateBirthday: function (e) {
+	
+	    e.preventDefault();
+	
+	    this.setState({ birthday: e.target.value });
+	  },
+	
+	  handleSubmit: function (e) {
+	
+	    e.preventDefault();
+	
+	    var formData = {
+	      birthday: this.state.birthday
+	    };
+	
+	    SessionApiUtil.updateCurrentUser(formData);
+	
+	    this.toggleEditing();
+	  },
+	
+	  render: function () {
+	
+	    if (SessionStore.currentUserId() !== this.props.id) {
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'birthday-form-value' },
+	          'Birthday: ',
+	          this.state.birthday
+	        )
+	      );
+	    } else if (this.state.editing) {
+	      return React.createElement(
+	        'form',
+	        { className: 'group',
+	          onSubmit: this.handleSubmit },
+	        React.createElement('input', {
+	          type: 'date',
+	          className: 'birthday-form-input',
+	          value: this.state.birthday,
+	          onChange: this.updateBirthday }),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'birthday-form-save',
+	          value: 'Save' })
+	      );
+	    } else if (this.state.birthday === "") {
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'birthday-form-value' },
+	          'What\'s your birthday?'
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'birthday-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
+	      );
+	    } else {
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'birthday-form-value' },
+	          'Birthday: ',
+	          this.state.birthday
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'birthday-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
+	      );
+	    }
+	  }
+	});
+	
+	module.exports = BirthdayForm;
+
+/***/ },
+/* 281 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(232);
+	var SessionApiUtil = __webpack_require__(229);
+	var UserStore = __webpack_require__(259);
+	var UserApiUtil = __webpack_require__(256);
+	
+	var PhoneNumberForm = React.createClass({
+	  displayName: 'PhoneNumberForm',
+	
+	
+	  getInitialState: function () {
+	    if (SessionStore.currentUserId() === this.props.id) {
+	      return { phoneNumber: SessionStore.currentUser().phone_number,
+	        editing: false };
+	    } else {
+	      UserApiUtil.fetchUser(this.props.id);
+	      return { phoneNumber: "", editing: false };
+	    }
+	  },
+	
+	  toggleEditing: function (e) {
+	
+	    if (this.state.editing) {
+	      this.setState({ editing: false });
+	    } else {
+	      this.setState({ editing: true });
+	    }
+	  },
+	
+	  componentDidMount: function () {
+	    this.listener = UserStore.addListener(this.handleChange);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	
+	  handleChange: function () {
+	    this.setState({ phoneNumber: UserStore.retrieveUser().phone_number || "" });
+	  },
+	
+	  updatePhoneNumber: function (e) {
+	
+	    e.preventDefault();
+	
+	    this.setState({ phoneNumber: e.target.value });
+	  },
+	
+	  handleSubmit: function (e) {
+	
+	    e.preventDefault();
+	
+	    var formData = {
+	      phone_number: this.state.phoneNumber
+	    };
+	
+	    SessionApiUtil.updateCurrentUser(formData);
+	
+	    this.toggleEditing();
+	  },
+	
+	  render: function () {
+	
+	    if (SessionStore.currentUserId() !== this.props.id) {
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'phone-number-form-value' },
+	          'Phone Number: ',
+	          this.state.phoneNumber
+	        )
+	      );
+	    } else if (this.state.editing) {
+	      return React.createElement(
+	        'form',
+	        { className: 'group',
+	          onSubmit: this.handleSubmit },
+	        React.createElement('input', {
+	          type: 'tel',
+	          className: 'phone-number-form-input',
+	          value: this.state.phoneNumber,
+	          onChange: this.updatePhoneNumber }),
+	        React.createElement('input', {
+	          type: 'submit',
+	          className: 'phone-number-form-save',
+	          value: 'Save' })
+	      );
+	    } else if (this.state.phoneNumber === "") {
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'phone-number-form-value' },
+	          'What\'s your phone number?'
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'phone-number-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
+	      );
+	    } else {
+	
+	      return React.createElement(
+	        'div',
+	        { className: 'group' },
+	        React.createElement(
+	          'div',
+	          {
+	            className: 'phone-number-form-value' },
+	          'Phone Number: ',
+	          this.state.phoneNumber
+	        ),
+	        React.createElement(
+	          'button',
+	          {
+	            className: 'phone-number-form-edit',
+	            onClick: this.toggleEditing },
+	          'Edit'
+	        )
+	      );
+	    }
+	  }
+	});
+	
+	module.exports = PhoneNumberForm;
+
+/***/ },
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -34714,7 +35440,7 @@
 	module.exports = Friends;
 
 /***/ },
-/* 279 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -34803,7 +35529,7 @@
 	module.exports = ProfilePic;
 
 /***/ },
-/* 280 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -34891,7 +35617,7 @@
 	module.exports = CoverPic;
 
 /***/ },
-/* 281 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -34939,7 +35665,7 @@
 	module.exports = NameBox;
 
 /***/ },
-/* 282 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -35039,13 +35765,13 @@
 	module.exports = FriendRequest;
 
 /***/ },
-/* 283 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
 	var SessionStore = __webpack_require__(232);
-	var PostApiUtil = __webpack_require__(284);
+	var PostApiUtil = __webpack_require__(288);
 	var PostStore = __webpack_require__(232);
 	
 	var PostForm = React.createClass({
@@ -35191,10 +35917,10 @@
 	module.exports = PostForm;
 
 /***/ },
-/* 284 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var PostActions = __webpack_require__(285);
+	var PostActions = __webpack_require__(289);
 	
 	var PostApiUtil = {
 	
@@ -35255,11 +35981,11 @@
 	module.exports = PostApiUtil;
 
 /***/ },
-/* 285 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(233);
-	var PostConstants = __webpack_require__(286);
+	var PostConstants = __webpack_require__(290);
 	
 	var PostActions = {
 	
@@ -35289,7 +36015,7 @@
 	module.exports = PostActions;
 
 /***/ },
-/* 286 */
+/* 290 */
 /***/ function(module, exports) {
 
 	var PostConstants = {
@@ -35302,14 +36028,14 @@
 	module.exports = PostConstants;
 
 /***/ },
-/* 287 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
-	var PostsIndexItem = __webpack_require__(288);
-	var PostStore = __webpack_require__(290);
-	var PostApiUtil = __webpack_require__(284);
+	var PostsIndexItem = __webpack_require__(292);
+	var PostStore = __webpack_require__(294);
+	var PostApiUtil = __webpack_require__(288);
 	
 	var PostsIndex = React.createClass({
 	  displayName: 'PostsIndex',
@@ -35369,14 +36095,14 @@
 	module.exports = PostsIndex;
 
 /***/ },
-/* 288 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
-	var PostApiUtil = __webpack_require__(284);
+	var PostApiUtil = __webpack_require__(288);
 	var SessionStore = __webpack_require__(232);
-	var LikeButton = __webpack_require__(289);
+	var LikeButton = __webpack_require__(293);
 	
 	var PostsIndexItem = React.createClass({
 	  displayName: 'PostsIndexItem',
@@ -35523,7 +36249,7 @@
 	module.exports = PostsIndexItem;
 
 /***/ },
-/* 289 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -35552,7 +36278,7 @@
 	module.exports = LikeButton;
 
 /***/ },
-/* 290 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(237).Store;
@@ -35605,15 +36331,15 @@
 	module.exports = PostStore;
 
 /***/ },
-/* 291 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
 	var Navbar = __webpack_require__(265);
-	var PostForm = __webpack_require__(283);
-	var PostsIndex = __webpack_require__(287);
-	var Friends = __webpack_require__(278);
+	var PostForm = __webpack_require__(287);
+	var PostsIndex = __webpack_require__(291);
+	var Friends = __webpack_require__(282);
 	var SessionStore = __webpack_require__(232);
 	
 	var Feed = React.createClass({
