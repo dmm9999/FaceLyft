@@ -77,7 +77,7 @@ var CurrentCityForm = React.createClass({
           <input
           type="text"
           className="current-city-form-input"
-          value={this.state.current_city}
+          value={this.state.currentCity}
           onChange={this.updateCurrentCity}/>
           <input
           type="submit"

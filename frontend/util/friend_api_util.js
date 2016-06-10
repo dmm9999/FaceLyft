@@ -16,7 +16,7 @@ var FriendApiUtil = {
   fetchFriendRequests: function () {
     $.ajax({
       type: 'GET',
-      url: 'api/user/friend_requests',
+      url: 'api/user/friendships',
       dataType: 'json',
       success: function (friendRequests) {
         FriendActions.receiveFriendRequests(friendRequests);
@@ -36,16 +36,20 @@ var FriendApiUtil = {
     });
   },
 
-  deleteFriendship: function (currentUserId, userProfileId) {
+  deleteFriendship: function (id) {
     $.ajax({
       type: 'DELETE',
-      url: 'api/users/' + currentUserId + '/friends',
+      url: 'api/friendships/' + id,
       dataType: 'json',
-      data: {userProfileId : userProfileId},
+      data: {id : id},
       success: function (friendship) {
         FriendActions.removeFriendship(friendship);
       }
     });
+  },
+
+  acceptFriendship: function () {
+
   }
 };
 

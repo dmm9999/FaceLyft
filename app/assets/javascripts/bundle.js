@@ -33868,6 +33868,20 @@
 	    this.setState({ friendRequests: FriendStore.friendRequests(SessionStore.currentUserId()) });
 	  },
 	
+	  handleDelete: function (e) {
+	
+	    e.preventDefault();
+	
+	    FriendApiUtil.deleteFriendship(e.target.value);
+	  },
+	
+	  handleConfirm: function (e) {
+	
+	    e.preventDefault();
+	
+	    FriendApiUtil.acceptFriendship(e.target.value);
+	  },
+	
 	  render: function () {
 	
 	    if (this.state.friendRequests.length) {
@@ -33875,22 +33889,29 @@
 	      var friendRequests = this.state.friendRequests.map(function (friendRequest) {
 	        return React.createElement(
 	          'li',
-	          { key: friendRequest.id },
+	          { key: friendRequest.id,
+	            className: 'friend-request-list-item group' },
+	          React.createElement('img', { className: 'friend-request-thumb', src: friendRequest.thumb }),
 	          React.createElement(
 	            'div',
 	            { className: 'friend-request-text' },
-	            friendRequest.friender_user,
-	            ' wants to be your friend!'
+	            friendRequest.name
 	          ),
 	          React.createElement(
 	            'button',
-	            { className: 'friend-request-accept' },
-	            'Accept'
+	            {
+	              className: 'friend-request-delete',
+	              onClick: this.handleDelete,
+	              value: friendRequest.id },
+	            'Delete Request'
 	          ),
 	          React.createElement(
 	            'button',
-	            { className: 'friend-request-deny' },
-	            'Deny'
+	            {
+	              className: 'friend-request-confirm',
+	              onClick: this.handleConfirm,
+	              value: friendRequest.id },
+	            'Confirm'
 	          )
 	        );
 	      });
@@ -33898,11 +33919,15 @@
 	      return React.createElement(
 	        'div',
 	        { className: 'friend-requests' },
-	        React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' }),
 	        React.createElement(
 	          'div',
-	          { className: 'friend-request-counter' },
-	          this.state.friendRequests.length
+	          { className: 'friend-request-counter-container' },
+	          React.createElement('img', { src: friendRequestIcon, className: 'friend-request-icon' }),
+	          React.createElement(
+	            'div',
+	            { className: 'friend-request-counter' },
+	            this.state.friendRequests.length
+	          )
 	        ),
 	        React.createElement(
 	          'ul',
@@ -34032,7 +34057,7 @@
 	  fetchFriendRequests: function () {
 	    $.ajax({
 	      type: 'GET',
-	      url: 'api/user/friend_requests',
+	      url: 'api/user/friendships',
 	      dataType: 'json',
 	      success: function (friendRequests) {
 	        FriendActions.receiveFriendRequests(friendRequests);
@@ -34052,17 +34077,19 @@
 	    });
 	  },
 	
-	  deleteFriendship: function (currentUserId, userProfileId) {
+	  deleteFriendship: function (id) {
 	    $.ajax({
 	      type: 'DELETE',
-	      url: 'api/users/' + currentUserId + '/friends',
+	      url: 'api/friendships/' + id,
 	      dataType: 'json',
-	      data: { userProfileId: userProfileId },
+	      data: { id: id },
 	      success: function (friendship) {
 	        FriendActions.removeFriendship(friendship);
 	      }
 	    });
-	  }
+	  },
+	
+	  acceptFriendship: function () {}
 	};
 	
 	module.exports = FriendApiUtil;
@@ -34974,7 +35001,7 @@
 	        React.createElement('input', {
 	          type: 'text',
 	          className: 'current-city-form-input',
-	          value: this.state.current_city,
+	          value: this.state.currentCity,
 	          onChange: this.updateCurrentCity }),
 	        React.createElement('input', {
 	          type: 'submit',

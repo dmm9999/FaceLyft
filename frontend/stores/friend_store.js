@@ -70,7 +70,7 @@ FriendStore.friendStatus = function (id) {
 };
 
 FriendStore.friendRequests = function (id) {
-
+  
   var requests = [];
 
   Object.keys(_pendingFriends).forEach(function(requestId) {

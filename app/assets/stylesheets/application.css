@@ -953,12 +953,30 @@ input {
 
 .friend-requests {
   float: left;
+  position: relative;
 }
 
 .friend-request-icon {
   width: 25px;
   height: 25px;
   margin: 5px 20px 0px 0px;
+}
+
+.friend-request-counter-container {
+  position: relative;
+  width: 30px;
+  padding-bottom: 20px;
+}
+
+.friend-request-counter {
+  position: absolute;
+  top: 3px;
+  right: 1px;
+  display: inline;
+  background: red;
+  padding: 0px 2px 0px 2px;
+  border-radius: 2px;
+  font-size: 14px;
 }
 
 .random-user-name {
@@ -973,12 +991,71 @@ input {
 
 .friend-request-list {
   display: none;
+  top: 45px;
+  left: -330px;
+}
+
+.friend-request-list-item {
+
+}
+
+.friend-request-thumb {
+  width: 50px;
+  height: 50px;
+  float: left;
+}
+
+.friend-request-text {
+  float: left;
+  color: #365899;
+  font-family: helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  margin: 18px 0px 0px 5px;
+}
+
+.friend-request-confirm {
+  float: right;
+  margin: 10px 10px 0px 10px;
+  border-radius: 4px;
+  color: white;
+  background: #3B5998;
+  font-size: 12px;
+  border-left: 1px solid #365089;
+  width: 60px;
+  height: 30px;
+  font-family: helvetica;
+  text-align: center;
+}
+
+.friend-request-delete {
+  float: right;
+  margin: 10px 10px 0px 10px;
+  border-radius: 4px;
+  color: white;
+  background: #3B5998;
+  font-size: 12px;
+  border-left: 1px solid #365089;
+  width: 80px;
+  height: 30px;
+  font-family: helvetica;
+  text-align: center;
 }
 
 .friend-requests:hover .friend-request-list {
   display: block;
+  z-index: 1;
   position: absolute;
   background: #ffffff;
+  width: 430px;
+}
+
+.friend-request-list:hover .friend-request-list {
+  display: block;
+  z-index: 1;
+  position: absolute;
+  background: #ffffff;
+  width: 430px;
 }
 
 .work-form-work {

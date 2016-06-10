@@ -25,24 +25,50 @@ var FriendRequestNotifier = React.createClass({
     this.setState( { friendRequests : FriendStore.friendRequests(SessionStore.currentUserId()) } );
   },
 
+  handleDelete: function (e) {
+
+    e.preventDefault();
+
+    FriendApiUtil.deleteFriendship(e.target.value);
+
+  },
+
+  handleConfirm: function (e) {
+
+    e.preventDefault();
+
+    FriendApiUtil.acceptFriendship(e.target.value);
+
+  },
+
   render: function () {
 
     if (this.state.friendRequests.length) {
 
       var friendRequests = this.state.friendRequests.map(function(friendRequest) {
         return (
-          <li key={friendRequest.id}>
-            <div className="friend-request-text">{friendRequest.friender_user} wants to be your friend!</div>
-            <button className="friend-request-accept">Accept</button>
-            <button className="friend-request-deny">Deny</button>
+          <li key={friendRequest.id}
+              className="friend-request-list-item group">
+            <img className="friend-request-thumb" src={friendRequest.thumb}/>
+            <div className="friend-request-text">{friendRequest.name}</div>
+            <button
+            className="friend-request-delete"
+            onClick={this.handleDelete}
+            value={friendRequest.id}>Delete Request</button>
+            <button
+            className="friend-request-confirm"
+            onClick={this.handleConfirm}
+            value={friendRequest.id}>Confirm</button>
           </li>
         );
       });
 
       return (
         <div className="friend-requests">
-          <img src={friendRequestIcon} className="friend-request-icon"/>
-          <div className="friend-request-counter">{this.state.friendRequests.length}</div>
+          <div className="friend-request-counter-container">
+            <img src={friendRequestIcon} className="friend-request-icon"/>
+            <div className="friend-request-counter">{this.state.friendRequests.length}</div>
+          </div>
           <ul className="friend-request-list">
             {friendRequests}
           </ul>
