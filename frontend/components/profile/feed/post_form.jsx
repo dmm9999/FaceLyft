@@ -3,6 +3,7 @@ var React = require('react');
 var SessionStore = require('./../../../stores/session_store');
 var PostApiUtil = require('./../../../util/post_api_util');
 var PostStore = require('./../../../stores/session_store');
+var FriendStore = require('./../../../stores/friend_store');
 
 var PostForm = React.createClass({
 
@@ -53,9 +54,11 @@ var PostForm = React.createClass({
 
   render: function () {
 
+    debugger
+
     var text = "What's on your mind?";
 
-    if (this.state.ownPage) {
+    if (!this.state.isTimeline || this.state.isOwnPage) {
       return (
         <form
           className="post-form"
@@ -80,6 +83,13 @@ var PostForm = React.createClass({
           </footer>
         </form>
       );
+    } else if (FriendStore.friendStatus(this.props.id) === null ||
+        FriendStore.friendStatus(this.props.id) === "pending") {
+
+        return(
+          <div/>
+        );
+
     } else {
       return (
         <form

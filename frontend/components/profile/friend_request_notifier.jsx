@@ -26,9 +26,7 @@ var FriendRequestNotifier = React.createClass({
   },
 
   handleDelete: function (e) {
-
-    debugger
-
+    
     e.preventDefault();
 
     FriendApiUtil.deleteFriendshipById(e.target.value, SessionStore.currentUserId());
@@ -54,16 +52,16 @@ var FriendRequestNotifier = React.createClass({
             <img className="friend-request-thumb" src={friendRequest.thumb}/>
             <div className="friend-request-text">{friendRequest.name}</div>
             <button
-            className="friend-request-delete"
-            onClick={this.handleDelete}
-            value={friendRequest.id}>Delete Request</button>
+              className="friend-request-delete"
+              onClick={this.handleDelete}
+              value={friendRequest.id}>Delete Request</button>
             <button
-            className="friend-request-confirm"
-            onClick={this.handleConfirm}
-            value={friendRequest.id}>Confirm</button>
+              className="friend-request-confirm"
+              onClick={this.handleConfirm}
+              value={friendRequest.id}>Confirm</button>
           </li>
         );
-      });
+      }.bind(this));
 
       return (
         <div className="friend-requests">

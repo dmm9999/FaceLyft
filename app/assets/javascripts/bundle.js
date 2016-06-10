@@ -33870,8 +33870,6 @@
 	
 	  handleDelete: function (e) {
 	
-	    debugger;
-	
 	    e.preventDefault();
 	
 	    FriendApiUtil.deleteFriendshipById(e.target.value, SessionStore.currentUserId());
@@ -33916,7 +33914,7 @@
 	            'Confirm'
 	          )
 	        );
-	      });
+	      }.bind(this));
 	
 	      return React.createElement(
 	        'div',
@@ -35802,6 +35800,7 @@
 	var SessionStore = __webpack_require__(232);
 	var PostApiUtil = __webpack_require__(288);
 	var PostStore = __webpack_require__(232);
+	var FriendStore = __webpack_require__(269);
 	
 	var PostForm = React.createClass({
 	  displayName: 'PostForm',
@@ -35851,9 +35850,11 @@
 	
 	  render: function () {
 	
+	    debugger;
+	
 	    var text = "What's on your mind?";
 	
-	    if (this.state.ownPage) {
+	    if (!this.state.isTimeline || this.state.isOwnPage) {
 	      return React.createElement(
 	        'form',
 	        {
@@ -35896,6 +35897,9 @@
 	          )
 	        )
 	      );
+	    } else if (FriendStore.friendStatus(this.props.id) === null || FriendStore.friendStatus(this.props.id) === "pending") {
+	
+	      return React.createElement('div', null);
 	    } else {
 	      return React.createElement(
 	        'form',
