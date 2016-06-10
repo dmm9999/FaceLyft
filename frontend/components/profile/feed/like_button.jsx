@@ -6,7 +6,13 @@ var LikeButton = React.createClass({
     return ( { liked : false} );
   },
 
+  handleLike: function () {
+    LikeApiUtil.likePost(this.props.postId);
+  },
+
   render: function () {
+
+    debugger
 
     if (this.state.liked) {
       return (
@@ -16,7 +22,8 @@ var LikeButton = React.createClass({
     } else {
       return (
         <img src={likeIcon}
-        className="react-like-icon" />
+        className="react-like-icon"
+        onClick={this.handleLike} />
       )
     }
   }

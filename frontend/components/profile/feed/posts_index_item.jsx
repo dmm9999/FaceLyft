@@ -35,7 +35,7 @@ var PostsIndexItem = React.createClass({
           </div>
           <div className="posts-index-item-body">{this.props.post.body}</div>
           <div className="react-container group">
-            <LikeButton/>
+            <LikeButton postId={this.props.post.id}/>
             <div className="react-like-text">Like</div>
             <img src={commentIcon}
               className="react-comment-icon"/>

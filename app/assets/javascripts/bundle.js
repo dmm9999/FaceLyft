@@ -36307,7 +36307,7 @@
 	        React.createElement(
 	          'div',
 	          { className: 'react-container group' },
-	          React.createElement(LikeButton, null),
+	          React.createElement(LikeButton, { postId: this.props.post.id }),
 	          React.createElement(
 	            'div',
 	            { className: 'react-like-text' },
@@ -36412,14 +36412,21 @@
 	    return { liked: false };
 	  },
 	
+	  handleLike: function () {
+	    LikeApiUtil.likePost(this.props.postId);
+	  },
+	
 	  render: function () {
+	
+	    debugger;
 	
 	    if (this.state.liked) {
 	      return React.createElement("img", { src: likedIcon,
 	        className: "react-liked-icon" });
 	    } else {
 	      return React.createElement("img", { src: likeIcon,
-	        className: "react-like-icon" });
+	        className: "react-like-icon",
+	        onClick: this.handleLike });
 	    }
 	  }
 	
