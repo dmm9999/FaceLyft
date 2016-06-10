@@ -79,8 +79,20 @@ var SignupForm = React.createClass({
         <div className="signup-content group">
 
           <ul className="splash">
-            <li>
+            <title>
               Connect with friends and the world around you on FaceLyft
+            </title>
+            <li className="group">
+              <img src={feedIcon}/>
+              <div> Look at your friends' posts!</div>
+            </li>
+            <li className="group">
+              <img src={timelineIcon}/>
+              <div>Make posts!</div>
+            </li>
+            <li className="group">
+              <img src={searchIcon}/>
+              <div>Search the site!</div>
             </li>
           </ul>
 
