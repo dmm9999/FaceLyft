@@ -65,7 +65,7 @@ var IntroDescription = React.createClass({
         <div>
           <textarea
             className="intro-description-form-text"
-            readonly="true"
+            disabled="true"
             value={this.state.description}/>
         </div>
       );
@@ -73,14 +73,13 @@ var IntroDescription = React.createClass({
       return (
         <form className="group"
           onSubmit={this.handleSubmit}>
-          <input
-          type="date"
-          className="birthday-form-input"
-          value={this.state.birthday}
-          onChange={this.updateBirthday}/>
+          <textarea
+          className="intro-description-form-text"
+          value={this.state.description}
+          onChange={this.updateDescription}/>
           <input
           type="submit"
-          className="birthday-form-save"
+          className="intro-description-form-save"
           value="Save"/>
         </form>
       )
@@ -93,6 +92,7 @@ var IntroDescription = React.createClass({
             <textarea
               onChange={this.updateDescription}
               className="intro-description-form-text"
+              disabled="true"
               placeholder="Describe who you are"
               value={this.state.description}/>
             <div
@@ -111,9 +111,9 @@ var IntroDescription = React.createClass({
             onSubmit={this.handleSubmit}
             className="intro-description-form group">
             <textarea
-              onChange={this.updateDescription}
               className="intro-description-form-text"
               placeholder={this.state.description}
+              disabled="true"
               value={this.state.description}/>
             <div
               className="intro-description-form-button-container">

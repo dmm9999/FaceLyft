@@ -34233,7 +34233,7 @@
 	        null,
 	        React.createElement('textarea', {
 	          className: 'intro-description-form-text',
-	          readonly: 'true',
+	          disabled: 'true',
 	          value: this.state.description })
 	      );
 	    } else if (this.state.editing) {
@@ -34241,14 +34241,13 @@
 	        'form',
 	        { className: 'group',
 	          onSubmit: this.handleSubmit },
-	        React.createElement('input', {
-	          type: 'date',
-	          className: 'birthday-form-input',
-	          value: this.state.birthday,
-	          onChange: this.updateBirthday }),
+	        React.createElement('textarea', {
+	          className: 'intro-description-form-text',
+	          value: this.state.description,
+	          onChange: this.updateDescription }),
 	        React.createElement('input', {
 	          type: 'submit',
-	          className: 'birthday-form-save',
+	          className: 'intro-description-form-save',
 	          value: 'Save' })
 	      );
 	    } else if (this.state.description === "") {
@@ -34263,6 +34262,7 @@
 	          React.createElement('textarea', {
 	            onChange: this.updateDescription,
 	            className: 'intro-description-form-text',
+	            disabled: 'true',
 	            placeholder: 'Describe who you are',
 	            value: this.state.description }),
 	          React.createElement(
@@ -34289,9 +34289,9 @@
 	            onSubmit: this.handleSubmit,
 	            className: 'intro-description-form group' },
 	          React.createElement('textarea', {
-	            onChange: this.updateDescription,
 	            className: 'intro-description-form-text',
 	            placeholder: this.state.description,
+	            disabled: 'true',
 	            value: this.state.description }),
 	          React.createElement(
 	            'div',

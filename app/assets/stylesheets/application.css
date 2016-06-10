@@ -711,10 +711,10 @@ input {
 }
 
 .posts-index-item {
-  width: 510px;
+  width: 500px;
   height: 170px;
   background: #ffffff;
-  margin-bottom: 33px;
+  margin-bottom: 80px;
   border: 1px solid #DFE0E4;
 }
 
@@ -1254,6 +1254,22 @@ input {
 }
 
 .school-form-save {
+  background: #4267B2;
+  float: right;
+  margin-right: 12px;
+  margin-left: 5px;
+  border-radius: 2px;
+  width: 70px;
+  text-align: center;
+  font-family: helvetica;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.intro-description-form-save {
   background: #4267B2;
   float: right;
   margin-right: 12px;
