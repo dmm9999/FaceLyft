@@ -7,7 +7,7 @@ var LikeApiUtil = {
       data: { id: id },
       dataType: 'json',
       success: function (likedPost) {
-        
+        LikeActions.receiveLikePosted
       }
     });
   }
