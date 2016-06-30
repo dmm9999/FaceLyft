@@ -70,14 +70,18 @@ var Friends = React.createClass({
       );
     } else {
 
-      randomUsers = this.state.friends.map(function(randomUser) {
-        var path = "/users/" + randomUser.id;
-        return <li key={randomUser.id} className="random-user-picture">
-                  <Link to={path} className="random-user-link"/>
-                  <img className="random-user-image" src={randomUser.profile_pic_url} />
-                  <title className="random-user-name">{randomUser.name}</title>
-              </li>;
-      });
+        if (this.state.friends && this.state.friends.length !== 0) {
+          randomUsers = this.state.friends.map(function(randomUser) {
+            var path = "/users/" + randomUser.id;
+            return <li key={randomUser.id} className="random-user-picture">
+                      <Link to={path} className="random-user-link"/>
+                      <img className="random-user-image" src={randomUser.profile_pic_url} />
+                      <title className="random-user-name">{randomUser.name}</title>
+                  </li>;
+          });
+        } else {
+          randomUsers = <div/>
+        }
 
       return (
         <ul className="random-users-container">

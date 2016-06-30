@@ -262,6 +262,7 @@ input {
   background: #3B5998;
   font-size: 12px;
   border-left: 1px solid #365089;
+  cursor: pointer;
 }
 
 .logout-button:hover {
@@ -286,6 +287,7 @@ input {
   background: #3B5998;
   font-size: 12px;
   border-left: 1px solid #365089;
+  cursor: pointer;
 }
 
 .home-button:hover {
@@ -310,6 +312,7 @@ input {
   float: left;
   width: 25px;
   height: 25px;
+  cursor: pointer;
 }
 
 .profile-button {
@@ -371,6 +374,7 @@ input {
   font-family: helvetica;
   color: #ffffff;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .profile-pic {
@@ -710,6 +714,7 @@ input {
   height: 25px;
   font-family: helvetica;
   text-align: center;
+  cursor: pointer;
 }
 
 .posts-index-item {
@@ -849,6 +854,7 @@ input {
   height: 25px;
   font-family: helvetica;
   text-align: center;
+  cursor: pointer;
 }
 
 .feed-content {
@@ -879,6 +885,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .first-name-form-input {
@@ -907,6 +914,7 @@ input {
   color: #ffffff;
   font-weight: bold;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .right-sidebar {
@@ -956,6 +964,7 @@ input {
 .friend-requests {
   float: left;
   position: relative;
+  cursor: pointer;
 }
 
 .friend-request-notifier-icon {
@@ -1083,6 +1092,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .work-form-input {
@@ -1106,6 +1116,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .current-city-form-value {
@@ -1130,6 +1141,7 @@ input {
   font-weight: bold;
   font-size: 12px;padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .current-city-form-input {
@@ -1153,6 +1165,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .birthday-form-value {
@@ -1178,6 +1191,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .birthday-form-input {
@@ -1202,6 +1216,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .phone-number-form-value {
@@ -1227,6 +1242,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .phone-number-form-input {
@@ -1250,6 +1266,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .hometown-form-value {
@@ -1275,6 +1292,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .hometown-form-input {
@@ -1298,6 +1316,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .school-form-value {
@@ -1323,6 +1342,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .school-form-input {
@@ -1346,6 +1366,7 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .intro-description-form-save {
@@ -1362,4 +1383,8 @@ input {
   font-size: 12px;
   padding: 4px;
   margin-bottom: 10px;
+}
+
+.hidden-items {
+  visibility: hidden;
 }

@@ -35528,20 +35528,24 @@
 	      );
 	    } else {
 	
-	      randomUsers = this.state.friends.map(function (randomUser) {
-	        var path = "/users/" + randomUser.id;
-	        return React.createElement(
-	          'li',
-	          { key: randomUser.id, className: 'random-user-picture' },
-	          React.createElement(Link, { to: path, className: 'random-user-link' }),
-	          React.createElement('img', { className: 'random-user-image', src: randomUser.profile_pic_url }),
-	          React.createElement(
-	            'title',
-	            { className: 'random-user-name' },
-	            randomUser.name
-	          )
-	        );
-	      });
+	      if (this.state.friends && this.state.friends.length !== 0) {
+	        randomUsers = this.state.friends.map(function (randomUser) {
+	          var path = "/users/" + randomUser.id;
+	          return React.createElement(
+	            'li',
+	            { key: randomUser.id, className: 'random-user-picture' },
+	            React.createElement(Link, { to: path, className: 'random-user-link' }),
+	            React.createElement('img', { className: 'random-user-image', src: randomUser.profile_pic_url }),
+	            React.createElement(
+	              'title',
+	              { className: 'random-user-name' },
+	              randomUser.name
+	            )
+	          );
+	        });
+	      } else {
+	        randomUsers = React.createElement('div', null);
+	      }
 	
 	      return React.createElement(
 	        'ul',
@@ -35809,8 +35813,12 @@
 	  },
 	
 	  componentDidMount: function () {
-	    FriendStore.addListener(this.handleChange);
+	    this.listener = FriendStore.addListener(this.handleChange);
 	    FriendApiUtil.fetchFriends(SessionStore.currentUserId());
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.listener.remove();
 	  },
 	
 	  handleChange: function () {
@@ -35978,10 +35986,10 @@
 	            { className: 'post-form-status-tab' },
 	            'Status'
 	          ),
-	          React.createElement('img', { src: photoIcon, className: 'post-form-photo-icon' }),
+	          React.createElement('img', { src: photoIcon, className: 'post-form-photo-icon hidden-items' }),
 	          React.createElement(
 	            'div',
-	            { className: 'post-form-photo-tab' },
+	            { className: 'post-form-photo-tab hidden-items' },
 	            'Photo'
 	          )
 	        ),
@@ -36294,7 +36302,7 @@
 	          React.createElement(
 	            'button',
 	            {
-	              className: 'post-edit-button',
+	              className: 'post-edit-button hidden-items',
 	              onClick: this.handleEdit },
 	            'Edit'
 	          )
@@ -36310,21 +36318,21 @@
 	          React.createElement(LikeButton, null),
 	          React.createElement(
 	            'div',
-	            { className: 'react-like-text' },
+	            { className: 'react-like-text hidden-items' },
 	            'Like'
 	          ),
 	          React.createElement('img', { src: commentIcon,
-	            className: 'react-comment-icon' }),
+	            className: 'react-comment-icon hidden-items' }),
 	          React.createElement(
 	            'div',
-	            { className: 'react-comment-text' },
+	            { className: 'react-comment-text hidden-items' },
 	            'Comment'
 	          ),
 	          React.createElement('img', { src: shareIcon,
-	            className: 'react-share-icon' }),
+	            className: 'react-share-icon hidden-items' }),
 	          React.createElement(
 	            'div',
-	            { className: 'react-share-text' },
+	            { className: 'react-share-text hidden-items' },
 	            'Share'
 	          )
 	        ),
@@ -36332,9 +36340,9 @@
 	          'div',
 	          { className: 'reactions-container group' },
 	          React.createElement('img', { src: this.props.post.author_profile_pic_url,
-	            className: 'comment-form-thumb' }),
+	            className: 'comment-form-thumb hidden-items' }),
 	          React.createElement('textarea', {
-	            className: 'comment-form',
+	            className: 'comment-form hidden-items',
 	            placeholder: 'Write a comment...' })
 	        )
 	      );
@@ -36416,10 +36424,10 @@
 	
 	    if (this.state.liked) {
 	      return React.createElement("img", { src: likedIcon,
-	        className: "react-liked-icon" });
+	        className: "react-liked-icon hidden-items" });
 	    } else {
 	      return React.createElement("img", { src: likeIcon,
-	        className: "react-like-icon" });
+	        className: "react-like-icon hidden-items" });
 	    }
 	  }
 	

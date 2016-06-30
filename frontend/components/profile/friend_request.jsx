@@ -13,8 +13,12 @@ var FriendRequest = React.createClass({
   },
 
   componentDidMount: function () {
-    FriendStore.addListener(this.handleChange);
+    this.listener = FriendStore.addListener(this.handleChange);
     FriendApiUtil.fetchFriends(SessionStore.currentUserId());
+  },
+
+  componentWillUnmount: function () {
+    this.listener.remove();
   },
 
   handleChange: function () {

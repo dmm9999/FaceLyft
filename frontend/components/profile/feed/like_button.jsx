@@ -11,12 +11,12 @@ var LikeButton = React.createClass({
     if (this.state.liked) {
       return (
         <img src={likedIcon}
-        className="react-liked-icon" />
+        className="react-liked-icon hidden-items" />
       );
     } else {
       return (
         <img src={likeIcon}
-        className="react-like-icon" />
+        className="react-like-icon hidden-items" />
       )
     }
   }

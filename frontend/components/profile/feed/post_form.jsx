@@ -65,7 +65,7 @@ var PostForm = React.createClass({
   },
 
   render: function () {
-    
+
     var text = "What's on your mind?";
 
     if (!this.state.isTimeline || this.state.isOwnPage) {
@@ -76,8 +76,8 @@ var PostForm = React.createClass({
           <header className="tab-container group">
             <img src={postIcon} className="post-form-post-icon"/>
             <div className="post-form-status-tab">Status</div>
-            <img src={photoIcon} className="post-form-photo-icon"/>
-            <div className="post-form-photo-tab">Photo</div>
+            <img src={photoIcon} className="post-form-photo-icon hidden-items"/>
+            <div className="post-form-photo-tab hidden-items">Photo</div>
           </header>
           <main>
             <img
