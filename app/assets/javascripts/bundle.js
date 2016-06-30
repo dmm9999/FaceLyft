@@ -36372,21 +36372,21 @@
 	          React.createElement(LikeButton, null),
 	          React.createElement(
 	            'div',
-	            { className: 'react-like-text' },
+	            { className: 'react-like-text hidden-items' },
 	            'Like'
 	          ),
 	          React.createElement('img', { src: commentIcon,
-	            className: 'react-comment-icon' }),
+	            className: 'react-comment-icon hidden-items' }),
 	          React.createElement(
 	            'div',
-	            { className: 'react-comment-text' },
+	            { className: 'react-comment-text hidden-items' },
 	            'Comment'
 	          ),
 	          React.createElement('img', { src: shareIcon,
-	            className: 'react-share-icon' }),
+	            className: 'react-share-icon hidden-items' }),
 	          React.createElement(
 	            'div',
-	            { className: 'react-share-text' },
+	            { className: 'react-share-text hidden-items' },
 	            'Share'
 	          )
 	        ),
@@ -36394,9 +36394,9 @@
 	          'div',
 	          { className: 'reactions-container group' },
 	          React.createElement('img', { src: this.props.post.author_profile_pic_url,
-	            className: 'comment-form-thumb' }),
+	            className: 'comment-form-thumb hidden-items' }),
 	          React.createElement('textarea', {
-	            className: 'comment-form',
+	            className: 'comment-form hidden-items',
 	            placeholder: 'Write a comment...' })
 	        )
 	      );

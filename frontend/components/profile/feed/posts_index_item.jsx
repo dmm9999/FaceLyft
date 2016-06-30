@@ -64,19 +64,19 @@ var PostsIndexItem = React.createClass({
           <div className="posts-index-item-body">{this.props.post.body}</div>
           <div className="react-container group">
             <LikeButton/>
-            <div className="react-like-text">Like</div>
+            <div className="react-like-text hidden-items">Like</div>
             <img src={commentIcon}
-              className="react-comment-icon"/>
-            <div className="react-comment-text">Comment</div>
+              className="react-comment-icon hidden-items"/>
+            <div className="react-comment-text hidden-items">Comment</div>
             <img src={shareIcon}
-              className="react-share-icon"/>
-            <div className="react-share-text">Share</div>
+              className="react-share-icon hidden-items"/>
+            <div className="react-share-text hidden-items">Share</div>
           </div>
           <div className="reactions-container group">
             <img src={this.props.post.author_profile_pic_url}
-              className="comment-form-thumb" />
+              className="comment-form-thumb hidden-items" />
             <textarea
-              className="comment-form"
+              className="comment-form hidden-items"
               placeholder="Write a comment..." />
           </div>
         </div>
