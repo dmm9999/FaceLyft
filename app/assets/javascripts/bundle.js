@@ -33813,11 +33813,11 @@
 	      null,
 	      React.createElement("input", {
 	        type: "text",
-	        className: "search-bar",
+	        className: "search-bar hidden-items",
 	        placeholder: "Search FaceLyft" }),
 	      React.createElement(
 	        "div",
-	        { className: "search-button" },
+	        { className: "search-button hidden-items" },
 	        React.createElement("i", { className: "fa fa-search", "aria-hidden": "true" })
 	      )
 	    );
@@ -36032,10 +36032,10 @@
 	            { className: 'post-form-status-tab' },
 	            'Post'
 	          ),
-	          React.createElement('img', { src: photoIcon, className: 'post-form-photo-icon' }),
+	          React.createElement('img', { src: photoIcon, className: 'post-form-photo-icon hidden-items' }),
 	          React.createElement(
 	            'div',
-	            { className: 'post-form-photo-tab' },
+	            { className: 'post-form-photo-tab hidden-items' },
 	            'Photo'
 	          )
 	        ),
